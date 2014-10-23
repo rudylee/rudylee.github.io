@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby on Rails | Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/categories/ruby-on-rails/atom.xml" rel="self"/>
+  <link href="http://blog.rudylee.com/"/>
+  <updated>2014-10-04T13:17:24+10:00</updated>
+  <id>http://blog.rudylee.com/</id>
+  <author>
+    <name><![CDATA[Rudy Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Add 'current' class to website menu in Rails]]></title>
+    <link href="http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails/"/>
+    <updated>2014-01-15T04:52:00+11:00</updated>
+    <id>http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails</id>
+    <content type="html"><![CDATA[<p>It is common to have &lsquo;active&rsquo; state or &lsquo;current&rsquo; state on website navigation. This will help visitors to know which page they have selected.</p>
+
+<p>This solution is based on Stackoverflow&rsquo;s question which I couldn&rsquo;t find. First, I&rsquo;ll create a method inside Rails application_helper.rb file. I&rsquo;ll call this method cp(). Here are the syntax:</p>
+
+<p>``` ruby application_helper.rb
+module ApplicationHelper
+  def cp(path)</p>
+
+<pre><code>current_route = Rails.application.routes.recognize_path(path)
+"current" if current_page?(path) or params[:controller] == current_route[:controller]
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>The method uses current_page and Rails.application.routes.recognize_path to get information about current page.</p>
+
+<p>After that we can use it in our view. Here is the example:</p>
+
+<p>``` ruby application.html.erb
+<nav id="menu-panel"></p>
+
+<pre><code>&lt;%= link_to 'SERVICES', services_path, class: cp('/services') %&gt;
+&lt;%= link_to 'FACILITIES', facilities_path, class: cp('/facilities') %&gt;
+&lt;%= link_to 'ABOUT', about_path, class: cp('/about') %&gt;
+&lt;%= link_to 'CAREERS', careers_path, class: cp(careers_path) %&gt;
+&lt;%= link_to 'BLOG', blog_index_path, class: cp(blog_index_path) %&gt;
+&lt;%= link_to 'CONTACT', contact_path, class: cp('/contact') %&gt;
+&lt;a href="#" id="close-menu-panel"&gt;&lt;b&gt;CLOSE&lt;/b&gt;&lt;/a&gt;
+</code></pre>
+
+<p></nav>
+```</p>
+
+<p>I hope that helps.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails 4 CORS]]></title>
+    <link href="http://blog.rudylee.com/2013/10/29/rails-4-cors/"/>
+    <updated>2013-10-29T02:02:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/10/29/rails-4-cors</id>
+    <content type="html"><![CDATA[<h2>Warning: I might update this post in the future if I find better way to achieve this</h2>
+
+<p>I was trying to use Rails to build REST API for my AngularJS app and came across CORS error on my Chrome developer tools.</p>
+
+<p>According to <a href="http://leopard.in.ua/2012/07/08/using-cors-with-rails/">Alexey Vasiliev</a>, Cross-origin resource sharing (CORS) is a web browser technology specification which defines ways for a web server to allow its resources to be accessed by a web page from a different domain. Such access would otherwise be forbidden by the same origin policy. CORS defines a way in which the browser and the server can interact to determine whether or not to allow the cross-origin request. It is a compromise that allows greater flexibility, but is more secure than simply allowing all such requests. CORS is supported in the following browsers:</p>
+
+<p>After following couple of outdated tutorials, I found the quick solution for it. Here are the steps:</p>
+
+<h1>Add route to handle OPTIONS method</h1>
+
+<p>AngularJS using OPTIONS method to check the CORS support on the API server. Thus, you need to add line in your route file to handle this. This can be done by adding code like this</p>
+
+<p><code>ruby
+match 'users', to: 'users#index', via: [:options]
+resources :users
+</code></p>
+
+<p>To check whether your configuration is correct you can run &lsquo;rake routes&rsquo;. It should print out something like this:</p>
+
+<p>``` bash
+   Prefix Verb    URI Pattern               Controller#Action</p>
+
+<pre><code>users OPTIONS /users(.:format)          users#index
+      GET     /users(.:format)          users#index
+      POST    /users(.:format)          users#create
+</code></pre>
+
+<p> new_user GET     /users/new(.:format)      users#new
+edit_user GET     /users/:id/edit(.:format) users#edit</p>
+
+<pre><code> user GET     /users/:id(.:format)      users#show
+      PATCH   /users/:id(.:format)      users#update
+      PUT     /users/:id(.:format)      users#update
+      DELETE  /users/:id(.:format)      users#destroy
+ root GET     /                         users#index
+</code></pre>
+
+<p>```</p>
+
+<p>You can see on the second line, we handle OPTIONS verb and redirect to index action.</p>
+
+<h1>Add before_filter and after_filter to allow CORS</h1>
+
+<p>The next step is we need to return proper header to tell AngularJS that our server allow CORS. Here is the sample controller file:</p>
+
+<p>``` ruby
+UsersController &lt; ApplicationController</p>
+
+<p>  skip_before_filter :verify_authenticity_token
+  before_filter :cors_preflight_check
+  after_filter :cors_set_access_control_headers</p>
+
+<p>  # For all responses in this controller, return the CORS access control headers.
+  def cors_set_access_control_headers</p>
+
+<pre><code>headers['Access-Control-Allow-Origin'] = '*'
+headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+headers['Access-Control-Max-Age'] = "1728000"
+</code></pre>
+
+<p>  end</p>
+
+<p>  # If this is a preflight OPTIONS request, then short-circuit the
+  # request, return only the necessary headers and return an empty
+  # text/plain.</p>
+
+<p>  def cors_preflight_check</p>
+
+<pre><code>headers['Access-Control-Allow-Origin'] = '*'
+headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS'
+headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version'
+headers['Access-Control-Max-Age'] = '1728000'
+</code></pre>
+
+<p>  end</p>
+
+<p>  def index</p>
+
+<pre><code>@users = User.all
+
+respond_to do |format|
+  format.json { render :json =&gt; @users }
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>We need to add skip_before_filter :verify_authenticity_token because Rails will return 422 status code and error message &lsquo;Can&rsquo;t verify CSRF token authenticity&rsquo;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Zeus inside Vagrant]]></title>
+    <link href="http://blog.rudylee.com/2013/09/13/zeus-inside-vagrant/"/>
+    <updated>2013-09-13T00:14:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/09/13/zeus-inside-vagrant</id>
+    <content type="html"><![CDATA[<p>I have been using Vagrant as my development environment for the last couple weeks. It has been very helpful as I prefer to use Linux as my development environment and I can only use Windows at my workplace. With Vagrant, I can easily set up new Linux machine, install Vim plus all the plugins and completely separate development machine for each project.</p>
+
+<p>Today, I was trying to use Zeus to speed up my Rspec test inside one of the Rails projects. I found this gem through a screencast by Ryan Bates about Fast Test.</p>
+
+<p>Install Zeus is pretty easy, you just need to run this command on your terminal:</p>
+
+<p><code>bash
+gem install zeus
+</code></p>
+
+<p>After that you just need to go to the directory of your Rails app and start the Zeus server using this command:</p>
+
+<p><code>bash
+zeus start
+</code></p>
+
+<p>However, when I got an error when I was trying to ran that command. Here is the error:</p>
+
+<p>``` bash
+vagrant@precise32:/vagrant$ zeus start
+Starting Zeus server
+[ready] [crashed] [running] [connecting] [waiting]
+boot
+└── default_bundle</p>
+
+<pre><code>├── development_environment
+│   └── prerake
+└── test_environment
+    ├── cucumber_environment
+    └── test_helper
+</code></pre>
+
+<p>Available Commands: [waiting] [crashed] [ready]
+zeus rake
+zeus runner (alias: r)
+zeus console (alias: c)
+zeus server (alias: s)
+zeus generate (alias: g)
+zeus destroy (alias: d)
+zeus dbconsole
+zeus cucumber
+zeus test (alias: rspec, testrb)
+It looks like Zeus is already running. If not, remove .zeus.sock and try again.
+```</p>
+
+<p>You can see on the last line that it&rsquo;s complaining something about .zeus.sock. The solution is pretty easy, you just need to add environment variable to your Vagrant machine. Use this command to add environment variable:</p>
+
+<p><code>bash
+export ZEUSSOCK=/tmp/zeus.sock
+</code></p>
+
+<p>Also make sure you use the latest version of Zeus. Add this line inside your Gemfile:</p>
+
+<p>``` ruby</p>
+
+<h1>Use Zeus</h1>
+
+<p>gem &lsquo;zeus&rsquo;, &ldquo;>= 0.13.4.pre2&rdquo;
+```</p>
+
+<p>Run &lsquo;bundle&rsquo; to install the gem and update the version. You should be able to run &lsquo;zeus start&rsquo; now and other Rails commands.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails set up namespace and redirect from namespace]]></title>
+    <link href="http://blog.rudylee.com/2012/02/12/rails-set-up-namespace-and-redirect-from-namespace/"/>
+    <updated>2012-02-12T13:02:27+11:00</updated>
+    <id>http://blog.rudylee.com/2012/02/12/rails-set-up-namespace-and-redirect-from-namespace</id>
+    <content type="html"><![CDATA[<p>In order to differentiate between admin actions and users actions, you can set up what called &ldquo;namespace&rdquo; in your rails apps. The basic idea of this feature is you will have different controller and view files for each role in your application.</p>
+
+<p>This concept is similar with prefixes in CakePHP. However,  CakePHP allows you to put different action in one controller file, while in rails you have to create different controller and view file for the new namespace. Here is the sample namespace code that I put in my routes.rb file :</p>
+
+<p><code>ruby
+namespace :admin do
+  resources :users
+  resources :products
+  resources :categories
+end
+</code></p>
+
+<p>The code means that users, products and categories will have admin namespace. The next step is to create new folder in your controller and view folder called &ldquo;admin&rdquo;. Here is the screenshot ( see the directory browser on the left hand side ) :</p>
+
+<p><a href="http://blog.rudylee.com/wp-content/uploads/2012/04/routes-rb.png"><img src="http://blog.rudylee.com/wp-content/uploads/2012/04/routes-rb.png" alt="" /></a></p>
+
+<p>Put the template and controller files inside these folders. You have to add Admin:: in front of the class definition of your controller file. So it&rsquo;s gonna be like this :</p>
+
+<p>``` ruby</p>
+
+<pre><code>class Admin::UsersController &lt; ApplicationController
+</code></pre>
+
+<p>```</p>
+
+<p>After you set up everything done, you can try to access your apps through <a href="http://your-url/admin/controller-path">http://your-url/admin/controller-path</a> ( ex: <a href="http://localhost:3000/admin/users">http://localhost:3000/admin/users</a> ). It should automatically pick the controller and view files from admin folder. And if you want to redirect to the original route, you have to add &lsquo;/&rsquo; in front of the controller name. Here is the code :</p>
+
+<p>``` ruby</p>
+
+<pre><code>redirect_to :controller =&gt; "/sessions",:action =&gt; "new"
+</code></pre>
+
+<p>```</p>
+
+<p>It means you will redirect the user to session controller outside of the namespace and load &ldquo;new&rdquo; action. That&rsquo;s all.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing rake command error in rails 3.0.7]]></title>
+    <link href="http://blog.rudylee.com/2011/05/29/fixing-rake-command-error-in-rails-3-0/"/>
+    <updated>2011-05-29T16:39:57+10:00</updated>
+    <id>http://blog.rudylee.com/2011/05/29/fixing-rake-command-error-in-rails-3-0</id>
+    <content type="html"><![CDATA[<p>Today I was trying to add rails project to Netbeans 6.9,but suddenly there is a pop up window that said &ldquo;Rake task fecthing failed&rdquo; with bunch of other errors. After that, I tried go to my application folder and try to run the rake command</p>
+
+<p><code>ruby    
+rake -D
+</code></p>
+
+<p>However I got this error</p>
+
+<p><code>`` bash
+rudy@rudy-laptop:~/www/depot$ rake -D
+rake aborted!
+undefined method</code>task' for #&lt;depot::application:0x91fa9c4></p>
+
+<p>(See full trace by running task with &mdash;trace)
+```</p>
+
+<p>After a little bit research, I found that I have to uninstall my rake 0.9 and install 0.8.7 instead. So I ran this command :</p>
+
+<p><code>bash
+gem uninstall rake -v 0.9
+gem install rake -v 0.8.7
+</code></p>
+
+<p>Edited the gem file and added this code inside that file :</p>
+
+<p><code>ruby
+gem 'rake', '0.8.7'
+</code></p>
+
+<p>Last step is update the bundle</p>
+
+<p><code>bash    
+bundle update
+</code></p>
+
+<p>After that you can try run your rake command or import your project to Netbans, it&rsquo;s should be fine.</p>
+
+<p>UPDATE :
+It turns out that the problem is because I was using rake 0.9 and it&rsquo;s break out all the installation.</p>
+
+<p><code>bash
+gem install bundler
+</code></p>
+
+<p>You might want to install bundler if you encounter some errors related to Netbeans couldn&rsquo;t find bundler setup. Another thing is you have to add gem path to your Netbeans ( Tools > Rubygems ) and add your gem path.</p>
+
+<p>I am using rvm to install ruby and also rails. So I run this command to find gem path</p>
+
+<p><code>bash
+rvm gemdir
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

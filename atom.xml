@@ -1,0 +1,1446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
+  <link href="http://blog.rudylee.com/"/>
+  <updated>2014-10-04T13:17:24+10:00</updated>
+  <id>http://blog.rudylee.com/</id>
+  <author>
+    <name><![CDATA[Rudy Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Enable HTTP authentication on certain domain]]></title>
+    <link href="http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain/"/>
+    <updated>2014-09-18T21:54:00+10:00</updated>
+    <id>http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain</id>
+    <content type="html"><![CDATA[<p>Basic HTTP authentication is one simple way to limit public access to your website prior to launch.</p>
+
+<p>The first thing you need is .htaccess file which contains all the configurations. The second one is .htpasswd containing username and password. You can use this website to generate .htpasswd file for you <a href="http://www.htaccesstools.com/htpasswd-generator/">http://www.htaccesstools.com/htpasswd-generator/</a></p>
+
+<p>In the sample below, I am trying to enable HTTP authentication only on certain domain. On the first line, I set enviroment variable if the domain name is equal to &ldquo;www.bundabergfestival.com.au&rdquo;. On line 7, I tell .htaccess file to deny any access by using the live_uri variable. I hope that explanation is pretty straight forward.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>SetEnvIf Host <span class="s2">&quot;^www.bundabergfestival.com.au&quot;</span> live_uri
+</span><span class='line'>AuthName <span class="s2">&quot;Bundaberg Festival Website Coming Soon&quot;</span>
+</span><span class='line'>AuthType Basic
+</span><span class='line'>AuthUserFile /var/app/.htpasswd
+</span><span class='line'>AuthGroupFile /dev/null
+</span><span class='line'>require valid-user
+</span><span class='line'>Order allow,deny
+</span><span class='line'>Allow from all
+</span><span class='line'>Deny from <span class="nv">env</span><span class="o">=</span>live_uri
+</span><span class='line'>Satisfy any
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[AngularJS Free Course by Code School]]></title>
+    <link href="http://blog.rudylee.com/2014/05/26/angularjs-free-course-by-code-school/"/>
+    <updated>2014-05-26T05:41:00+10:00</updated>
+    <id>http://blog.rudylee.com/2014/05/26/angularjs-free-course-by-code-school</id>
+    <content type="html"><![CDATA[<p>I spent some time last weekend to run through the new <a href="https://www.codeschool.com/courses/shaping-up-with-angular-js">AngularJS course by Code School</a>. This course is sponsored by Google which means you don&rsquo;t need to pay for the Code School membership to play this course. AngularJS is one of the popular Javascript frameworks to build single page app application. You might be familiar with other frameworks such as <a href="http://emberjs.com/">Ember.js</a>, <a href="http://backbonejs.org/">Backbone.js</a> and <a href="http://knockoutjs.com/">Knockout.js</a>.</p>
+
+<p>I really enjoyed the course and definitely learned something new from it. It covers the basic concept about directives, services and dependecy injection. I didn&rsquo;t understand those features when the first time I learned about AngularJS. In the beginning of learning AngularJS, I tended to copy and paste code without understanding the meaning behind it. This caused confusion when I tried to learn more about the framework.</p>
+
+<p>Code School also released another screencast on how to build AngularJS app from scratch. I&rsquo;ll suggest you to check that one out as well so you can apply the knowledge that you have learned from the course to build real application. However, you have to become the member to get access to the screencast.  There are also some other websites that provide AngularJS videos such as <a href="http://www.egghead.io">http://www.egghead.io</a> and <a href="http://www.thinkster.io">http://www.thinkster.io</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Elastic Beanstalk Environment with .ebextensions]]></title>
+    <link href="http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions/"/>
+    <updated>2014-05-22T01:44:00+10:00</updated>
+    <id>http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions</id>
+    <content type="html"><![CDATA[<p>At <a href="http://www.captiv8.com.au">Captiv8</a>, we are using Amazon AWS to host most of our PHP projects. We are heavily rely on Elastic Beanstalk to help us set up PHP environment, database and load balancer. On top of that, we are also managing our own server image based on Amazon AMI. In this image, we installed additional software and packages that we need for our application. However, this approach has a drawback as it is difficult to maintain the image and track changes. Everytime you need to update the image, you have to create new server, install the new software and export it into new image. This will leave you with bunch of different images and it is hard to tell what are the things that have changed inside each image.</p>
+
+<h1>Chef</h1>
+
+<p>In order to solve these problems, I decided to find a way to automate the process. My first attempt was trying to use Chef to provision the Elastic Beanstalk environment. I have been using Chef for a while to provision my Vagrant machines. It is powerful and more convenient in compare with bash scripts. Since I am already familiar with Chef, I started looking at tutorials on how to use Chef with Elastic Beanstalk. Most of the tutorials that I found don&rsquo;t provide easy way to integrate Chef with Elastic Beanstalk. One of them mentions about using AWS OpsWorks with Chef but I think it is overkill for the time being. So, I ditched Chef and start looking for another solution.</p>
+
+<h1>ebextensions</h1>
+
+<p>ebextensions is another solution that I found after checking the official documentation of Elastic Beanstalk. With this solution, you need to to create .ebextensions folder inside your project and create a file to define what are the packages that you want to install into the environment. Elastic Beanstalk will automatically run the script every time you deploy a new version of the application. Aside from that, you can also tell ebextensions to execute shell script in the instance or changing permission of a file. You can read more details about ebextension here: <a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html">http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html</a></p>
+
+<p>This is my directory structure at the moment:
+<a href="http://blog.rudylee.com/images/ebextensions.png"><img src="http://blog.rudylee.com/images/ebextensions.png" alt="" /></a></p>
+
+<p>Here is the example of my ebextension config file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">packages</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">yum</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">mlocate</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">commands</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">01updateComposer</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">export COMPOSER_HOME=/root &amp;&amp; /usr/bin/composer.phar self-update</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">02updateTag</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ec2-create-tags $(ec2-metadata -i | cut -d &#39; &#39; -f2) --tag Project=ChangeThis</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">cwd</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/home/ec2-user</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">env</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">EC2_HOME</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/opt/aws/apitools/ec2</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">EC2_URL</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">https://ec2.ap-southeast-2.amazonaws.com</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">JAVA_HOME</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/usr/lib/jvm/jre</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">PATH</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/bin:/usr/bin:/opt/aws/bin/</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">container_commands</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">01-command</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">updatedb</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">02-command</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">rm -rf /captiv8/.ebextensions</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">03-command</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mkdir -p /captiv8/.ebextensions</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">04-command</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cp -R .ebextensions/* /captiv8/.ebextensions/</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">05-command</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bash /captiv8/.ebextensions/scripts/app-setup.sh</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">option_settings</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">namespace</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">aws:elasticbeanstalk:application:environment</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">option_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">COMPOSER_HOME</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">value</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/root</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And this is the example of my bash script:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/usr/bin/env bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># References: </span>
+</span><span class='line'><span class="c"># - http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/</span>
+</span><span class='line'><span class="c"># - http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Main configuration, change these for each project</span>
+</span><span class='line'><span class="nv">appName</span><span class="o">=</span><span class="s2">&quot;change_this&quot;</span>
+</span><span class='line'><span class="nv">newrelicLicense</span><span class="o">=</span><span class="s2">&quot;newreliclicense&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Check if this is the very first time that this script is running</span>
+</span><span class='line'><span class="k">if</span> <span class="o">([</span> ! -f /root/.not-a-new-instance.txt <span class="o">])</span> <span class="k">then</span>
+</span><span class='line'><span class="k">  </span><span class="nv">newEC2Instance</span><span class="o">=</span><span class="nb">true</span>
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Install applications if this is new instance</span>
+</span><span class='line'><span class="k">if</span> <span class="o">([</span> <span class="nv">$newEC2Instance</span> <span class="o">])</span> <span class="k">then</span>
+</span><span class='line'>    <span class="c"># Allow sudo command to be used as part of beanstalk ebextensions scripts without a terminal</span>
+</span><span class='line'>    grep -q <span class="s1">&#39;Defaults:root !requiretty&#39;</span> /etc/sudoers.d/<span class="nv">$appName</span> <span class="o">||</span> <span class="nb">echo</span> -e <span class="s1">&#39;Defaults:root !requirettyn&#39;</span> &gt; /etc/sudoers.d/<span class="nv">$appName</span>
+</span><span class='line'>    chmod 440 /etc/sudoers.d/<span class="nv">$appName</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># Add sudo command if not already present to .bashrc of ec2-user so that we are logged on as root when we use ssh</span>
+</span><span class='line'>    grep -q <span class="s2">&quot;sudo -s&quot;</span> /home/ec2-user/.bashrc <span class="o">||</span> <span class="nb">echo</span> -e <span class="s2">&quot;nsudo -sn&quot;</span> &gt;&gt; /home/ec2-user/.bashrc
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Install phpMyAdmin</span>
+</span><span class='line'>  yum -y --enablerepo<span class="o">=</span>epel install phpmyadmin
+</span><span class='line'>  rm /etc/httpd/conf.d/phpMyAdmin.conf
+</span><span class='line'>  rm /etc/phpMyAdmin/config.inc.php
+</span><span class='line'>  mv /captiv8/.ebextensions/templates/phpMyAdmin/phpMyAdmin.conf /etc/httpd/conf.d/
+</span><span class='line'>  mv /captiv8/.ebextensions/templates/phpMyAdmin/config.inc.php /etc/phpMyAdmin/
+</span><span class='line'>  chmod 644 /etc/httpd/conf.d/phpMyAdmin.conf
+</span><span class='line'>  chmod 644 /etc/phpMyAdmin/config.inc.php
+</span><span class='line'>  service httpd restart
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Install New Relic</span>
+</span><span class='line'>  rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm
+</span><span class='line'>  yum -y install newrelic-php5
+</span><span class='line'>  <span class="nb">echo</span> -ne <span class="err">&#39;</span><span class="se">\n\&#39;</span> | newrelic-install install
+</span><span class='line'>  rm /etc/php.d/newrelic.ini
+</span><span class='line'>  mv /captiv8/.ebextensions/templates/newrelic/newrelic.ini /etc/php.d/
+</span><span class='line'>  chmod 644 /etc/php.d/newrelic.ini
+</span><span class='line'>  perl -pi -e <span class="s2">&quot;s/PHP Application/$appName/g&quot;</span> /etc/php.d/newrelic.ini
+</span><span class='line'>  perl -pi -e <span class="s2">&quot;s/newrelicLicense/$newrelicLicense/g&quot;</span> /etc/php.d/newrelic.ini
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Install New Relic Server Monitor  </span>
+</span><span class='line'>  yum -y install newrelic-sysmond
+</span><span class='line'>  nrsysmond-config --set <span class="nv">license_key</span><span class="o">=</span><span class="nv">$newrelicLicense</span>
+</span><span class='line'>  /etc/init.d/newrelic-sysmond start
+</span><span class='line'>  service httpd restart
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Install OSSEC</span>
+</span><span class='line'>  yum -y install mysql-devel postgresql-devel
+</span><span class='line'>  wget http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz -P /captiv8
+</span><span class='line'>  tar xzvf /captiv8/ossec-hids-2.7.1.tar.gz -C /captiv8
+</span><span class='line'>  rm /captiv8/ossec-hids-2.7.1.tar.gz
+</span><span class='line'>  rm /captiv8/ossec-hids-2.7.1/etc/preloaded-vars.conf
+</span><span class='line'>  mv /captiv8/.ebextensions/templates/ossec/preloaded-vars.conf /captiv8/ossec-hids-2.7.1/etc/
+</span><span class='line'>  /captiv8/ossec-hids-2.7.1/install.sh
+</span><span class='line'>  /var/ossec/bin/ossec-control start
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># If new instance, now it is not new anymore</span>
+</span><span class='line'><span class="k">if</span> <span class="o">([</span> <span class="nv">$newEC2Instance</span> <span class="o">])</span> <span class="k">then</span>
+</span><span class='line'><span class="k">    </span><span class="nb">echo</span> -n <span class="s2">&quot;&quot;</span> &gt; /root/.not-a-new-instance.txt
+</span><span class='line'>    chmod 644 /etc/php.d/.not-a-new-instance
+</span><span class='line'><span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Inside my ebextensions config file, I call the shell script which will install additional software. The benefit of using shell script is you have more options and it is much easier to customize the software. Since the .ebextensions folder is copied to the instance, you can tell the shell script to copy a template config file that you have prepared before hand. I hope you find this blog post useful.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Audio Books]]></title>
+    <link href="http://blog.rudylee.com/2014/03/27/audio-books/"/>
+    <updated>2014-03-27T23:30:00+11:00</updated>
+    <id>http://blog.rudylee.com/2014/03/27/audio-books</id>
+    <content type="html"><![CDATA[<p>Around October 2013, I decided to move from city to Gladesville which located 9 kilometres north-west of Sydney CBD. It wasn&rsquo;t easy decision because I need to spend about 2 hours on commuting every day.</p>
+
+<p>For the first couple months, I was fine with the long commuting time. I can distract myself with my phone or sleeping on the bus. However, I started to feel unproductive and I can feel it affected my concentration throughout the day. So, I tried to do some research on the Internet about productive use of commuting time. Most of the articles that I found suggesting to listen either podcasts or audio books.</p>
+
+<p>I decided to give audio book a try and downloaded <a href="http://www.amazon.com/Eat-That-Frog-Great-Procrastinating/dp/1576754227">Eat That Frog by Brian Tracy</a>. If you are interested, you can easily find the audio version of this book on YouTube. At first, I was a little bit skeptical with the result but it turned out to be really helpful. I can feel that my life is back on track again. I started to use <a href="http://trello.com/">Trello</a> to keep my list of tasks. Once in a while, I&rsquo;ll update my goals and create separate boards for each project.</p>
+
+<p>Since that, I have been listening to several different audio books such as <a href="http://www.amazon.com/168-Hours-Have-More-Think/dp/159184410X">168 hours by Laura Vanderkam</a> and <a href="http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280">Getting things done by David Allen</a>. Both of them shared some basic principles from Eat that frog. I prefer Getting things done because it&rsquo;s more straight forward and focusing on actions you can perform to improve your productivity. Although, I can say that this book is quite to hard understand so you need to listen it more than once to get a good grasp of the concept.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Add 'current' class to website menu in Rails]]></title>
+    <link href="http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails/"/>
+    <updated>2014-01-15T04:52:00+11:00</updated>
+    <id>http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails</id>
+    <content type="html"><![CDATA[<p>It is common to have &lsquo;active&rsquo; state or &lsquo;current&rsquo; state on website navigation. This will help visitors to know which page they have selected.</p>
+
+<p>This solution is based on Stackoverflow&rsquo;s question which I couldn&rsquo;t find. First, I&rsquo;ll create a method inside Rails application_helper.rb file. I&rsquo;ll call this method cp(). Here are the syntax:</p>
+
+<figure class='code'><figcaption><span>application_helper.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ApplicationHelper</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cp</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">current_route</span> <span class="o">=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">recognize_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="s2">&quot;current&quot;</span> <span class="k">if</span> <span class="n">current_page?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">params</span><span class="o">[</span><span class="ss">:controller</span><span class="o">]</span> <span class="o">==</span> <span class="n">current_route</span><span class="o">[</span><span class="ss">:controller</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The method uses current_page and Rails.application.routes.recognize_path to get information about current page.</p>
+
+<p>After that we can use it in our view. Here is the example:</p>
+
+<figure class='code'><figcaption><span>application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="n">nav</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;menu-panel&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="sx">%= link_to &#39;SERVICES&#39;, services_path, class: cp(&#39;/services&#39;) %&gt;</span>
+</span><span class='line'><span class="sx">    &lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;FACILITIES&#39;</span><span class="p">,</span> <span class="n">facilities_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="n">cp</span><span class="p">(</span><span class="s1">&#39;/facilities&#39;</span><span class="p">)</span> <span class="sx">%&gt;</span>
+</span><span class='line'><span class="sx">    &lt;%= link_to &#39;ABOUT&#39;, about_path, class: cp(&#39;/about&#39;) %&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="sx">%= link_to &#39;CAREERS&#39;, careers_path, class: cp(careers_path) %&gt;</span>
+</span><span class='line'><span class="sx">    &lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;BLOG&#39;</span><span class="p">,</span> <span class="n">blog_index_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="n">cp</span><span class="p">(</span><span class="n">blog_index_path</span><span class="p">)</span> <span class="sx">%&gt;</span>
+</span><span class='line'><span class="sx">    &lt;%= link_to &#39;CONTACT&#39;, contact_path, class: cp(&#39;/contact&#39;) %&gt;</span>
+</span><span class='line'>    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;close-menu-panel&quot;</span><span class="o">&gt;&lt;</span><span class="n">b</span><span class="o">&gt;</span><span class="no">CLOSE</span><span class="o">&lt;</span><span class="sr">/b&gt;&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="sr">/nav&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I hope that helps.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install the latest tmux on Ubuntu 12.04]]></title>
+    <link href="http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04/"/>
+    <updated>2013-12-06T03:43:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04</id>
+    <content type="html"><![CDATA[<p>In this post, I will show you how to install the latest tmux on Ubuntu 12.04. First, we need to install &lsquo;add-apt-repository&rsquo; command on our machine. This can be done by running these commands:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install software-properties-common
+</span><span class='line'>
+</span><span class='line'>sudo apt-get install python-software-properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After that you can add third party repository ( Ubuntu official repository does not have latest tmux at the moment )</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo add-apt-repository ppa:pi-rho/dev
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get install tmux
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rails 4 CORS]]></title>
+    <link href="http://blog.rudylee.com/2013/10/29/rails-4-cors/"/>
+    <updated>2013-10-29T02:02:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/10/29/rails-4-cors</id>
+    <content type="html"><![CDATA[<h2>Warning: I might update this post in the future if I find better way to achieve this</h2>
+
+<p>I was trying to use Rails to build REST API for my AngularJS app and came across CORS error on my Chrome developer tools.</p>
+
+<p>According to <a href="http://leopard.in.ua/2012/07/08/using-cors-with-rails/">Alexey Vasiliev</a>, Cross-origin resource sharing (CORS) is a web browser technology specification which defines ways for a web server to allow its resources to be accessed by a web page from a different domain. Such access would otherwise be forbidden by the same origin policy. CORS defines a way in which the browser and the server can interact to determine whether or not to allow the cross-origin request. It is a compromise that allows greater flexibility, but is more secure than simply allowing all such requests. CORS is supported in the following browsers:</p>
+
+<p>After following couple of outdated tutorials, I found the quick solution for it. Here are the steps:</p>
+
+<h1>Add route to handle OPTIONS method</h1>
+
+<p>AngularJS using OPTIONS method to check the CORS support on the API server. Thus, you need to add line in your route file to handle this. This can be done by adding code like this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">&#39;users#index&#39;</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="o">[</span><span class="ss">:options</span><span class="o">]</span>
+</span><span class='line'><span class="n">resources</span> <span class="ss">:users</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To check whether your configuration is correct you can run &lsquo;rake routes&rsquo;. It should print out something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>   Prefix Verb    URI Pattern               Controller#Action
+</span><span class='line'>    users OPTIONS /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
+</span><span class='line'>          GET     /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
+</span><span class='line'>          POST    /users<span class="o">(</span>.:format<span class="o">)</span>          users#create
+</span><span class='line'> new_user GET     /users/new<span class="o">(</span>.:format<span class="o">)</span>      users#new
+</span><span class='line'>edit_user GET     /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> users#edit
+</span><span class='line'>     user GET     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#show
+</span><span class='line'>          PATCH   /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
+</span><span class='line'>          PUT     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
+</span><span class='line'>          DELETE  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#destroy
+</span><span class='line'>     root GET     /                         users#index
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can see on the second line, we handle OPTIONS verb and redirect to index action.</p>
+
+<h1>Add before_filter and after_filter to allow CORS</h1>
+
+<p>The next step is we need to return proper header to tell AngularJS that our server allow CORS. Here is the sample controller file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">skip_before_filter</span> <span class="ss">:verify_authenticity_token</span>
+</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:cors_preflight_check</span>
+</span><span class='line'>  <span class="n">after_filter</span> <span class="ss">:cors_set_access_control_headers</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># For all responses in this controller, return the CORS access control headers.</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_set_access_control_headers</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;1728000&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1"># If this is a preflight OPTIONS request, then short-circuit the</span>
+</span><span class='line'>  <span class="c1"># request, return only the necessary headers and return an empty</span>
+</span><span class='line'>  <span class="c1"># text/plain.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_preflight_check</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;X-Requested-With, X-Prototype-Version&#39;</span>
+</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;1728000&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
+</span><span class='line'>    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
+</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="vi">@users</span> <span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We need to add skip_before_filter :verify_authenticity_token because Rails will return 422 status code and error message &lsquo;Can&rsquo;t verify CSRF token authenticity&rsquo;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fix npm symlink problem in Vagrant]]></title>
+    <link href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/"/>
+    <updated>2013-10-24T00:16:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant</id>
+    <content type="html"><![CDATA[<p>Today I encountered weird symlink error when trying to install npm modules on my Vagrant Ubuntu Box. The error says &ldquo;pm ERR! Error: UNKNOWN, symlink &lsquo;../which/bin/which&rsquo;&rdquo;.</p>
+
+<p>After quick Google, it turns out the problem is caused by npm trying to create symlink which is not supported on Windows ( I am using Windows 8 as my host machine ).</p>
+
+<p>Here is quick solution which allow you to install npm modules without creating any symlinks :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install --no-bin-link
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Trailing Characters ^M]]></title>
+    <link href="http://blog.rudylee.com/2013/09/18/trailing-characters-m/"/>
+    <updated>2013-09-18T00:58:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/09/18/trailing-characters-m</id>
+    <content type="html"><![CDATA[<p>This morning I ran into weird errors in one of my Vagrant machine. These errors come up when I was trying to run tmux and vim:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Error detected <span class="k">while </span>processing /home/vagrant/.vimrc:
+</span><span class='line'>line    1:
+</span><span class='line'>E488: Trailing characters: nocompatible^M
+</span><span class='line'>line    2:
+</span><span class='line'>E488: Trailing characters: nu^M
+</span><span class='line'>line    3:
+</span><span class='line'>E488: Trailing characters: nobackup^M
+</span><span class='line'>line    4:
+</span><span class='line'>E488: Trailing characters: nowritebackup^M
+</span><span class='line'>line    5:
+</span><span class='line'>E488: Trailing characters: noswapfile^M
+</span><span class='line'>line    6:
+</span><span class='line'>E488: Trailing characters: hlsearch^M
+</span><span class='line'>line    7:
+</span><span class='line'>E488: Trailing characters: ruler^M
+</span><span class='line'>line    8:
+</span><span class='line'>E474: Invalid argument: <span class="nv">laststatus</span><span class="o">=</span>2^M
+</span><span class='line'>line    9:
+</span><span class='line'>E474: Invalid argument: <span class="nv">tabstop</span><span class="o">=</span>2^M
+</span><span class='line'>line   10:
+</span><span class='line'>E474: Invalid argument: <span class="nv">shiftwidth</span><span class="o">=</span>2^M
+</span><span class='line'>line   11:
+</span><span class='line'>E488: Trailing characters: expandtab^M
+</span><span class='line'>Vim: Error reading input, exiting...ne down, b/u/k: up, q: quit
+</span><span class='line'>Vim: Finished.
+</span><span class='line'>Press ENTER or <span class="nb">type command </span>to continueVim: Error reading input, exiting...
+</span><span class='line'>Vim: Finished.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I had similar problem before when trying to edit file from Windows machine inside vim. ^M character is added by Windows machine to mark newline in their files.</p>
+
+<p>The quickest solution to fix this is by installing &lsquo;dos2unix&rsquo; software and let it fix the file for you. In Ubuntu, you can run this command to install it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install dos2unix
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And fix the file by typing this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>dos2unix &lt;file&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It will automatically remove all the trailing characters for you.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Zeus inside Vagrant]]></title>
+    <link href="http://blog.rudylee.com/2013/09/13/zeus-inside-vagrant/"/>
+    <updated>2013-09-13T00:14:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/09/13/zeus-inside-vagrant</id>
+    <content type="html"><![CDATA[<p>I have been using Vagrant as my development environment for the last couple weeks. It has been very helpful as I prefer to use Linux as my development environment and I can only use Windows at my workplace. With Vagrant, I can easily set up new Linux machine, install Vim plus all the plugins and completely separate development machine for each project.</p>
+
+<p>Today, I was trying to use Zeus to speed up my Rspec test inside one of the Rails projects. I found this gem through a screencast by Ryan Bates about Fast Test.</p>
+
+<p>Install Zeus is pretty easy, you just need to run this command on your terminal:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gem install zeus
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After that you just need to go to the directory of your Rails app and start the Zeus server using this command:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>zeus start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>However, when I got an error when I was trying to ran that command. Here is the error:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant@precise32:/vagrant<span class="nv">$ </span>zeus start
+</span><span class='line'>Starting Zeus server
+</span><span class='line'><span class="o">[</span>ready<span class="o">]</span> <span class="o">[</span>crashed<span class="o">]</span> <span class="o">[</span>running<span class="o">]</span> <span class="o">[</span>connecting<span class="o">]</span> <span class="o">[</span>waiting<span class="o">]</span>
+</span><span class='line'>boot
+</span><span class='line'>└── default_bundle
+</span><span class='line'>    ├── development_environment
+</span><span class='line'>    │   └── prerake
+</span><span class='line'>    └── test_environment
+</span><span class='line'>        ├── cucumber_environment
+</span><span class='line'>        └── test_helper
+</span><span class='line'>
+</span><span class='line'>Available Commands: <span class="o">[</span>waiting<span class="o">]</span> <span class="o">[</span>crashed<span class="o">]</span> <span class="o">[</span>ready<span class="o">]</span>
+</span><span class='line'>zeus rake
+</span><span class='line'>zeus runner <span class="o">(</span><span class="nb">alias</span>: r<span class="o">)</span>
+</span><span class='line'>zeus console <span class="o">(</span><span class="nb">alias</span>: c<span class="o">)</span>
+</span><span class='line'>zeus server <span class="o">(</span><span class="nb">alias</span>: s<span class="o">)</span>
+</span><span class='line'>zeus generate <span class="o">(</span><span class="nb">alias</span>: g<span class="o">)</span>
+</span><span class='line'>zeus destroy <span class="o">(</span><span class="nb">alias</span>: d<span class="o">)</span>
+</span><span class='line'>zeus dbconsole
+</span><span class='line'>zeus cucumber
+</span><span class='line'>zeus <span class="nb">test</span> <span class="o">(</span><span class="nb">alias</span>: rspec, testrb<span class="o">)</span>
+</span><span class='line'>It looks like Zeus is already running. If not, remove .zeus.sock and try again.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can see on the last line that it&rsquo;s complaining something about .zeus.sock. The solution is pretty easy, you just need to add environment variable to your Vagrant machine. Use this command to add environment variable:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">ZEUSSOCK</span><span class="o">=</span>/tmp/zeus.sock
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Also make sure you use the latest version of Zeus. Add this line inside your Gemfile:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Use Zeus</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;zeus&#39;</span><span class="p">,</span> <span class="s2">&quot;&gt;= 0.13.4.pre2&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run &lsquo;bundle&rsquo; to install the gem and update the version. You should be able to run &lsquo;zeus start&rsquo; now and other Rails commands.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Refocus]]></title>
+    <link href="http://blog.rudylee.com/2013/08/04/refocus/"/>
+    <updated>2013-08-04T17:08:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/08/04/refocus</id>
+    <content type="html"><![CDATA[<p>For the past few weeks, it seems that I am gradually moving into different life style. When I was still doing my course, it is almost impossible to spend time on the weekend to catch up with friends, walking around city and trying new stuff. Everytime my friend invited me to hang out with them I always said that I need to finish my assignments.</p>
+
+<p>I remember one of my friend just asked me this question &ldquo;So, what you usually do during the weekend ?&rdquo; and I answered &ldquo;Nothing, just doing my assigments and other stuff&rdquo;. He looked surprised with my answer and he added &ldquo;Don&rsquo;t you have any friends that invited you out ?&rdquo;. At that time, I realized that he must be feel pity and I said to him &ldquo;At first, you might feel that your life is unfair. You will think that why everyone can enjoy their life during the weekend and you trapped here working on your assigments. But, as the time goes you start to get used to it&rdquo;.</p>
+
+<p>So for the past few months, I have been doing the same routine. Working and attending the class during the weekdays, working on assignments with my group mate during the weekend. Sometimes, I felt stress and tired but believe me, that was the most meaningful moment in my life. During that time, I definitely know what I am going to do everyday and somehow I feel more motivated.</p>
+
+<p>The problem with my current life style is I have more control on what I can do during my free time. I can decide that I can go to cinema, buy clothes, trying this new restaurant or just spending whole day watching YouTube. However, I started to feel that this path is leading me to different direction. The direction that I might regret in the future.</p>
+
+<p>That is why I decided to start writing more blog posts about my life experience. I believe writing blog post can help you refocus on what you should do.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Sending email from Amazon EC2 using postfix and Amazon SES]]></title>
+    <link href="http://blog.rudylee.com/2013/07/26/sending-email-from-amazon-ec2-using-postfix-and-amazon-ses/"/>
+    <updated>2013-07-26T14:37:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/07/26/sending-email-from-amazon-ec2-using-postfix-and-amazon-ses</id>
+    <content type="html"><![CDATA[<p>Sending email is a basic functionality that most of the applications need to support. In my company latest project, we have to send invitation emails to users through an Amazon EC2 instance. It is relatively easy task because I can use built in email library from Code Igniter and point it to Amazon SES. It works perfectly until my colleague realize that there is a slightly delay when the application sends the email.</p>
+
+<p>It turns out that the built in email library inside Code Igniter has to wait for the response from Amazon SES to send the email. After a little bit of research, we found that we can solve the problem by using either sendmail or postfix to send the emails.</p>
+
+<h2>Sendmail</h2>
+
+<p>The first approach that we tried was using sendmail to send the email. You can find the tutorial to set it up in the <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/sendmail.html">official Amazon SES documentation</a>. It is pretty easy to set up because the default Amazon EC2 Linux Image already have sendmail installed by default.</p>
+
+<p>The problem that we found with this solution is you can only send email to verified email address only. The tutorial mentions that you need to request for production access to be able to send email to unverified email addresses.</p>
+
+<h2>Postfix</h2>
+
+<p>After the sendmail approach, we decided to try the other approach which is using postfix to send the email. This is also easy to set up by following the tutorial from <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide/postfix.html">official documentation</a>. The only thing that is missing from the tutorial is to switch the MTA from sendmail to postfix.</p>
+
+<p>First thing that you have to do is to install postfix. This can be easily done through yum package manager :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>yum install postfix
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You don&rsquo;t need to uninstall sendmail because they can just work together just fine. You just need to turn off the sendmail server and switch on postfix server.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo /etc/init.d/sendmail stop
+</span><span class='line'>sudo /etc/init.d/postfix start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After that you need to switch the MTA from sendmail to postfix using this command</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo alternatives --set mta /usr/sbin/sendmail.postfix
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you get to this point, you just need to follow the tutorial from official documentation to set up postfix and use Amazon SES as the relay. After you are done with the configuration there is another thing that you need to solve. You might notice there is a timeout when you are trying to send emails in huge volume. The workaround for this problem is you have to ask Amazon to remove the limitation on your account.</p>
+
+<p>Amazon put throttle on port 25 to prevent user to use Amazon EC2 for spam machine. This cause connection timeout which prevent you from sending email in real time. To solve this you have to send support request to remove this limitation. So, good luck with that.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Migrate to Octopress]]></title>
+    <link href="http://blog.rudylee.com/2013/07/25/migrate-to-octopress/"/>
+    <updated>2013-07-25T20:26:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/07/25/migrate-to-octopress</id>
+    <content type="html"><![CDATA[<p>Today, I decided to upload my new blog using Octopress into live. I have spent the last two weeks migrating my blog posts into Octopress. The process was not as smooth as I thought. I had to check every single blog post and re-apply all the code snippet tags, fix typo and add missing post.</p>
+
+<p>After all, I am quite happy with the end result. I can easily add new blog post through terminal and edit the post using my current favourite text editor Vim. The other good thing is the beautiful code snippet which is one of the reasons I moved from Wordpress.</p>
+
+<p>I am looking forward to post more tutorials about PHP, Rails, NodeJS, AngularJS and so on.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Playing with Google Map API]]></title>
+    <link href="http://blog.rudylee.com/2013/05/27/playing-with-google-map-api/"/>
+    <updated>2013-05-27T11:16:02+10:00</updated>
+    <id>http://blog.rudylee.com/2013/05/27/playing-with-google-map-api</id>
+    <content type="html"><![CDATA[<p>The main purpose of this post is only to write about Google Map API for future reference. Here are the code snippets :</p>
+
+<p>Get the latitude and longitude based on address : <a href="http://maps.googleapis.com/maps/api/geocode/json?address=435A%20Kent%20St&amp;sensor=true">http://maps.googleapis.com/maps/api/geocode/json?address=435A%20Kent%20St&amp;sensor=true</a></p>
+
+<p>The code below set up the Google Map, put the marker and also make it grayscale</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">initialize</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">map</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">location</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="o">-</span><span class="mf">33.87190930</span><span class="p">,</span> <span class="mf">151.20480740</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">styles</span> <span class="o">=</span> <span class="p">[</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="nx">featureType</span><span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">elementType</span><span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">stylers</span><span class="o">:</span> <span class="p">[</span>
+</span><span class='line'>                <span class="p">{</span> <span class="nx">saturation</span><span class="o">:</span> <span class="o">-</span><span class="mi">100</span> <span class="p">}</span>
+</span><span class='line'>            <span class="p">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">mapOptions</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">center</span><span class="o">:</span> <span class="nx">location</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">zoom</span><span class="o">:</span> <span class="mi">17</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">mapTypeControlOptions</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">mapTypeId</span><span class="o">:</span> <span class="p">[</span><span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">MapTypeId</span><span class="p">.</span><span class="nx">ROADMAP</span><span class="p">,</span> <span class="s1">&#39;theGray&#39;</span><span class="p">]</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;map-canvas&quot;</span><span class="p">),</span> <span class="nx">mapOptions</span><span class="p">);</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">mapType</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">StyledMapType</span><span class="p">(</span><span class="nx">styles</span><span class="p">,</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span><span class="s2">&quot;GrayScale&quot;</span> <span class="p">});</span>
+</span><span class='line'>    <span class="nx">map</span><span class="p">.</span><span class="nx">mapTypes</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;theGray&#39;</span><span class="p">,</span> <span class="nx">mapType</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">map</span><span class="p">.</span><span class="nx">setMapTypeId</span><span class="p">(</span><span class="s1">&#39;theGray&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">marker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Marker</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">position</span><span class="o">:</span> <span class="nx">location</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">map</span><span class="o">:</span> <span class="nx">map</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">addDomListener</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">,</span> <span class="nx">initialize</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Override module config in Zend Framework 2]]></title>
+    <link href="http://blog.rudylee.com/2013/05/16/override-module-config-in-zend-framework-2/"/>
+    <updated>2013-05-16T11:12:19+10:00</updated>
+    <id>http://blog.rudylee.com/2013/05/16/override-module-config-in-zend-framework-2</id>
+    <content type="html"><![CDATA[<p>There is a time when you want to override module config in your Zend Framework 2 application. In my case, I have different configuration for SMS gateway in staging and live server. You can do this by overwriting the module.config.php file inside the module config&rsquo;s folder. However, there are heaps of configuration inside module.config.php file. This approach will lead to maintenance nightmare when you need to change one or more configuration inside the file.</p>
+
+<p>The cleanest approach is to override specific configuration key by creating module-name.local.php file inside config/autoload folder. For example, you have &ldquo;Admin&rdquo; module and here is the sample module.config.php file :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>    <span class="s1">&#39;sms&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>        <span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;rudy&#39;</span><span class="p">,</span> <span class="c1">//API access username</span>
+</span><span class='line'>        <span class="s1">&#39;password&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;rudy&#39;</span><span class="p">,</span> <span class="c1">//API access password</span>
+</span><span class='line'>        <span class="s1">&#39;sender&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Rudy&#39;</span><span class="p">,</span> <span class="c1">// max of 11 alphanumeric or max of 15 numerical characters</span>
+</span><span class='line'>    <span class="p">),</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can override only the username by creating admin.local.php file inside config/autoload folder and put this code inside it :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">return</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>    <span class="s1">&#39;sms&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>        <span class="s1">&#39;username&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;override&#39;</span><span class="p">,</span> <span class="c1">//API access username</span>
+</span><span class='line'>    <span class="p">),</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Zend Framework 2 will read this file and overwrite the username key inside module.config.php. Now you can create script during your deployment process to create this file automatically.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Zend Framework 2 : The proper way to set application path in Javascript Object]]></title>
+    <link href="http://blog.rudylee.com/2013/05/06/zend-framework-2-the-proper-way-to-set-application-path-in-javascript-object/"/>
+    <updated>2013-05-06T14:44:36+10:00</updated>
+    <id>http://blog.rudylee.com/2013/05/06/zend-framework-2-the-proper-way-to-set-application-path-in-javascript-object</id>
+    <content type="html"><![CDATA[<p>Storing application path inside Javascript object is a way to avoid &ldquo;hard coded&rdquo; URL inside your Javascript file.  It is pretty common to have like this in your Javascript file :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="nx">POST</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost/my-website/register&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="nx">dataJSON</span>
+</span><span class='line'><span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That approach is completely fine. However, when you need to deploy your application, you need to manually change all the URL to match with your server. The solution that I have been using for quite a long time is setting up Javascript object that contains path to my application.</p>
+
+<p>In CakePHP, this can be easily done by using URL method inside Router Class. Here is the sample :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$cbunny</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>    <span class="s1">&#39;APP_PATH&#39;</span> <span class="o">=&gt;</span> <span class="nx">Router</span><span class="o">::</span><span class="na">url</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span><span class='line'><span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">scriptBlock</span><span class="p">(</span><span class="s1">&#39;var CbunnyObj = &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Javascript</span><span class="o">-&gt;</span><span class="na">object</span><span class="p">(</span><span class="nv">$cbunny</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In Zend Framework 2, you have to rely on serverUrl and basePath to achieve the same thing. Here is the proper way to do it in Zend Framework 2 :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="c1">//&lt;![CDATA[</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">CMSObj</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>            <span class="s2">&quot;APP_PATH&quot;</span><span class="o">:</span><span class="s2">&quot;&lt;?php echo $this-&gt;serverUrl() . $this-&gt;basePath() ?&gt;/&quot;</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>    <span class="c1">//]]&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My review after two months using VIM]]></title>
+    <link href="http://blog.rudylee.com/2013/03/30/my-review-after-two-months-using-vim/"/>
+    <updated>2013-03-30T23:35:41+11:00</updated>
+    <id>http://blog.rudylee.com/2013/03/30/my-review-after-two-months-using-vim</id>
+    <content type="html"><![CDATA[<p>On January ( Two months ago ) , I decided to learn Vim after watching screencast from <a href="http://www.destroyallsoftware.com">Destroy All Software</a>. In one of the screencast, the guy shows how fast you can program when using Vim and use plugin to make it even better.</p>
+
+<p>I have known Vim for 4 years now but never actually keen to learn all the shortcuts. I remember I been to one of the PHP meetup in my city and one guy was presenting some of his code using Vim. One of the audience commented &ldquo;Why you need to use Vim if you have IDE and all of the GUI ?&rdquo;. At that time, I couldn&rsquo;t agree more with that guy.</p>
+
+<p>I had always thought Vim&rsquo;s user are just trying to show off that they are different and superior. Using Vim basically separate them from GUI&rsquo;s group and put them one level above. At least, that&rsquo;s what I was thinking and apparently I am wrong.</p>
+
+<p>After started using Vim, I can feel that I am more productive and less stressful when programming. All the shortcuts definitively help you to avoid redundancy and remove your reliance on mouse. You can navigate through the source code by only using keyboard.</p>
+
+<p>The book that I am using to learn VIM is<a href="http://www.amazon.com/Practical-Vim-Thought-Pragmatic-Programmers/dp/1934356980/ref=sr_1_1?ie=UTF8&amp;qid=1364646960&amp;sr=8-1&amp;keywords=vim"> &ldquo;Practical Vim : Edit Text at the Speed of Thought&rdquo; by Drew Neil</a>. If you are new with Vim, I&rsquo;ll strongly recommend to start with this book. This book has collection of tips on how to use Vim in real situation and you going to feel you learn Vim faster.</p>
+
+<p>However, before deciding to learn Vim, you need to know that Vim is not for everyone. You know that you are not suitable for Vim when you :</p>
+
+<ul>
+<li><p>Still looking at your keyboard when typing.</p></li>
+<li><p>Have problem or hate remembering shortcuts.</p></li>
+<li><p>Don&rsquo;t have any curiosity to find another way to achieve something.</p></li>
+</ul>
+
+
+<p>If you are an IDE fan such as Eclipse, Netbeans or Visual Studio. There are some plugins that you can download to unleash the Vim power in your IDE. At the moment, I am using <a href="http://visualstudiogallery.msdn.microsoft.com/59ca71b3-a4a3-46ca-8fe1-0e90e3f79329">VsVim</a> to use all the Vim shortcuts when programming in C#. If you want to become better programmer, I&rsquo;ll say start using Vim and you won&rsquo;t regret it.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Zend Framework 2 : get server URL in controller without using serverUrl()]]></title>
+    <link href="http://blog.rudylee.com/2013/02/15/zend-framework-2-get-server-url-in-controller-without-using-serverurl/"/>
+    <updated>2013-02-15T16:22:35+11:00</updated>
+    <id>http://blog.rudylee.com/2013/02/15/zend-framework-2-get-server-url-in-controller-without-using-serverurl</id>
+    <content type="html"><![CDATA[<p>Sometimes you need to be able to get current server URL inside controller in your Zend Framework 2 application. As you might know, you won&rsquo;t be able to use $this->serverUrl() method in the controller as it&rsquo;s a part of helper.</p>
+
+<p>So, here is the code that I am using to get server URL in controller :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$server_url</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getRequest</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getUri</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getScheme</span><span class="p">()</span> <span class="o">.</span> <span class="s1">&#39;://&#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getRequest</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getUri</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getHost</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Probably it&rsquo;s not the best solution but it works for now :)</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bootstrap Typeahead CakePHP 2.0]]></title>
+    <link href="http://blog.rudylee.com/2013/02/02/bootstrap-typeahead-cakephp-2-0/"/>
+    <updated>2013-02-02T20:13:35+11:00</updated>
+    <id>http://blog.rudylee.com/2013/02/02/bootstrap-typeahead-cakephp-2-0</id>
+    <content type="html"><![CDATA[<h2></h2>
+
+<p>Demo : <a href="http://cbunny2.rudylee.com/users/typeahead">http://cbunny2.rudylee.com/users/typeahead</a>
+Source : <a href="https://github.com/rudylee/cbunny">https://github.com/rudylee/cbunny</a></p>
+
+<p>In this post, I&rsquo;ll explain how to integrate Twitter Bootstrap Typeahead with your CakePHP 2.0 application. We will avoid using helpers or plugins and stick with plain Javascript + jQuery. Make sure you have include jQuery, Bootstrap CSS and Bootstrap Javascript files in your CakePHP application. You can simply do it inside your default.ctp file ( the files are bootstrap.min.js and bootstrap.min.css ).</p>
+
+<p>After that we will create controller, action and view to put our input box. In this tutorial I&rsquo;ll use my Cbunny application and Users controller. I&rsquo;ll start by creating typeahead action, here is the code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">public</span> <span class="k">function</span> <span class="nf">typeahead</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">User</span><span class="o">-&gt;</span><span class="na">recursive</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">paginate</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nothing special happening rather than get current users from the table and paginate them. And here is the view :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span12&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&lt;!-- Typeahead Auto Complete --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;pull-right&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">data-provide=</span><span class="s">&quot;typeahead&quot;</span> <span class="na">id=</span><span class="s">&quot;user-typeahead&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;h2&gt;</span><span class="cp">&lt;?php echo __(&#39;Users&#39;);?&gt;</span><span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;table&quot;</span><span class="na">cellpadding=</span><span class="s">&quot;0&quot;</span> <span class="na">cellspacing=</span><span class="s">&quot;0&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;thead&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;id&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;username&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;password&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;created&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;modified&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th</span> <span class="na">class=</span><span class="s">&quot;actions&quot;</span><span class="nt">&gt;</span><span class="cp">&lt;?php echo __(&#39;Actions&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/thead&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;tbody&gt;</span>
+</span><span class='line'>            <span class="cp">&lt;?php foreach ($users as $user): ?&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;id&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;username&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;password&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;created&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;modified&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">&quot;actions&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>                    <span class="cp">&lt;?php echo $this-&gt;Html-&gt;link(__(&#39;View&#39;), array(&#39;action&#39; =&gt; &#39;view&#39;, $user[&#39;User&#39;][&#39;id&#39;])); ?&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>            <span class="cp">&lt;?php endforeach; ?&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/tbody&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On line 5-7, I am defining input text with typeahead attribute and ID that we will use in Javascript code. The next step is to create Javascript object in your layout file. So add this code snippet in your default.ctp file :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$cbunny</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>    <span class="s1">&#39;APP_PATH&#39;</span> <span class="o">=&gt;</span> <span class="nx">Router</span><span class="o">::</span><span class="na">url</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span><span class='line'><span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">scriptBlock</span><span class="p">(</span><span class="s1">&#39;var CbunnyObj = &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Javascript</span><span class="o">-&gt;</span><span class="na">object</span><span class="p">(</span><span class="nv">$cbunny</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can change the $cbunny and CBunnyObj variable name to resemble your app name. However, the rest of the code has to be same as above. This snippet of code will create Javascript object which contains the root URL path of CakePHP.</p>
+
+<p>After we have the Javascript object variable, let&rsquo;s continue by creating the Javascript code. Inside your application Javascript file add these code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#user-typeahead&#39;</span><span class="p">).</span><span class="nx">typeahead</span><span class="p">({</span>
+</span><span class='line'>  <span class="nx">source</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">query</span><span class="p">,</span> <span class="nx">process</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="nx">CbunnyObj</span><span class="p">.</span><span class="nx">APP_PATH</span> <span class="o">+</span> <span class="s1">&#39;users/typeahead_search&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">type</span><span class="o">:</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="p">{</span><span class="nx">q</span><span class="o">:</span> <span class="nx">query</span><span class="p">},</span>
+</span><span class='line'>      <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">success</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">json</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">process</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this code, we initialize the typeahead library and create AJAX request to the typeahead_search action. In the next step, we will create typeahead_search action that will handle AJAX request and return JSON result. Back to our users controller, create the typeahead action which will contain this code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">public</span> <span class="k">function</span> <span class="nf">typeahead_search</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">autoRender</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">RequestHandler</span><span class="o">-&gt;</span><span class="na">respondAs</span><span class="p">(</span><span class="s1">&#39;json&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// get the search term from URL</span>
+</span><span class='line'>    <span class="nv">$term</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">request</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">];</span>
+</span><span class='line'>    <span class="nv">$users</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">User</span><span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="k">array</span><span class="p">(</span>
+</span><span class='line'>        <span class="s1">&#39;conditions&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>            <span class="s1">&#39;User.username LIKE&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;%&#39;</span><span class="o">.</span><span class="nv">$term</span><span class="o">.</span><span class="s1">&#39;%&#39;</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>    <span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Format the result for select2</span>
+</span><span class='line'>    <span class="nv">$result</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">foreach</span><span class="p">(</span><span class="nv">$users</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nb">array_push</span><span class="p">(</span><span class="nv">$result</span><span class="p">,</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nv">$users</span> <span class="o">=</span> <span class="nv">$result</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">echo</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$users</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This action will receive the request, search the database for relevant result and return it on JSON format.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Select2 AJAX Auto Complete with CakePHP 2.0]]></title>
+    <link href="http://blog.rudylee.com/2013/02/02/select2-ajax-auto-complete-with-cakephp-2-0/"/>
+    <updated>2013-02-02T19:09:26+11:00</updated>
+    <id>http://blog.rudylee.com/2013/02/02/select2-ajax-auto-complete-with-cakephp-2-0</id>
+    <content type="html"><![CDATA[<h2>Demo : <a href="http://cbunny2.rudylee.com/users/select2">http://cbunny2.rudylee.com/users/select2</a></h2>
+
+<p>Source : <a href="https://github.com/rudylee/cbunny">https://github.com/rudylee/cbunny</a></p>
+
+<p>In this post, I&rsquo;ll explain how to use <a href="http://ivaynberg.github.com/select2/">Select2</a> inside CakePHP. We will avoid using any helpers and rely on jQuery + Javascript. Before we start, I presume you have downloaded Select2 and included the Javascript and CSS files inside your layout. Thus, I won&rsquo;t explain how to import Select2 library into your CakePHP app ( you can download my cbunny app from Github if you are lost ).</p>
+
+<p>So the first step is to create controller that will contain our Select2 search box. In this tutorial, I&rsquo;ll create users controller and one action to put the select2 search box. Here is the snippet of my code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">public</span> <span class="k">function</span> <span class="nf">select2</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">User</span><span class="o">-&gt;</span><span class="na">recursive</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">paginate</span><span class="p">());</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this you can create the view ( View/Users/select2.ctp ). Here is my view code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;row&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;span12&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&lt;!-- Select2 Auto Complete --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;pull-right&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">id=</span><span class="s">&quot;user-select2&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nt">&lt;h2&gt;</span><span class="cp">&lt;?php echo __(&#39;Users&#39;);?&gt;</span><span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;table&quot;</span><span class="na">cellpadding=</span><span class="s">&quot;0&quot;</span> <span class="na">cellspacing=</span><span class="s">&quot;0&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;thead&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;id&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;username&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;password&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;created&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th&gt;</span><span class="cp">&lt;?php echo $this-&gt;Paginator-&gt;sort(&#39;modified&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;th</span> <span class="na">class=</span><span class="s">&quot;actions&quot;</span><span class="nt">&gt;</span><span class="cp">&lt;?php echo __(&#39;Actions&#39;);?&gt;</span><span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/thead&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;tbody&gt;</span>
+</span><span class='line'>            <span class="cp">&lt;?php foreach ($users as $user): ?&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;id&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;username&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;password&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;created&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td&gt;</span><span class="cp">&lt;?php echo h($user[&#39;User&#39;][&#39;modified&#39;]); ?&gt;</span> <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;td</span> <span class="na">class=</span><span class="s">&quot;actions&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>                    <span class="cp">&lt;?php echo $this-&gt;Html-&gt;link(__(&#39;View&#39;), array(&#39;action&#39; =&gt; &#39;view&#39;, $user[&#39;User&#39;][&#39;id&#39;])); ?&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>            <span class="cp">&lt;?php endforeach; ?&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/tbody&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you look at 5-7 you&rsquo;ll notice that I have input element with id element user-select2. We will use the ID inside our jQuery to initiate the Select2. The next step after this is to create a Javascript object to store the dynamic app path. Add this snippet of code into your layout file ( default.ctp ).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$cbunny</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>    <span class="s1">&#39;APP_PATH&#39;</span> <span class="o">=&gt;</span> <span class="nx">Router</span><span class="o">::</span><span class="na">url</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">);</span>
+</span><span class='line'><span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">scriptBlock</span><span class="p">(</span><span class="s1">&#39;var CbunnyObj = &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Javascript</span><span class="o">-&gt;</span><span class="na">object</span><span class="p">(</span><span class="nv">$cbunny</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;;&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You can change the $cbunny and CBunnyObj variable name to resemble your app name. However, the rest of the code has to be same as above. This snippet of code will create Javascript object which contains the root URL path of CakePHP.</p>
+
+<p>After we have the Javascript object, we will create jQuery code to create Select2 search box, process AJAX request and handle the respond. I&rsquo;ll start with creating cbunny.js file inside my webroot folder and add the file in my layout file. Here is the code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/*global $, document, CbunnyObj */</span>
+</span><span class='line'><span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#user-select2&#39;</span><span class="p">).</span><span class="nx">select2</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">placeholder</span><span class="o">:</span> <span class="s2">&quot;Search user auto complete&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">minimumInputLength</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">ajax</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">url</span><span class="o">:</span> <span class="nx">CbunnyObj</span><span class="p">.</span><span class="nx">APP_PATH</span> <span class="o">+</span> <span class="s1">&#39;users/search&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">dataType</span><span class="o">:</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">data</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">term</span><span class="p">,</span> <span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nx">q</span><span class="o">:</span> <span class="nx">term</span>
+</span><span class='line'>        <span class="p">};</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nx">results</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">page</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">{</span> <span class="nx">results</span><span class="o">:</span> <span class="nx">data</span> <span class="p">};</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I&rsquo;ll explain the Javascript code a little bit. Line 4-19 contain the definition of Select2 library. You can see we have ajax definition on line 7 which will perform AJAX request to  CbunnyObj.APP_PATH + &lsquo;users/search&rsquo;. CbunnyObj is javascript object variable that we have defined before and will translate into your CakePHP App path ( ex: <a href="http://cbunny.rudylee.com">http://cbunny.rudylee.com</a> ). I believe you understand the rest of the code as I just copied it from Select2 website.</p>
+
+<p>After this, our last step is to create action + view to handle the AJAX request. So we are going back to Users controller and add new action called &lsquo;search&rsquo;. Here is my &lsquo;search&rsquo; action code :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">public</span> <span class="k">function</span> <span class="nf">search</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">autoRender</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// get the search term from URL</span>
+</span><span class='line'>    <span class="nv">$term</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">request</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">];</span>
+</span><span class='line'>    <span class="nv">$users</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">User</span><span class="o">-&gt;</span><span class="na">find</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span><span class="k">array</span><span class="p">(</span>
+</span><span class='line'>        <span class="s1">&#39;conditions&#39;</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>            <span class="s1">&#39;User.username LIKE&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;%&#39;</span><span class="o">.</span><span class="nv">$term</span><span class="o">.</span><span class="s1">&#39;%&#39;</span>
+</span><span class='line'>        <span class="p">)</span>
+</span><span class='line'>    <span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Format the result for select2</span>
+</span><span class='line'>    <span class="nv">$result</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">foreach</span><span class="p">(</span><span class="nv">$users</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$user</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nv">$result</span><span class="p">[</span><span class="nv">$key</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">];</span>
+</span><span class='line'>        <span class="nv">$result</span><span class="p">[</span><span class="nv">$key</span><span class="p">][</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$user</span><span class="p">[</span><span class="s1">&#39;User&#39;</span><span class="p">][</span><span class="s1">&#39;username&#39;</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nv">$users</span> <span class="o">=</span> <span class="nv">$result</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">echo</span> <span class="nb">json_encode</span><span class="p">(</span><span class="nv">$users</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On line 5, we grab the search query term from the URL and store into $term variable. After that, we will perform normal query to the table. When we get the result, we won&rsquo;t be able to use it straight away. We will have to reformat it so it can be readable by Select2. On line 12-17 we basically iterate through the $users variable and create new associative array which has id and text as their key.</p>
+
+<p>That&rsquo;s it for the tutorial. If you are confuse, feel free to write comment below and I&rsquo;ll be happy to answer them.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
+  <link href="http://blog.rudylee.com/"/>
+  <updated>2014-10-04T13:17:24+10:00</updated>
+  <id>http://blog.rudylee.com/</id>
+  <author>
+    <name><![CDATA[Rudy Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Enable HTTP authentication on certain domain]]></title>
+    <link href="http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain/"/>
+    <updated>2014-09-18T21:54:00+10:00</updated>
+    <id>http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain</id>
+    <content type="html"><![CDATA[<p>Basic HTTP authentication is one simple way to limit public access to your website prior to launch.</p>
+
+<p>The first thing you need is .htaccess file which contains all the configurations. The second one is .htpasswd containing username and password. You can use this website to generate .htpasswd file for you <a href="http://www.htaccesstools.com/htpasswd-generator/">http://www.htaccesstools.com/htpasswd-generator/</a></p>
+
+<p>In the sample below, I am trying to enable HTTP authentication only on certain domain. On the first line, I set enviroment variable if the domain name is equal to &ldquo;www.bundabergfestival.com.au&rdquo;. On line 7, I tell .htaccess file to deny any access by using the live_uri variable. I hope that explanation is pretty straight forward.</p>
+
+<p><code>bash
+SetEnvIf Host "^www.bundabergfestival.com.au" live_uri
+AuthName "Bundaberg Festival Website Coming Soon"
+AuthType Basic
+AuthUserFile /var/app/.htpasswd
+AuthGroupFile /dev/null
+require valid-user
+Order allow,deny
+Allow from all
+Deny from env=live_uri
+Satisfy any
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Elastic Beanstalk Environment with .ebextensions]]></title>
+    <link href="http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions/"/>
+    <updated>2014-05-22T01:44:00+10:00</updated>
+    <id>http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions</id>
+    <content type="html"><![CDATA[<p>At <a href="http://www.captiv8.com.au">Captiv8</a>, we are using Amazon AWS to host most of our PHP projects. We are heavily rely on Elastic Beanstalk to help us set up PHP environment, database and load balancer. On top of that, we are also managing our own server image based on Amazon AMI. In this image, we installed additional software and packages that we need for our application. However, this approach has a drawback as it is difficult to maintain the image and track changes. Everytime you need to update the image, you have to create new server, install the new software and export it into new image. This will leave you with bunch of different images and it is hard to tell what are the things that have changed inside each image.</p>
+
+<h1>Chef</h1>
+
+<p>In order to solve these problems, I decided to find a way to automate the process. My first attempt was trying to use Chef to provision the Elastic Beanstalk environment. I have been using Chef for a while to provision my Vagrant machines. It is powerful and more convenient in compare with bash scripts. Since I am already familiar with Chef, I started looking at tutorials on how to use Chef with Elastic Beanstalk. Most of the tutorials that I found don&rsquo;t provide easy way to integrate Chef with Elastic Beanstalk. One of them mentions about using AWS OpsWorks with Chef but I think it is overkill for the time being. So, I ditched Chef and start looking for another solution.</p>
+
+<h1>ebextensions</h1>
+
+<p>ebextensions is another solution that I found after checking the official documentation of Elastic Beanstalk. With this solution, you need to to create .ebextensions folder inside your project and create a file to define what are the packages that you want to install into the environment. Elastic Beanstalk will automatically run the script every time you deploy a new version of the application. Aside from that, you can also tell ebextensions to execute shell script in the instance or changing permission of a file. You can read more details about ebextension here: <a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html">http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html</a></p>
+
+<p>This is my directory structure at the moment:
+<a href="/images/ebextensions.png"><img src="/images/ebextensions.png" alt="" /></a></p>
+
+<p>Here is the example of my ebextension config file:</p>
+
+<p>``` yaml
+packages:
+  yum:</p>
+
+<pre><code>mlocate: []
+</code></pre>
+
+<p>commands:
+  01updateComposer:</p>
+
+<pre><code>command: export COMPOSER_HOME=/root &amp;&amp; /usr/bin/composer.phar self-update
+</code></pre>
+
+<p>  02updateTag:</p>
+
+<pre><code>command: ec2-create-tags $(ec2-metadata -i | cut -d ' ' -f2) --tag Project=ChangeThis
+cwd: /home/ec2-user
+env:
+  EC2_HOME: /opt/aws/apitools/ec2
+  EC2_URL: https://ec2.ap-southeast-2.amazonaws.com
+  JAVA_HOME: /usr/lib/jvm/jre
+  PATH: /bin:/usr/bin:/opt/aws/bin/
+</code></pre>
+
+<p>container_commands:
+  01-command:</p>
+
+<pre><code>command: updatedb
+</code></pre>
+
+<p>  02-command:</p>
+
+<pre><code>command: rm -rf /captiv8/.ebextensions
+</code></pre>
+
+<p>  03-command:</p>
+
+<pre><code>command: mkdir -p /captiv8/.ebextensions
+</code></pre>
+
+<p>  04-command:</p>
+
+<pre><code>command: cp -R .ebextensions/* /captiv8/.ebextensions/
+</code></pre>
+
+<p>  05-command:</p>
+
+<pre><code>command: bash /captiv8/.ebextensions/scripts/app-setup.sh
+</code></pre>
+
+<p>option_settings:
+  &ndash; namespace: aws:elasticbeanstalk:application:environment</p>
+
+<pre><code>option_name: COMPOSER_HOME
+value: /root
+</code></pre>
+
+<p>```</p>
+
+<p>And this is the example of my bash script:</p>
+
+<p>``` bash</p>
+
+<h1>!/usr/bin/env bash</h1>
+
+<p>#</p>
+
+<h1>References:</h1>
+
+<h1>&ndash; <a href="http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/">http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/</a></h1>
+
+<h1>&ndash; <a href="http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app">http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app</a></h1>
+
+<p>#</p>
+
+<h1>Main configuration, change these for each project</h1>
+
+<p>appName=&ldquo;change_this&rdquo;
+newrelicLicense=&ldquo;newreliclicense&rdquo;</p>
+
+<h1>Check if this is the very first time that this script is running</h1>
+
+<p>if ([ ! -f /root/.not-a-new-instance.txt ]) then
+  newEC2Instance=true
+fi</p>
+
+<h1>Install applications if this is new instance</h1>
+
+<p>if ([ $newEC2Instance ]) then</p>
+
+<pre><code># Allow sudo command to be used as part of beanstalk ebextensions scripts without a terminal
+grep -q 'Defaults:root !requiretty' /etc/sudoers.d/$appName || echo -e 'Defaults:root !requirettyn' &gt; /etc/sudoers.d/$appName
+chmod 440 /etc/sudoers.d/$appName
+
+# Add sudo command if not already present to .bashrc of ec2-user so that we are logged on as root when we use ssh
+grep -q "sudo -s" /home/ec2-user/.bashrc || echo -e "nsudo -sn" &gt;&gt; /home/ec2-user/.bashrc
+</code></pre>
+
+<p>  # Install phpMyAdmin
+  yum -y &mdash;enablerepo=epel install phpmyadmin
+  rm /etc/httpd/conf.d/phpMyAdmin.conf
+  rm /etc/phpMyAdmin/config.inc.php
+  mv /captiv8/.ebextensions/templates/phpMyAdmin/phpMyAdmin.conf /etc/httpd/conf.d/
+  mv /captiv8/.ebextensions/templates/phpMyAdmin/config.inc.php /etc/phpMyAdmin/
+  chmod 644 /etc/httpd/conf.d/phpMyAdmin.conf
+  chmod 644 /etc/phpMyAdmin/config.inc.php
+  service httpd restart</p>
+
+<p>  # Install New Relic
+  rpm -Uvh <a href="http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm">http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm</a>
+  yum -y install newrelic-php5<br/>
+  echo -ne &lsquo;\n\&rsquo; | newrelic-install install
+  rm /etc/php.d/newrelic.ini
+  mv /captiv8/.ebextensions/templates/newrelic/newrelic.ini /etc/php.d/
+  chmod 644 /etc/php.d/newrelic.ini
+  perl -pi -e &ldquo;s/PHP Application/$appName/g&rdquo; /etc/php.d/newrelic.ini
+  perl -pi -e &ldquo;s/newrelicLicense/$newrelicLicense/g&rdquo; /etc/php.d/newrelic.ini</p>
+
+<p>  # Install New Relic Server Monitor<br/>
+  yum -y install newrelic-sysmond
+  nrsysmond-config &mdash;set license_key=$newrelicLicense
+  /etc/init.d/newrelic-sysmond start
+  service httpd restart</p>
+
+<p>  # Install OSSEC
+  yum -y install mysql-devel postgresql-devel
+  wget <a href="http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz">http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz</a> -P /captiv8
+  tar xzvf /captiv8/ossec-hids-2.7.1.tar.gz -C /captiv8
+  rm /captiv8/ossec-hids-2.7.1.tar.gz
+  rm /captiv8/ossec-hids-2.7.1/etc/preloaded-vars.conf
+  mv /captiv8/.ebextensions/templates/ossec/preloaded-vars.conf /captiv8/ossec-hids-2.7.1/etc/
+  /captiv8/ossec-hids-2.7.1/install.sh
+  /var/ossec/bin/ossec-control start
+fi</p>
+
+<h1>If new instance, now it is not new anymore</h1>
+
+<p>if ([ $newEC2Instance ]) then</p>
+
+<pre><code>echo -n "" &gt; /root/.not-a-new-instance.txt
+chmod 644 /etc/php.d/.not-a-new-instance
+</code></pre>
+
+<p>fi
+```</p>
+
+<p>Inside my ebextensions config file, I call the shell script which will install additional software. The benefit of using shell script is you have more options and it is much easier to customize the software. Since the .ebextensions folder is copied to the instance, you can tell the shell script to copy a template config file that you have prepared before hand. I hope you find this blog post useful.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Install the latest tmux on Ubuntu 12.04]]></title>
+    <link href="http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04/"/>
+    <updated>2013-12-06T03:43:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04</id>
+    <content type="html"><![CDATA[<p>In this post, I will show you how to install the latest tmux on Ubuntu 12.04. First, we need to install &lsquo;add-apt-repository&rsquo; command on our machine. This can be done by running these commands:</p>
+
+<p>``` bash
+sudo apt-get install software-properties-common</p>
+
+<p>sudo apt-get install python-software-properties
+```</p>
+
+<p>After that you can add third party repository ( Ubuntu official repository does not have latest tmux at the moment )</p>
+
+<p>``` bash
+sudo add-apt-repository ppa:pi-rho/dev</p>
+
+<p>sudo apt-get update</p>
+
+<p>sudo apt-get install tmux
+```</p>
+
+<p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fix npm symlink problem in Vagrant]]></title>
+    <link href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/"/>
+    <updated>2013-10-24T00:16:00+11:00</updated>
+    <id>http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant</id>
+    <content type="html"><![CDATA[<p>Today I encountered weird symlink error when trying to install npm modules on my Vagrant Ubuntu Box. The error says &ldquo;pm ERR! Error: UNKNOWN, symlink &lsquo;../which/bin/which&rsquo;&rdquo;.</p>
+
+<p>After quick Google, it turns out the problem is caused by npm trying to create symlink which is not supported on Windows ( I am using Windows 8 as my host machine ).</p>
+
+<p>Here is quick solution which allow you to install npm modules without creating any symlinks :</p>
+
+<p><code>bash
+npm install --no-bin-link
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Trailing Characters ^M]]></title>
+    <link href="http://blog.rudylee.com/2013/09/18/trailing-characters-m/"/>
+    <updated>2013-09-18T00:58:00+10:00</updated>
+    <id>http://blog.rudylee.com/2013/09/18/trailing-characters-m</id>
+    <content type="html"><![CDATA[<p>This morning I ran into weird errors in one of my Vagrant machine. These errors come up when I was trying to run tmux and vim:</p>
+
+<p><code>bash
+Error detected while processing /home/vagrant/.vimrc:
+line    1:
+E488: Trailing characters: nocompatible^M
+line    2:
+E488: Trailing characters: nu^M
+line    3:
+E488: Trailing characters: nobackup^M
+line    4:
+E488: Trailing characters: nowritebackup^M
+line    5:
+E488: Trailing characters: noswapfile^M
+line    6:
+E488: Trailing characters: hlsearch^M
+line    7:
+E488: Trailing characters: ruler^M
+line    8:
+E474: Invalid argument: laststatus=2^M
+line    9:
+E474: Invalid argument: tabstop=2^M
+line   10:
+E474: Invalid argument: shiftwidth=2^M
+line   11:
+E488: Trailing characters: expandtab^M
+Vim: Error reading input, exiting...ne down, b/u/k: up, q: quit
+Vim: Finished.
+Press ENTER or type command to continueVim: Error reading input, exiting...
+Vim: Finished.
+</code></p>
+
+<p>I had similar problem before when trying to edit file from Windows machine inside vim. ^M character is added by Windows machine to mark newline in their files.</p>
+
+<p>The quickest solution to fix this is by installing &lsquo;dos2unix&rsquo; software and let it fix the file for you. In Ubuntu, you can run this command to install it:</p>
+
+<p><code>bash
+sudo apt-get install dos2unix
+</code></p>
+
+<p>And fix the file by typing this:</p>
+
+<p><code>bash
+dos2unix &lt;file&gt;
+</code></p>
+
+<p>It will automatically remove all the trailing characters for you.</p>
+]]></content>
+  </entry>
+  
+</feed>
