@@ -4,7 +4,7 @@
   <title><![CDATA[Category: My Stories | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/my-stories/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2014-10-24T11:07:41+11:00</updated>
+  <updated>2014-10-27T17:13:04+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -65,56 +65,7 @@
     <id>http://blog.rudylee.com/2013/01/15/science-of-productivity</id>
     <content type="html"><![CDATA[<p>Continuing from my <a href="http://blog.rudylee.com/2013/01/14/my-journey-to-productivity/">previous post about productivity</a>, I just found a video that you guys might wanna check out. It covers some of the techniques from my previous post such as make your todo list doable and set up the morning dash.</p>
 
-<p>
-<div class="ratio-4-3 embed-video-container" onclick="var myAnchor = document.getElementById('lHfjvYzr-3g');var tmpDiv = document.createElement('div');tmpDiv.innerHTML = '&lt;iframe style=&quot;vertical-align:top;width:100%;height:100%;position:absolute;&quot; src=&quot;http://www.youtube.com/embed/lHfjvYzr-3g?autoplay=1&quot; frameborder=&quot;0&quot; allowfullscreen&gt;&lt;/iframe&gt;';myAnchor.parentNode.replaceChild(tmpDiv.firstChild, myAnchor);return false;" title="click here to play">
-<a class="youtube-lazy-link" style="width:100%;height:100%;background:#000 url(http://i2.ytimg.com/vi/lHfjvYzr-3g/0.jpg) center center no-repeat;background-size:contain;position:absolute" href="http://www.youtube.com/watch?v=lHfjvYzr-3g" id="lHfjvYzr-3g" onclick="return false;">
-<div class="youtube-lazy-link-div"></div>
-<div class="youtube-lazy-link-info">The Science of Productivity</div>
-</a>
-<div class="video-info" >Made in collaboration with Sparring Mind, the behavioral psychology blog. Read the full productivity post: http://bit.ly/XRcYAY
-
-TWEET IT - http://clicktotweet.com/ny8ak
-
-In today's crazy world, productivity is on the minds of many. So what can science tell us about the human brain and productive work? How do we become more efficient at working, and spend less time working overall? 
-
-Written and created by Mitchell Moffit (twitter @mitchellmoffit) and Gregory Brown (twitter @whalewatchmeplz).
-
-TWITTER: http://www.twitter.com/AsapSCIENCE
-FACEBOOK: http://www.facebook.com/AsapSCIENCE
-
-Mitchell Moffit
-http://www.mitchellmoffit.com
-http://www.twitter.com/mitchellmoffit
-http://www.facebook.com/mitchellmoffit
-
-Gregory
-http://www.gregorybrownart.tumblr.com
-http://www.twitter.com/whalewatchmeplz
-
-SOURCES----
-
-Fear of projects:
-1) http://bit.ly/TX4DJr
- 
-Zeigarnik Effect:
-2) http://bit.ly/XWOCG0
-
-Simulated Work:
-3) http://bit.ly/W8y21M
-
-Ego Depletion
-4) http://bit.ly/12n7uNI
-
-Practice (Elite Violinists):
-5) http://bit.ly/QWLtCK
-6) http://bit.ly/Z2DgBT
-7) http://1.usa.gov/UDE6OJ
-
-Multitasking:
-8) http://bit.ly/UmTVIv</div>
-</div>
-
-</p>
+<p>{% youtube lHfjvYzr-3g %}</p>
 ]]></content>
   </entry>
   

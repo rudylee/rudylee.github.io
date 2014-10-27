@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Change wordpress default email and name - Blog Rudy Lee</title>
+  <title>Symbolic Links With Vagrant Windows - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Change Wordpress Default Email and Name Jun 20th, 2011 Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog &hellip;">
+  <meta name="description" content="Symbolic Links With Vagrant Windows Oct 27th, 2014 There are few known limitations when using Vagrant on Windows machine. One of these limitations &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name">
+  <link rel="canonical" href="http://blog.rudylee.com/2014/10/27/symbolic-links-with-vagrant-windows">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -93,7 +93,7 @@
 
   <header>
   <div class="jumbotron">
-    Change Wordpress Default Email and Name
+    Symbolic Links With Vagrant Windows
 	<h5>
 
 
@@ -106,39 +106,57 @@
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2011-06-20T14:12:53+10:00" pubdate data-updated="true">Jun 20<span>th</span>, 2011</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2014-10-27T14:22:00+11:00" pubdate data-updated="true">Oct 27<span>th</span>, 2014</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog just because I am lazy to find it again.</p>
+      <p>There are few known limitations when using Vagrant on Windows machine. One of these limitations is the lack of symbolic links support on synced folder.</p>
 
-<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#109;&#97;&#105;&#108;&#x74;&#x6f;&#58;&#119;&#x6f;&#x72;&#100;&#112;&#x72;&#101;&#115;&#115;&#x40;&#121;&#111;&#x75;&#x72;&#x64;&#111;&#109;&#97;&#x69;&#110;&#x2e;&#x63;&#x6f;&#x6d;">&#119;&#x6f;&#x72;&#100;&#112;&#114;&#101;&#115;&#x73;&#64;&#121;&#111;&#x75;&#114;&#100;&#x6f;&#x6d;&#97;&#105;&#110;&#x2e;&#x63;&#111;&#x6d;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
+<p>Symbolic links are used heavily by NPM to create shortcut for the libraries. I posted more details about this here: <a href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/">http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/</a></p>
+
+<p>Most of the time, you can get away with &lsquo;npm &mdash;no-bin-link&rsquo; solution. However, you need more robust solution if you are using complex tools such as Grunt or Yeoman.</p>
+
+<p>In this post, I&rsquo;ll show you the proper way to add symbolic links support to your Vagrant machine.</p>
+
+<p>First, you need to add this code snippet inside your Vagrantfile</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from_name&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;no-reply@rudylee.com&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from_name</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;Rudy&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>config.vm.provider <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> |v|
+</span><span class='line'>    v.customize <span class="o">[</span><span class="s2">&quot;setextradata&quot;</span>, :id, <span class="s2">&quot;VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root&quot;</span>, <span class="s2">&quot;1&quot;</span><span class="o">]</span>
+</span><span class='line'>end
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Just change the email address and name to your&rsquo;s. Hope it works, cheers.</p>
+<p>VirtualBox disables symbolic links for security reasons. In order to pass this restriction, you need to boot up the Vagrant machine in Administrator mode.</p>
+
+<p>You can do this by simply right clicking on your Command Prompt or Git Bash icon and click &lsquo;Run as Administrator&rsquo;. See the picture below if you can&rsquo;t find it.</p>
+
+<p><a href="/images/run_as_admin.png"><img src="/images/run_as_admin.png" alt="" /></a></p>
+
+<p>After that, boot up the Vagrant machine normally with &lsquo;vagrant up&rsquo; command. Wait until the machine boots up, SSH to the machine and try to create symbolic link in the synced folder.</p>
+
+<h2>File path 255 character limit</h2>
+
+<p>Another annoying problem you might encounter is file path character limit. This happens quite often if you are using a node module with a long name. You can easily solve it by following these steps:</p>
+
+<h3>Create &lsquo;node_modules&rsquo; folder in your home folder</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  mkdir ~/node_modules
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Add symbolic link to the &lsquo;node_modules&rsquo; folder you just created inside your project folder</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>  ln -sf /vagrant/node_modules /vagrant/your-project-folder
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This solution will ensure that all the node modules are stored inside home directory instead of synced folder.</p>
 
     </div>
   </div>
@@ -157,7 +175,9 @@
 
 
 
-  <a href="/categories/wordpress/"><span class="badge">Wordpress</span></a>
+  <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
+
+  <a href="/categories/vagrant/"><span class="badge">Vagrant</span></a>
 
 
 
@@ -187,10 +207,8 @@
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2011/05/29/fixing-rake-command-error-in-rails-3-0/" title="Previous Post: Fixing rake command error in rails 3.0.7">&laquo; Fixing rake command error in rails 3.0.7</a>
+            <a class="basic-alignment left" href="/2014/09/18/enable-http-authentication-on-certain-domain/" title="Previous Post: Enable HTTP authentication on certain domain">&laquo; Enable HTTP authentication on certain domain</a>
           
-          
-            <a class="basic-alignment right" href="/2011/07/25/jquery-ui-autocomplete-in-cakephp/" title="Next Post: jQuery UI AutoComplete in CakePHP">jQuery UI AutoComplete in CakePHP &raquo;</a>
           
         </p>
       </div>
@@ -229,8 +247,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
-        var disqus_url = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
+        var disqus_identifier = 'http://blog.rudylee.com/2014/10/27/symbolic-links-with-vagrant-windows/';
+        var disqus_url = 'http://blog.rudylee.com/2014/10/27/symbolic-links-with-vagrant-windows/';
         var disqus_script = 'embed.js';
       
     (function () {

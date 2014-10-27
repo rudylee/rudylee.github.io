@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2014-10-24T11:07:41+11:00</updated>
+  <updated>2014-10-27T17:13:04+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,58 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Symbolic Links With Vagrant Windows]]></title>
+    <link href="http://blog.rudylee.com/2014/10/27/symbolic-links-with-vagrant-windows/"/>
+    <updated>2014-10-27T14:22:00+11:00</updated>
+    <id>http://blog.rudylee.com/2014/10/27/symbolic-links-with-vagrant-windows</id>
+    <content type="html"><![CDATA[<p>There are few known limitations when using Vagrant on Windows machine. One of these limitations is the lack of symbolic links support on synced folder.</p>
+
+<p>Symbolic links are used heavily by NPM to create shortcut for the libraries. I posted more details about this here: <a href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/">http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/</a></p>
+
+<p>Most of the time, you can get away with &lsquo;npm &mdash;no-bin-link&rsquo; solution. However, you need more robust solution if you are using complex tools such as Grunt or Yeoman.</p>
+
+<p>In this post, I&rsquo;ll show you the proper way to add symbolic links support to your Vagrant machine.</p>
+
+<p>First, you need to add this code snippet inside your Vagrantfile</p>
+
+<p>``` bash
+config.vm.provider &ldquo;virtualbox&rdquo; do |v|</p>
+
+<pre><code>v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+</code></pre>
+
+<p>end
+```</p>
+
+<p>VirtualBox disables symbolic links for security reasons. In order to pass this restriction, you need to boot up the Vagrant machine in Administrator mode.</p>
+
+<p>You can do this by simply right clicking on your Command Prompt or Git Bash icon and click &lsquo;Run as Administrator&rsquo;. See the picture below if you can&rsquo;t find it.</p>
+
+<p><a href="/images/run_as_admin.png"><img src="/images/run_as_admin.png" alt="" /></a></p>
+
+<p>After that, boot up the Vagrant machine normally with &lsquo;vagrant up&rsquo; command. Wait until the machine boots up, SSH to the machine and try to create symbolic link in the synced folder.</p>
+
+<h2>File path 255 character limit</h2>
+
+<p>Another annoying problem you might encounter is file path character limit. This happens quite often if you are using a node module with long name. You can easily solve it by following these steps:</p>
+
+<h3>Create &lsquo;node_modules&rsquo; folder in your home folder</h3>
+
+<p><code>bash
+  mkdir ~/node_modules
+</code></p>
+
+<h3>Add symbolic link to the &lsquo;node_modules&rsquo; folder you just created inside your project folder</h3>
+
+<p><code>bash
+  ln -sf /vagrant/node_modules /vagrant/your-project-folder
+</code></p>
+
+<p>This solution will ensure that all the node modules are stored inside home directory instead of synced folder.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Enable HTTP authentication on certain domain]]></title>
@@ -250,61 +302,6 @@ sudo add-apt-repository ppa:pi-rho/dev</p>
 <p><code>bash
 npm install --no-bin-link
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Trailing Characters ^M]]></title>
-    <link href="http://blog.rudylee.com/2013/09/18/trailing-characters-m/"/>
-    <updated>2013-09-18T00:58:00+10:00</updated>
-    <id>http://blog.rudylee.com/2013/09/18/trailing-characters-m</id>
-    <content type="html"><![CDATA[<p>This morning I ran into weird errors in one of my Vagrant machine. These errors come up when I was trying to run tmux and vim:</p>
-
-<p><code>bash
-Error detected while processing /home/vagrant/.vimrc:
-line    1:
-E488: Trailing characters: nocompatible^M
-line    2:
-E488: Trailing characters: nu^M
-line    3:
-E488: Trailing characters: nobackup^M
-line    4:
-E488: Trailing characters: nowritebackup^M
-line    5:
-E488: Trailing characters: noswapfile^M
-line    6:
-E488: Trailing characters: hlsearch^M
-line    7:
-E488: Trailing characters: ruler^M
-line    8:
-E474: Invalid argument: laststatus=2^M
-line    9:
-E474: Invalid argument: tabstop=2^M
-line   10:
-E474: Invalid argument: shiftwidth=2^M
-line   11:
-E488: Trailing characters: expandtab^M
-Vim: Error reading input, exiting...ne down, b/u/k: up, q: quit
-Vim: Finished.
-Press ENTER or type command to continueVim: Error reading input, exiting...
-Vim: Finished.
-</code></p>
-
-<p>I had similar problem before when trying to edit file from Windows machine inside vim. ^M character is added by Windows machine to mark newline in their files.</p>
-
-<p>The quickest solution to fix this is by installing &lsquo;dos2unix&rsquo; software and let it fix the file for you. In Ubuntu, you can run this command to install it:</p>
-
-<p><code>bash
-sudo apt-get install dos2unix
-</code></p>
-
-<p>And fix the file by typing this:</p>
-
-<p><code>bash
-dos2unix &lt;file&gt;
-</code></p>
-
-<p>It will automatically remove all the trailing characters for you.</p>
 ]]></content>
   </entry>
   
