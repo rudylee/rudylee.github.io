@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2014-11-05T09:55:35+11:00</updated>
+  <updated>2014-11-05T10:03:23+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -1076,7 +1076,27 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Probably it&rsquo;s not the best solution but it works for now :)</p>
+<p>Probably it&rsquo;s not the best solution but it works for now. Please check the other solutions below:</p>
+
+<h2>Other solutions from the comments below</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$helper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Zend\View\Helper\ServerUrl</span><span class="p">();</span>
+</span><span class='line'><span class="nv">$url</span> <span class="o">=</span> <span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">__invoke</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getRouter</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">assemble</span><span class="p">(</span><span class="k">array</span><span class="p">(),</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="o">=&gt;</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;force_canonical&#39;</span><span class="o">=&gt;</span><span class="k">true</span><span class="p">));</span>
+</span><span class='line'><span class="c1">// WHERE default is the name of your route, &quot;default&quot; or whatever you use</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
 ]]></content>
   </entry>
   

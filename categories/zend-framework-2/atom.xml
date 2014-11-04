@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Zend Framework 2 | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/zend-framework-2/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2014-11-05T09:55:35+11:00</updated>
+  <updated>2014-11-05T10:03:23+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -117,7 +117,25 @@ echo $this->Html->scriptBlock(&lsquo;var CbunnyObj = &rsquo; . $this->Javascript
 
 <p>```</p>
 
-<p>Probably it&rsquo;s not the best solution but it works for now :)</p>
+<p>Probably it&rsquo;s not the best solution but it works for now. Please check the other solutions below:</p>
+
+<h2>Other solutions from the comments below</h2>
+
+<p>``` php</p>
+
+<pre><code>$helper = new Zend\View\Helper\ServerUrl();
+$url = $helper-&gt;__invoke(true);
+</code></pre>
+
+<p>```</p>
+
+<p>``` php</p>
+
+<pre><code>$this-&gt;getEvent()-&gt;getRouter()-&gt;assemble(array(), array('name'=&gt;'home', 'force_canonical'=&gt;true));
+// WHERE default is the name of your route, "default" or whatever you use
+</code></pre>
+
+<p>```</p>
 ]]></content>
   </entry>
   
