@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby on Rails | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/ruby-on-rails/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2014-11-05T10:03:23+11:00</updated>
+  <updated>2015-05-03T17:30:36+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,49 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails Engines and Vim]]></title>
+    <link href="http://blog.rudylee.com/2015/05/03/rails-engines-and-vim/"/>
+    <updated>2015-05-03T16:14:00+10:00</updated>
+    <id>http://blog.rudylee.com/2015/05/03/rails-engines-and-vim</id>
+    <content type="html"><![CDATA[<p>At the moment, I am working on a Ruby on Rails projects using Rails Engines ( you can read more about Rails Engines here: <a href="http://guides.rubyonrails.org/engines.html">http://guides.rubyonrails.org/engines.html</a> ). In this post, I&rsquo;ll share my tips and trick on how to configure your vim to work with Rails Engines.</p>
+
+<h1>NERDTree Bookmark</h1>
+
+<p>I am using NERDTree Bookmark to quickly jump between different engines. If you are using NERDTree, you can create a bookmark by putting your cursor on one of the Rails Engines directory and use the command below:</p>
+
+<p><code>
+:Bookmark &lt;engine name&gt;
+</code></p>
+
+<p>After you created the bookmark, you can see the bookmarks list by pressing <code>B</code> inside NERDTree window. See the screenshot below:</p>
+
+<p><a href="/images/vim-bookmarks.png"><img src="/images/vim-bookmarks.png" alt="" /></a></p>
+
+<p>I also added these two options to my vimrc file.</p>
+
+<p><code>
+" Automatically show bookmarks list when you open NERDTree
+let NERDTreeShowBookmarks=1
+let NERDTreeChDirMode=2
+</code></p>
+
+<p><code>NERDTreeChDirMode</code> changes the current working directory of your vim to your bookmark directory. This will also enable my favourite rails.vim feature which is open alternate file.</p>
+
+<h1>CtrlP Working Path Mode</h1>
+
+<p>It is normal for Rails Engines to share similar directory structure and filenames. However, this creates problem when you want to search a file using CtrlP plugin. Combined with <code>NERDTreeChDirMode</code>, you can tell CtrlP to search only in the current working directory.</p>
+
+<p>Add this option to your vimrc file to enable this feature:</p>
+
+<p><code>
+let g:ctrlp_working_path_mode = 'a'
+</code></p>
+
+<p>That&rsquo;s it for now, I&rsquo;ll update this post if I find a better workflow or configuration. If you are interested, you can check my full vimrc file here: <a href="https://github.com/rudylee/dotfiles/blob/master/vimrc">https://github.com/rudylee/dotfiles/blob/master/vimrc</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Add 'current' class to website menu in Rails]]></title>
@@ -264,65 +307,6 @@ end
 <p>```</p>
 
 <p>It means you will redirect the user to session controller outside of the namespace and load &ldquo;new&rdquo; action. That&rsquo;s all.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fixing rake command error in rails 3.0.7]]></title>
-    <link href="http://blog.rudylee.com/2011/05/29/fixing-rake-command-error-in-rails-3-0/"/>
-    <updated>2011-05-29T16:39:57+10:00</updated>
-    <id>http://blog.rudylee.com/2011/05/29/fixing-rake-command-error-in-rails-3-0</id>
-    <content type="html"><![CDATA[<p>Today I was trying to add rails project to Netbeans 6.9,but suddenly there is a pop up window that said &ldquo;Rake task fecthing failed&rdquo; with bunch of other errors. After that, I tried go to my application folder and try to run the rake command</p>
-
-<p><code>ruby    
-rake -D
-</code></p>
-
-<p>However I got this error</p>
-
-<p><code>`` bash
-rudy@rudy-laptop:~/www/depot$ rake -D
-rake aborted!
-undefined method</code>task' for #&lt;depot::application:0x91fa9c4></p>
-
-<p>(See full trace by running task with &mdash;trace)
-```</p>
-
-<p>After a little bit research, I found that I have to uninstall my rake 0.9 and install 0.8.7 instead. So I ran this command :</p>
-
-<p><code>bash
-gem uninstall rake -v 0.9
-gem install rake -v 0.8.7
-</code></p>
-
-<p>Edited the gem file and added this code inside that file :</p>
-
-<p><code>ruby
-gem 'rake', '0.8.7'
-</code></p>
-
-<p>Last step is update the bundle</p>
-
-<p><code>bash    
-bundle update
-</code></p>
-
-<p>After that you can try run your rake command or import your project to Netbans, it&rsquo;s should be fine.</p>
-
-<p>UPDATE :
-It turns out that the problem is because I was using rake 0.9 and it&rsquo;s break out all the installation.</p>
-
-<p><code>bash
-gem install bundler
-</code></p>
-
-<p>You might want to install bundler if you encounter some errors related to Netbeans couldn&rsquo;t find bundler setup. Another thing is you have to add gem path to your Netbeans ( Tools > Rubygems ) and add your gem path.</p>
-
-<p>I am using rvm to install ruby and also rails. So I run this command to find gem path</p>
-
-<p><code>bash
-rvm gemdir
-</code></p>
 ]]></content>
   </entry>
   
