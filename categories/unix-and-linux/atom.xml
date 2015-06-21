@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-05-03T17:30:36+10:00</updated>
+  <updated>2015-06-21T17:11:10+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -58,7 +58,7 @@ config.vm.provider &ldquo;virtualbox&rdquo; do |v|</p>
 <h3>Add symbolic link to the &lsquo;node_modules&rsquo; folder you just created inside your project folder</h3>
 
 <p><code>bash
-  ln -sf /vagrant/node_modules /vagrant/your-project-folder
+  ln -sf ~/node_modules /vagrant/your-project-folder
 </code></p>
 
 <p>This solution will ensure that all the node modules are stored inside home directory instead of synced folder.</p>
