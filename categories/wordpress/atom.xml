@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Wordpress | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/wordpress/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-08-12T17:33:38+10:00</updated>
+  <updated>2015-08-13T09:25:05+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -39,7 +39,7 @@ jwplayer_tag_callback(&ldquo;[jwplayer file=&lsquo;<a href="http://xxx.com/xxx.m
     <id>http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name</id>
     <content type="html"><![CDATA[<p>Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog just because I am lazy to find it again.</p>
 
-<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#119;&#x6f;&#x72;&#100;&#x70;&#114;&#x65;&#115;&#x73;&#64;&#x79;&#x6f;&#x75;&#114;&#100;&#111;&#109;&#97;&#x69;&#x6e;&#x2e;&#x63;&#111;&#109;">&#x77;&#111;&#x72;&#100;&#x70;&#114;&#101;&#115;&#x73;&#x40;&#121;&#111;&#117;&#x72;&#x64;&#x6f;&#x6d;&#97;&#x69;&#110;&#46;&#x63;&#111;&#109;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
+<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#x6d;&#97;&#105;&#x6c;&#116;&#111;&#x3a;&#x77;&#111;&#114;&#x64;&#x70;&#x72;&#x65;&#x73;&#x73;&#x40;&#x79;&#x6f;&#x75;&#x72;&#100;&#111;&#109;&#x61;&#105;&#110;&#46;&#99;&#111;&#109;">&#119;&#x6f;&#114;&#x64;&#x70;&#114;&#x65;&#115;&#x73;&#x40;&#121;&#111;&#117;&#x72;&#x64;&#x6f;&#109;&#x61;&#105;&#x6e;&#46;&#99;&#x6f;&#109;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
 
 <p>``` php  <br/>
 add_filter(&lsquo;wp_mail_from&rsquo;, &lsquo;new_mail_from&rsquo;);
