@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-08-13T09:25:05+10:00</updated>
+  <updated>2015-08-31T10:30:55+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Create SSH Tunnel To Backup PostgreSQL Database]]></title>
+    <link href="http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database/"/>
+    <updated>2015-08-31T10:28:00+10:00</updated>
+    <id>http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database</id>
+    <content type="html"><![CDATA[<p>Today, I was trying to create a backup of production database. The problem is we have two different version of PostgreSQL running on production and these databases can only be accessed from front end(FE) server. We have older version of PostgreSQL client installed in all FE server which means I can&rsquo;t use it to run pg_dump.</p>
+
+<h2>SSH Tunnel to the rescue</h2>
+
+<p>One solution to this problem is to create a SSH tunnel. Since I have the latest version of PostgreSQL client installed in my machine, I can run pg_dump locally which will connect to the database through SSH tunnel.</p>
+
+<p>Here is the command I used to create SSH tunnel:
+```bash</p>
+
+<h1>Format: ssh -L &lt;local-port>:&lt;db-hostname>:&lt;db-port> &lt;fe-username>@&lt;fe-hostname></h1>
+
+<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#x6f;&#58;&#x75;&#x62;&#x75;&#x6e;&#x74;&#117;&#64;&#112;&#x72;&#111;&#100;&#117;&#x63;&#116;&#105;&#x6f;&#110;&#46;&#x73;&#x65;&#x72;&#118;&#x65;&#x72;&#x73;&#x2e;&#99;&#x6f;&#109;">&#x75;&#x62;&#117;&#x6e;&#116;&#x75;&#64;&#x70;&#x72;&#x6f;&#100;&#x75;&#x63;&#116;&#105;&#x6f;&#110;&#x2e;&#x73;&#101;&#114;&#118;&#101;&#x72;&#115;&#x2e;&#99;&#x6f;&#109;</a>
+```</p>
+
+<p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000
+<code>bash
+netstat -na | grep LISTEN
+</code></p>
+
+<p>If you confirm that the SSH tunnel is working, you can run psql to connect or pg_dump to backup your database
+<code>bash
+psql -h localhost -p 9000
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Symbolic Links With Vagrant Windows]]></title>
@@ -285,23 +316,6 @@ sudo add-apt-repository ppa:pi-rho/dev</p>
 ```</p>
 
 <p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fix npm symlink problem in Vagrant]]></title>
-    <link href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/"/>
-    <updated>2013-10-24T00:16:00+11:00</updated>
-    <id>http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant</id>
-    <content type="html"><![CDATA[<p>Today I encountered weird symlink error when trying to install npm modules on my Vagrant Ubuntu Box. The error says &ldquo;pm ERR! Error: UNKNOWN, symlink &lsquo;../which/bin/which&rsquo;&rdquo;.</p>
-
-<p>After quick Google, it turns out the problem is caused by npm trying to create symlink which is not supported on Windows ( I am using Windows 8 as my host machine ).</p>
-
-<p>Here is quick solution which allow you to install npm modules without creating any symlinks :</p>
-
-<p><code>bash
-npm install --no-bin-link
-</code></p>
 ]]></content>
   </entry>
   

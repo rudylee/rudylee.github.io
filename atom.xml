@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-08-13T09:25:05+10:00</updated>
+  <updated>2015-08-31T10:30:55+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,42 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Create SSH Tunnel To Backup PostgreSQL Database]]></title>
+    <link href="http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database/"/>
+    <updated>2015-08-31T10:28:00+10:00</updated>
+    <id>http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database</id>
+    <content type="html"><![CDATA[<p>Today, I was trying to create a backup of production database. The problem is we have two different version of PostgreSQL running on production and these databases can only be accessed from front end(FE) server. We have older version of PostgreSQL client installed in all FE server which means I can&rsquo;t use it to run pg_dump.</p>
+
+<h2>SSH Tunnel to the rescue</h2>
+
+<p>One solution to this problem is to create a SSH tunnel. Since I have the latest version of PostgreSQL client installed in my machine, I can run pg_dump locally which will connect to the database through SSH tunnel.</p>
+
+<p>Here is the command I used to create SSH tunnel:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Format: ssh -L &lt;local-port&gt;:&lt;db-hostname&gt;:&lt;db-port&gt; &lt;fe-username&gt;@&lt;fe-hostname&gt;</span>
+</span><span class='line'>ssh -L 9000:database.com:5432 ubuntu@production.servers.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>netstat -na | grep LISTEN
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you confirm that the SSH tunnel is working, you can run psql to connect or pg_dump to backup your database</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>psql -h localhost -p 9000
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Engines and Vim]]></title>
@@ -1106,44 +1142,6 @@
 
 
 <p>If you are an IDE fan such as Eclipse, Netbeans or Visual Studio. There are some plugins that you can download to unleash the Vim power in your IDE. At the moment, I am using <a href="http://visualstudiogallery.msdn.microsoft.com/59ca71b3-a4a3-46ca-8fe1-0e90e3f79329">VsVim</a> to use all the Vim shortcuts when programming in C#. If you want to become better programmer, I&rsquo;ll say start using Vim and you won&rsquo;t regret it.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Zend Framework 2 : get server URL in controller without using serverUrl()]]></title>
-    <link href="http://blog.rudylee.com/2013/02/15/zend-framework-2-get-server-url-in-controller-without-using-serverurl/"/>
-    <updated>2013-02-15T16:22:35+11:00</updated>
-    <id>http://blog.rudylee.com/2013/02/15/zend-framework-2-get-server-url-in-controller-without-using-serverurl</id>
-    <content type="html"><![CDATA[<p>Sometimes you need to be able to get current server URL inside controller in your Zend Framework 2 application. As you might know, you won&rsquo;t be able to use $this->serverUrl() method in the controller as it&rsquo;s a part of helper.</p>
-
-<p>So, here is the code that I am using to get server URL in controller :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$server_url</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getRequest</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getUri</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getScheme</span><span class="p">()</span> <span class="o">.</span> <span class="s1">&#39;://&#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getRequest</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getUri</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getHost</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Probably it&rsquo;s not the best solution but it works for now. Please check the other solutions below:</p>
-
-<h2>Other solutions from the comments below</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$helper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Zend\View\Helper\ServerUrl</span><span class="p">();</span>
-</span><span class='line'><span class="nv">$url</span> <span class="o">=</span> <span class="nv">$helper</span><span class="o">-&gt;</span><span class="na">__invoke</span><span class="p">(</span><span class="k">true</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getEvent</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getRouter</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">assemble</span><span class="p">(</span><span class="k">array</span><span class="p">(),</span> <span class="k">array</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="o">=&gt;</span><span class="s1">&#39;home&#39;</span><span class="p">,</span> <span class="s1">&#39;force_canonical&#39;</span><span class="o">=&gt;</span><span class="k">true</span><span class="p">));</span>
-</span><span class='line'><span class="c1">// WHERE default is the name of your route, &quot;default&quot; or whatever you use</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

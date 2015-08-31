@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Oct 19th, 2009 Research Unix and Linux Hotlinking protection di web server Apache Hari ini &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Oct 20th, 2009 CakePHP Passing parameters di paging CakePHP Sekian lama gwa ga sentuh2 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -52,10 +52,6 @@
   window.heap=window.heap||[],heap.load=function(t,e){window.heap.appid=t,window.heap.config=e;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+t+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(t){return function(){heap.push([t].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
   heap.load("1170192688");
 </script>
-
-  <!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
-for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
-mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 </head>
 
@@ -106,6 +102,105 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2009-10-20T19:10:51+11:00" pubdate data-updated="true">Oct 20<span>th</span>, 2009</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/cakephp/"><span class="badge">CakePHP</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2009/10/20/passing-parameters-di-paging-cakephp/">Passing parameters di paging CakePHP</a></h1>
+      <p>Sekian lama gwa ga sentuh2 CakePHP lagi ternyata sekarang ada kesempatan lagi buat megang CakePHP, ternyata setelah lama ga grepe2 CakePHP banyak codingan dan syntax2 yang gwa lupa dan salah satunya ada passing parameter ketika melakukan paging dan juga melimit jumlah row setiap halamannya.</p>
+
+<p>jadi tanpa banyak cing cong seperti biasanya langsung saja ke codingan aja deh. Ceritanya gwa punya method dalam controller seperti ini.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">function</span> <span class="nf">index</span><span class="p">(</span><span class="nv">$id</span> <span class="o">=</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$id</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Session</span><span class="o">-&gt;</span><span class="na">setFlash</span><span class="p">(</span><span class="nx">__</span><span class="p">(</span><span class="s1">&#39;Invalid Question.&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;passedArgs&#39;</span><span class="p">,</span><span class="nv">$id</span><span class="p">);</span>
+</span><span class='line'>    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;questions&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">paginate</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;group_id&#39;</span> <span class="o">=&gt;</span> <span class="nv">$id</span><span class="p">)));</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Jadi kalau dilihat dari method tersebut terlihat bahwa gwa mempassing parameter ke dalam method indexnya, dan gwa menggunakan parameter tersebut dalam paging gwa. Oleh karena itu gwa membuat satu variable lagi bernama <strong>passedArgs</strong> untuk menyimpan parameter yang ingin gwa passing ke dalam url paging nantinya ( dalam hal ini id yang ingin gwa passing ).</p>
+
+<p>Setelah itu akan menambah codingan ke dalam viewnya yaitu</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nx">counter</span><span class="p">(</span><span class="k">array</span><span class="p">(</span>
+</span><span class='line'><span class="s1">&#39;format&#39;</span> <span class="o">=&gt;</span> <span class="nx">__</span><span class="p">(</span><span class="s1">&#39;Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">)</span>
+</span><span class='line'><span class="p">));</span>
+</span><span class='line'><span class="nv">$paginator</span><span class="o">-&gt;</span><span class="na">options</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="o">=&gt;</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">passedArgs</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Jadi kita hanya perlu menambah codingan $paginator->options yang di dalamnya kita letakkan variable yang ingin kita passing. Mungkin pada bingung kenapa gwa harus passing variable itu ke dalam halaman paging, jika anda bingung berarti anda harus belajar banyak lagi :)</p>
+
+<p>Sekalian bonus biar ntar kalo lupa bisa ingat :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">var</span> <span class="nv">$paginate</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+</span><span class='line'>  <span class="s1">&#39;limit&#39;</span> <span class="o">=&gt;</span> <span class="mi">10</span>
+</span><span class='line'><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Code di atas buat limit jumlah item dalam 1 page, diletakkannya di dalam controller. Semoga membantu :D</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -1288,59 +1383,6 @@ Jadi kalau dilihat-lihat dari settingan nginx.conf gwa, cuma ada 2 hal bagian ya
 <p>Tapi sekarang gwa tidak menyalahkan pendapat dia sepenuhnya, tetapi juga tidak membenarkan pendapat dia sepenuhnya. Sekarang gwa suka membuat website dan gwa menikmati saat-saat membuat website, tetapi terkadang gwa merasa sangat jenuh dengan pekerjaan gwa itu. Gwa merasa kemampuan gwa kurang, tempat belajar gwa tidak mendukung, dan waktu yang tersisa semakin sedikit. Tapi di sela-sela kejenuhan itu, melihat orang berkomentar tentang bagaimana senangnya mereka menggunakan aplikasi yang telah kita buat, secara tidak langsung seakan-akan kejenuhan itu hilang dan semangat itu muncul lagi.</p>
 
 <p>Mungkin yang dimaksud akan passion dalam pekerjaan itu sebenarnya bukanlah disaat kita melakukan suatu pekerjaan, tetapi lebih ke impact yang timbulkan dari pekerjaan yang kita lakukan. Yah at least for now I find my way again :) thx everyone for your comments</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2009-07-01T02:36:21+10:00" pubdate data-updated="true">Jul 1<span>st</span>, 2009</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/my-stories/"><span class="badge">My Stories</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2009/07/01/i-love-jakarta-at-night/">I love Jakarta&#8230;. at Night</a></h1>
-      <p>Gila&hellip;. entah kenapa gwa suka banget kalo jalan2 di Jakarta pas malam hari, entah itu naik busway, naik bus, naik angkot, tetep aja gwa suka banget&hellip; rasanya kalau jalan-jalan pas di malam hari itu beda aja, seakan-akan kita melihat Jakarta dari sisi yang berbeda. Satu hal yang membuat gwa suka adalah &ldquo;SEPI&rdquo; gila enak banget duduk di angkot sendirian sambil memperhatikan gemerlap lampu malam di Jakarta. Gwa rasa kalau gwa duduk di dalam angkot begitu sambil nulis blog bisa jadi 1 novel kali ya ( lebay )&hellip; rasanya gimana gitu kalau duduk di angkot, sudah lah sepi, sendiri, dingin, tenang, lampu remang-remang ( kan lampu angkot + lampu jalanan warna kuning gitu ), beh suasananya benar-benar membuat larut dah dalam lamunan&hellip; Mungkin gwa termasuk manusia malam kali ya, rasanya kalau dah malam hari rasanya lebih semangat, lebih punya banyak ide dan lebih positif thinking&hellip;</p>
-
-<p>neh hasil gambar2 comotan dari google&hellip; walaupun tak melihat gambarnya ga bisa membangkitkan perasaan yang gwa rasain saat ngeliat langsung, tapi lumayan la :)</p>
-
-<p><img src="http://blog.rudylee.com/content/night1.jpg" alt="" />
-<img src="http://blog.rudylee.com/content/night2.jpg" alt="" /></p>
-
-<p>udah ah cari bedak dolo, gila malam2 gini gatal&hellip; pertanda apa ini ? ada yang kangen kali ya wakakakaka</p>
 
       
       

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Setting up NFS di Ubuntu - Blog Rudy Lee</title>
+  <title>Create SSH Tunnel To Backup PostgreSQL Database - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Setting Up NFS Di Ubuntu Jun 7th, 2010 Unix and Linux &laquo; Upload file in CakePHP using Media Plugin Copying files between 2 unix servers &raquo &hellip;">
+  <meta name="description" content="Create SSH Tunnel to Backup PostgreSQL Database Aug 31st, 2015 Today, I was trying to create a backup of production database. The problem is we have &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2010/06/07/setting-up-nfs-di-ubuntu">
+  <link rel="canonical" href="http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -98,7 +98,7 @@
 
   <header>
   <div class="jumbotron">
-    Setting Up NFS Di Ubuntu
+    Create SSH Tunnel to Backup PostgreSQL Database
 	<h5>
 
 
@@ -111,12 +111,39 @@
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2010-06-07T16:41:49+10:00" pubdate data-updated="true">Jun 7<span>th</span>, 2010</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2015-08-31T10:28:00+10:00" pubdate data-updated="true">Aug 31<span>st</span>, 2015</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      
+      <p>Today, I was trying to create a backup of production database. The problem is we have two different version of PostgreSQL running on production and these databases can only be accessed from front end(FE) server. We have older version of PostgreSQL client installed in all FE server which means I can&rsquo;t use it to run pg_dump.</p>
+
+<h2>SSH Tunnel to the rescue</h2>
+
+<p>One solution to this problem is to create a SSH tunnel. Since I have the latest version of PostgreSQL client installed in my machine, I can run pg_dump locally which will connect to the database through SSH tunnel.</p>
+
+<p>Here is the command I used to create SSH tunnel:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Format: ssh -L &lt;local-port&gt;:&lt;db-hostname&gt;:&lt;db-port&gt; &lt;fe-username&gt;@&lt;fe-hostname&gt;</span>
+</span><span class='line'>ssh -L 9000:database.com:5432 ubuntu@production.servers.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>netstat -na | grep LISTEN
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you confirm that the SSH tunnel is working, you can run psql to connect or pg_dump to backup your database</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>psql -h localhost -p 9000
+</span></code></pre></td></tr></table></div></figure>
+
 
     </div>
   </div>
@@ -134,6 +161,8 @@
         
 
 
+
+  <a href="/categories/postgresql/"><span class="badge">PostgreSQL</span></a>
 
   <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
 
@@ -165,10 +194,8 @@
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2010/06/03/upload-file-in-cakephp-using-media-plugin/" title="Previous Post: Upload file in CakePHP using Media Plugin">&laquo; Upload file in CakePHP using Media Plugin</a>
+            <a class="basic-alignment left" href="/2015/05/03/rails-engines-and-vim/" title="Previous Post: Rails Engines and Vim">&laquo; Rails Engines and Vim</a>
           
-          
-            <a class="basic-alignment right" href="/2010/06/08/copying-files-between-2-unix-servers/" title="Next Post: Copying files between 2 unix servers">Copying files between 2 unix servers &raquo;</a>
           
         </p>
       </div>
@@ -207,8 +234,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2010/06/07/setting-up-nfs-di-ubuntu/';
-        var disqus_url = 'http://blog.rudylee.com/2010/06/07/setting-up-nfs-di-ubuntu/';
+        var disqus_identifier = 'http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database/';
+        var disqus_url = 'http://blog.rudylee.com/2015/08/31/create-ssh-tunnel-to-backup-postgresql-database/';
         var disqus_script = 'embed.js';
       
     (function () {
