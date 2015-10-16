@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: AWS | Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/categories/aws/atom.xml" rel="self"/>
+  <link href="http://blog.rudylee.com/"/>
+  <updated>2015-10-16T12:02:42+11:00</updated>
+  <id>http://blog.rudylee.com/</id>
+  <author>
+    <name><![CDATA[Rudy Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Copying Files Between Two S3 Buckets]]></title>
+    <link href="http://blog.rudylee.com/2015/10/16/copying-files-between-two-s3-buckets/"/>
+    <updated>2015-10-16T12:00:00+11:00</updated>
+    <id>http://blog.rudylee.com/2015/10/16/copying-files-between-two-s3-buckets</id>
+    <content type="html"><![CDATA[<p>Today, I have to copy files from one S3 bucket to another S3 bucket which sitting in separate AWS account.</p>
+
+<p>Initially, I was thinking to use S3 clients ( Tranmit or Cyberduck ) to download the files first and manually upload the files again to the other S3 Bucket. However, this approach will consume a lot of bandwidth and really slow if you have a lot of files in your S3 bucket.</p>
+
+<h2>s3cmd or s4cmd</h2>
+
+<p>After a bit of research, I found that I can easily copy files directly from one bucket to another. First thing you have to do is install s3cmd or s4cmd through pip.</p>
+
+<p><code>bash
+pip install s4cmd
+</code></p>
+
+<p>After you finished setting up the AWS credentials, you can start the copying process.</p>
+
+<p>```bash</p>
+
+<h1>format</h1>
+
+<p>s4cmd cp s3://&lt;source-bucket> s3://&lt;target-bucket>/ &mdash;recursive</p>
+
+<h1>example</h1>
+
+<p>s4cmd cp s3://rudylee-images s3://rudylee-new-images/ &mdash;recursive
+```</p>
+
+<p>Since my target bucket is sitting in separate AWS account, I have to set another permission to allow everyone to upload and delete files into my target bucket.</p>
+
+<p>If you want to follow this approach, make sure delete that permission after you finished with the copying.</p>
+]]></content>
+  </entry>
+  
+</feed>

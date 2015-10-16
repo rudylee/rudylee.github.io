@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-08-31T10:46:21+10:00</updated>
+  <updated>2015-10-16T12:02:42+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,45 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Copying Files Between Two S3 Buckets]]></title>
+    <link href="http://blog.rudylee.com/2015/10/16/copying-files-between-two-s3-buckets/"/>
+    <updated>2015-10-16T12:00:00+11:00</updated>
+    <id>http://blog.rudylee.com/2015/10/16/copying-files-between-two-s3-buckets</id>
+    <content type="html"><![CDATA[<p>Today, I have to copy files from one S3 bucket to another S3 bucket which sitting in separate AWS account.</p>
+
+<p>Initially, I was thinking to use S3 clients ( Tranmit or Cyberduck ) to download the files first and manually upload the files again to the other S3 Bucket. However, this approach will consume a lot of bandwidth and really slow if you have a lot of files in your S3 bucket.</p>
+
+<h2>s3cmd or s4cmd</h2>
+
+<p>After a bit of research, I found that I can easily copy files directly from one bucket to another. First thing you have to do is install s3cmd or s4cmd through pip.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pip install s4cmd
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After you finished setting up the AWS credentials, you can start the copying process.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># format</span>
+</span><span class='line'>s4cmd cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;target-bucket&gt;/ --recursive
+</span><span class='line'>
+</span><span class='line'><span class="c">#example</span>
+</span><span class='line'>s4cmd cp s3://rudylee-images s3://rudylee-new-images/ --recursive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since my target bucket is sitting in separate AWS account, I have to set another permission to allow everyone to upload and delete files into my target bucket.</p>
+
+<p>If you want to follow this approach, make sure delete that permission after you finished with the copying.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Create SSH Tunnel To Backup PostgreSQL Database]]></title>
@@ -1114,34 +1153,6 @@
 
 
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[My review after two months using VIM]]></title>
-    <link href="http://blog.rudylee.com/2013/03/30/my-review-after-two-months-using-vim/"/>
-    <updated>2013-03-30T23:35:41+11:00</updated>
-    <id>http://blog.rudylee.com/2013/03/30/my-review-after-two-months-using-vim</id>
-    <content type="html"><![CDATA[<p>On January ( Two months ago ) , I decided to learn Vim after watching screencast from <a href="http://www.destroyallsoftware.com">Destroy All Software</a>. In one of the screencast, the guy shows how fast you can program when using Vim and use plugin to make it even better.</p>
-
-<p>I have known Vim for 4 years now but never actually keen to learn all the shortcuts. I remember I been to one of the PHP meetup in my city and one guy was presenting some of his code using Vim. One of the audience commented &ldquo;Why you need to use Vim if you have IDE and all of the GUI ?&rdquo;. At that time, I couldn&rsquo;t agree more with that guy.</p>
-
-<p>I had always thought Vim&rsquo;s user are just trying to show off that they are different and superior. Using Vim basically separate them from GUI&rsquo;s group and put them one level above. At least, that&rsquo;s what I was thinking and apparently I am wrong.</p>
-
-<p>After started using Vim, I can feel that I am more productive and less stressful when programming. All the shortcuts definitively help you to avoid redundancy and remove your reliance on mouse. You can navigate through the source code by only using keyboard.</p>
-
-<p>The book that I am using to learn VIM is<a href="http://www.amazon.com/Practical-Vim-Thought-Pragmatic-Programmers/dp/1934356980/ref=sr_1_1?ie=UTF8&amp;qid=1364646960&amp;sr=8-1&amp;keywords=vim"> &ldquo;Practical Vim : Edit Text at the Speed of Thought&rdquo; by Drew Neil</a>. If you are new with Vim, I&rsquo;ll strongly recommend to start with this book. This book has collection of tips on how to use Vim in real situation and you going to feel you learn Vim faster.</p>
-
-<p>However, before deciding to learn Vim, you need to know that Vim is not for everyone. You know that you are not suitable for Vim when you :</p>
-
-<ul>
-<li><p>Still looking at your keyboard when typing.</p></li>
-<li><p>Have problem or hate remembering shortcuts.</p></li>
-<li><p>Don&rsquo;t have any curiosity to find another way to achieve something.</p></li>
-</ul>
-
-
-<p>If you are an IDE fan such as Eclipse, Netbeans or Visual Studio. There are some plugins that you can download to unleash the Vim power in your IDE. At the moment, I am using <a href="http://visualstudiogallery.msdn.microsoft.com/59ca71b3-a4a3-46ca-8fe1-0e90e3f79329">VsVim</a> to use all the Vim shortcuts when programming in C#. If you want to become better programmer, I&rsquo;ll say start using Vim and you won&rsquo;t regret it.</p>
 ]]></content>
   </entry>
   
