@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-10-16T12:05:15+11:00</updated>
+  <updated>2015-10-19T17:51:20+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -22,9 +22,11 @@
 
 <p>Initially, I was thinking to use S3 clients ( Tranmit or Cyberduck ) to download the files first and manually upload the files again to the other S3 Bucket. However, this approach will consume a lot of bandwidth and really slow if you have a lot of files in your S3 bucket.</p>
 
+<p>After a bit of research, I found that you can easily copy files between two S3 buckets. You can use either s4cmd or AWS CLI.</p>
+
 <h2>s3cmd or s4cmd</h2>
 
-<p>After a bit of research, I found that you can easily copy files between two S3 buckets. First thing you have to do is install s3cmd or s4cmd through pip.</p>
+<p>Run this command to install s4cmd</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>pip install s4cmd
@@ -46,9 +48,43 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>AWS CLI</h2>
+
+<p>Install the cli through pip</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pip install awscli
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And configure it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>awscli configure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The usage is quite similar to s4cmd, see below:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>aws s3 cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;destination-bucket&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I prefer using AWS CLI because it has more options and official support. AWS CLI has a built it support can specify the ACL and permission of the objects.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># The command below will allow the target bucket owner to have full access to the object</span>
+</span><span class='line'>aws s3 cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;target-bucket&gt; --acl <span class="s2">&quot;bucket-owner-full-control&quot;</span> --recursive
+</span></code></pre></td></tr></table></div></figure>
+
+
 <p>Since my target bucket is sitting in separate AWS account, I have to set another permission to allow everyone to upload and delete files into my target bucket.</p>
 
 <p>If you want to follow this approach, make sure to delete that permission after you finished with the copying.</p>
+
+<p>The other option is to set the S3 bucket policy manually, see this link: <a href="http://serverfault.com/questions/556077/what-is-causing-access-denied-when-using-the-aws-cli-to-download-from-amazon-s3">http://serverfault.com/questions/556077/what-is-causing-access-denied-when-using-the-aws-cli-to-download-from-amazon-s3</a></p>
 ]]></content>
   </entry>
   
