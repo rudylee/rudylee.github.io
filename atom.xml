@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-10-19T17:51:20+11:00</updated>
+  <updated>2016-01-20T14:30:56+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reopen Last Commit in Git]]></title>
+    <link href="http://blog.rudylee.com/2016/01/20/reopen-last-commit-in-git/"/>
+    <updated>2016-01-20T14:26:00+11:00</updated>
+    <id>http://blog.rudylee.com/2016/01/20/reopen-last-commit-in-git</id>
+    <content type="html"><![CDATA[<p>Run the command below if you want to reopen the last commit in your git</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git reset --soft HEAD~
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is useful if you miss something in your last commit. Instead of creating new commit and squashing it, you can open last commit and fix it there.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Copying Files Between Two S3 Buckets]]></title>
@@ -1131,64 +1147,6 @@
 
 
 <p>Zend Framework 2 will read this file and overwrite the username key inside module.config.php. Now you can create script during your deployment process to create this file automatically.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Zend Framework 2 : The proper way to set application path in Javascript Object]]></title>
-    <link href="http://blog.rudylee.com/2013/05/06/zend-framework-2-the-proper-way-to-set-application-path-in-javascript-object/"/>
-    <updated>2013-05-06T14:44:36+10:00</updated>
-    <id>http://blog.rudylee.com/2013/05/06/zend-framework-2-the-proper-way-to-set-application-path-in-javascript-object</id>
-    <content type="html"><![CDATA[<p>Storing application path inside Javascript object is a way to avoid &ldquo;hard coded&rdquo; URL inside your Javascript file.  It is pretty common to have like this in your Javascript file :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="nx">POST</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost/my-website/register&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="nx">dataJSON</span>
-</span><span class='line'><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That approach is completely fine. However, when you need to deploy your application, you need to manually change all the URL to match with your server. The solution that I have been using for quite a long time is setting up Javascript object that contains path to my application.</p>
-
-<p>In CakePHP, this can be easily done by using URL method inside Router Class. Here is the sample :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$cbunny</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
-</span><span class='line'>    <span class="s1">&#39;APP_PATH&#39;</span> <span class="o">=&gt;</span> <span class="nx">Router</span><span class="o">::</span><span class="na">url</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
-</span><span class='line'><span class="p">);</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">scriptBlock</span><span class="p">(</span><span class="s1">&#39;var CbunnyObj = &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Javascript</span><span class="o">-&gt;</span><span class="na">object</span><span class="p">(</span><span class="nv">$cbunny</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;;&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In Zend Framework 2, you have to rely on serverUrl and basePath to achieve the same thing. Here is the proper way to do it in Zend Framework 2 :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="c1">//&lt;![CDATA[</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">CMSObj</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>            <span class="s2">&quot;APP_PATH&quot;</span><span class="o">:</span><span class="s2">&quot;&lt;?php echo $this-&gt;serverUrl() . $this-&gt;basePath() ?&gt;/&quot;</span>
-</span><span class='line'>        <span class="p">};</span>
-</span><span class='line'>    <span class="c1">//]]&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 ]]></content>
   </entry>
   

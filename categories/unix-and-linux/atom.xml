@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2015-10-19T17:51:20+11:00</updated>
+  <updated>2016-01-20T14:30:56+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -29,7 +29,7 @@
 
 <h1>Format: ssh -L &lt;local-port>:&lt;db-hostname>:&lt;db-port> &lt;fe-username>@&lt;fe-hostname></h1>
 
-<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#97;&#105;&#108;&#x74;&#x6f;&#x3a;&#x75;&#98;&#x75;&#x6e;&#x74;&#117;&#x40;&#112;&#114;&#x6f;&#x64;&#x75;&#99;&#116;&#105;&#111;&#x6e;&#46;&#x73;&#x65;&#114;&#x76;&#101;&#x72;&#x73;&#x2e;&#99;&#x6f;&#109;">&#x75;&#98;&#117;&#110;&#x74;&#x75;&#x40;&#x70;&#114;&#x6f;&#100;&#117;&#99;&#x74;&#105;&#111;&#x6e;&#46;&#x73;&#x65;&#114;&#118;&#101;&#x72;&#x73;&#x2e;&#99;&#111;&#x6d;</a>
+<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x75;&#98;&#117;&#x6e;&#116;&#x75;&#x40;&#112;&#114;&#x6f;&#x64;&#117;&#99;&#x74;&#x69;&#111;&#x6e;&#x2e;&#115;&#101;&#114;&#118;&#x65;&#114;&#x73;&#x2e;&#x63;&#111;&#109;">&#117;&#98;&#x75;&#110;&#x74;&#117;&#64;&#112;&#x72;&#111;&#x64;&#117;&#x63;&#x74;&#105;&#x6f;&#x6e;&#46;&#115;&#101;&#x72;&#118;&#x65;&#x72;&#x73;&#x2e;&#99;&#111;&#x6d;</a>
 ```</p>
 
 <p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000
