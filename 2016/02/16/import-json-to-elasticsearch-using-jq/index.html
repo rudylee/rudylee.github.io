@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Reopen Last Commit in Git - Blog Rudy Lee</title>
+  <title>Import JSON to Elasticsearch using jq - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Reopen Last Commit in Git Jan 20th, 2016 Run the command below if you want to reopen the last commit in your git 1
-git reset --soft HEAD~ This is &hellip;">
+  <meta name="description" content="Import JSON to Elasticsearch Using Jq Feb 16th, 2016 This is based on http://kevinmarsh.com/2014/10/23/using-jq-to-import-json-into-elasticsearch. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@ git reset --soft HEAD~ This is &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2016/01/20/reopen-last-commit-in-git">
+  <link rel="canonical" href="http://blog.rudylee.com/2016/02/16/import-json-to-elasticsearch-using-jq">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -103,7 +102,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
   <header>
   <div class="jumbotron">
-    Reopen Last Commit in Git
+    Import JSON to Elasticsearch Using Jq
 	<h5>
 
 
@@ -116,19 +115,28 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2016-01-20T14:26:00+11:00" pubdate data-updated="true">Jan 20<span>th</span>, 2016</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2016-02-16T16:14:00+11:00" pubdate data-updated="true">Feb 16<span>th</span>, 2016</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Run the command below if you want to reopen the last commit in your git</p>
+      <p>This is based on <a href="http://kevinmarsh.com/2014/10/23/using-jq-to-import-json-into-elasticsearch.html">http://kevinmarsh.com/2014/10/23/using-jq-to-import-json-into-elasticsearch.html</a></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>git reset --soft HEAD~
-</span></code></pre></td></tr></table></div></figure>
+<p>Install jq first on Mac</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew install jq</span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is useful if you miss something in your last commit. Instead of creating new commit and squashing it, you can open last commit and fix it there.</p>
+<p>Import the JSON file to Elasticsearch index</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cat file.json | jq -c '.[] | {"index": {"_index": "bookmarks", "_type": "bookmark", "_id": .id}}, .' | curl -XPOST localhost:9200/_bulk --data-binary @-</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Check for the list of indexes <a href="http://localhost:9200/_cat/indices?v">http://localhost:9200/_cat/indices?v</a></p>
+
+<p>See the list of records <a href="http:/localhost:9200//bookmarks/_search">http:/localhost:9200//bookmarks/_search</a></p>
 
     </div>
   </div>
@@ -147,7 +155,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 
-  <a href="/categories/git/"><span class="badge">Git</span></a>
+  <a href="/categories/elasticsearch/"><span class="badge">Elasticsearch</span></a>
 
 
 
@@ -177,10 +185,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2015/10/16/copying-files-between-two-s3-buckets/" title="Previous Post: Copying Files Between Two S3 Buckets">&laquo; Copying Files Between Two S3 Buckets</a>
+            <a class="basic-alignment left" href="/2016/01/20/reopen-last-commit-in-git/" title="Previous Post: Reopen Last Commit in Git">&laquo; Reopen Last Commit in Git</a>
           
-          
-            <a class="basic-alignment right" href="/2016/02/16/import-json-to-elasticsearch-using-jq/" title="Next Post: Import JSON to Elasticsearch using jq">Import JSON to Elasticsearch using jq &raquo;</a>
           
         </p>
       </div>
@@ -219,8 +225,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2016/01/20/reopen-last-commit-in-git/';
-        var disqus_url = 'http://blog.rudylee.com/2016/01/20/reopen-last-commit-in-git/';
+        var disqus_identifier = 'http://blog.rudylee.com/2016/02/16/import-json-to-elasticsearch-using-jq/';
+        var disqus_url = 'http://blog.rudylee.com/2016/02/16/import-json-to-elasticsearch-using-jq/';
         var disqus_script = 'embed.js';
       
     (function () {
