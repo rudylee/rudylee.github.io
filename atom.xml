@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-02-16T16:19:43+11:00</updated>
+  <updated>2016-03-09T15:05:31+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,71 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Create new user on Amazon AMI and give it root access]]></title>
+    <link href="http://blog.rudylee.com/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access/"/>
+    <updated>2016-03-09T14:55:00+11:00</updated>
+    <id>http://blog.rudylee.com/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access</id>
+    <content type="html"><![CDATA[<p>Setup your new EC2 instance on AWS and choose Amazon AMI.</p>
+
+<p>SSH to your instance using your private key</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -i &lt;path-to-your-pem-file&gt; ec2-user@&lt;ec2-endpoint-or-ip&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Change to root</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo su</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create new group for your user ( in this case my group name is &lsquo;dev&rsquo; )</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>groupadd dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create new user and assign it to your recently created group</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>useradd -g dev dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Give the username root access</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>visudo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add this to the bottom of the file</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dev     ALL=(ALL)       NOPASSWD:ALL</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Delete the password for &lsquo;dev&rsquo; user</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo passwd dev -d</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Change to the &lsquo;dev&rsquo; user</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>su dev</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Try run sudo su whether you can gain root privileges</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sudo su</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If everything is correct, you should be able to change to root user from dev without providing any password.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Import JSON to Elasticsearch using jq]]></title>
@@ -1047,86 +1112,6 @@
 <p>After all, I am quite happy with the end result. I can easily add new blog post through terminal and edit the post using my current favourite text editor Vim. The other good thing is the beautiful code snippet which is one of the reasons I moved from Wordpress.</p>
 
 <p>I am looking forward to post more tutorials about PHP, Rails, NodeJS, AngularJS and so on.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Playing with Google Map API]]></title>
-    <link href="http://blog.rudylee.com/2013/05/27/playing-with-google-map-api/"/>
-    <updated>2013-05-27T11:16:02+10:00</updated>
-    <id>http://blog.rudylee.com/2013/05/27/playing-with-google-map-api</id>
-    <content type="html"><![CDATA[<p>The main purpose of this post is only to write about Google Map API for future reference. Here are the code snippets :</p>
-
-<p>Get the latitude and longitude based on address : <a href="http://maps.googleapis.com/maps/api/geocode/json?address=435A%20Kent%20St&amp;sensor=true">http://maps.googleapis.com/maps/api/geocode/json?address=435A%20Kent%20St&amp;sensor=true</a></p>
-
-<p>The code below set up the Google Map, put the marker and also make it grayscale</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">initialize</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">map</span><span class="p">;</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">location</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span><span class="p">(</span><span class="o">-</span><span class="mf">33.87190930</span><span class="p">,</span> <span class="mf">151.20480740</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">styles</span> <span class="o">=</span> <span class="p">[</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="nx">featureType</span><span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">elementType</span><span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
-</span><span class='line'>            <span class="nx">stylers</span><span class="o">:</span> <span class="p">[</span>
-</span><span class='line'>                <span class="p">{</span> <span class="nx">saturation</span><span class="o">:</span> <span class="o">-</span><span class="mi">100</span> <span class="p">}</span>
-</span><span class='line'>            <span class="p">]</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">mapOptions</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">center</span><span class="o">:</span> <span class="nx">location</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">zoom</span><span class="o">:</span> <span class="mi">17</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">mapTypeControlOptions</span><span class="o">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">mapTypeId</span><span class="o">:</span> <span class="p">[</span><span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">MapTypeId</span><span class="p">.</span><span class="nx">ROADMAP</span><span class="p">,</span> <span class="s1">&#39;theGray&#39;</span><span class="p">]</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Map</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">&quot;map-canvas&quot;</span><span class="p">),</span> <span class="nx">mapOptions</span><span class="p">);</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">mapType</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">StyledMapType</span><span class="p">(</span><span class="nx">styles</span><span class="p">,</span> <span class="p">{</span> <span class="nx">name</span><span class="o">:</span><span class="s2">&quot;GrayScale&quot;</span> <span class="p">});</span>
-</span><span class='line'>    <span class="nx">map</span><span class="p">.</span><span class="nx">mapTypes</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;theGray&#39;</span><span class="p">,</span> <span class="nx">mapType</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">map</span><span class="p">.</span><span class="nx">setMapTypeId</span><span class="p">(</span><span class="s1">&#39;theGray&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">marker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Marker</span><span class="p">({</span>
-</span><span class='line'>        <span class="nx">position</span><span class="o">:</span> <span class="nx">location</span><span class="p">,</span>
-</span><span class='line'>        <span class="nx">map</span><span class="o">:</span> <span class="nx">map</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">event</span><span class="p">.</span><span class="nx">addDomListener</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">,</span> <span class="nx">initialize</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   
