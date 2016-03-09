@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-03-09T15:05:31+11:00</updated>
+  <updated>2016-03-09T15:39:59+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -65,6 +65,14 @@ su dev
 <p>Try run sudo su whether you can gain root privileges
 <code>
 sudo su
+</code></p>
+
+<p>Change user back to dev and set authorized_keys for ssh
+<code>
+exit
+mkdir ~/.ssh
+chmod -R 700 ~/.ssh
+vi ~/.ssh/authorized_keys
 </code></p>
 
 <p>If everything is correct, you should be able to change to root user from dev without providing any password.</p>
