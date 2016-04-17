@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-03-10T10:59:38+11:00</updated>
+  <updated>2016-04-17T23:12:24+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,122 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HAProxy and A/B Testing]]></title>
+    <link href="http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing/"/>
+    <updated>2016-04-13T15:59:00+10:00</updated>
+    <id>http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing</id>
+    <content type="html"><![CDATA[<p>Few weeks ago, I was given a task to create an A/B test using HAProxy. I need to make HAProxy to split traffic between two different applications ( Rails and NodeJS )</p>
+
+<p>In this blog post, I&rsquo;ll explain how to achieve this.</p>
+
+<h3>Create ACL for the page you want to A/B test</h3>
+
+<p>The first step you have to do is to create an ACL for the URL you want to A/B test. In this example, the URL path is <code>/ab-test-path</code></p>
+
+<p><code>
+acl ab_test_url path_beg /ab-test-path
+</code></p>
+
+<h3>Direct the traffic based on ACL rule and cookie</h3>
+
+<p>```</p>
+
+<h1>Send user to first backend if they have SITEID cookie with cookie_first_backend value</h1>
+
+<p>use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }</p>
+
+<h1>Send user to second backend if they have SITEID cookie with cookie_second_backend value and the URL they request is ab_test_url</h1>
+
+<p>use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url</p>
+
+<h1>If the doesn&rsquo;t have any cookie send them to ab-test backend</h1>
+
+<p>use_backend ab-test-backend if ab_test_url</p>
+
+<h1>By default send all traffic to the first backend</h1>
+
+<p>default_backend first-backend
+```</p>
+
+<h3>Create all the backends</h3>
+
+<p>```
+backend first-backend</p>
+
+<pre><code>    appsession JSESSIONID len 52 timeout 3h
+    cookie SERVERID insert
+
+    balance leastconn
+    server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+    server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</code></pre>
+
+<p>backend second-backend</p>
+
+<pre><code>    server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</code></pre>
+
+<p>backend ab-test-backend</p>
+
+<pre><code>    balance roundrobin
+    cookie SITEID insert indirect nocache maxlife 48h
+
+    server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+    server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+
+    server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend
+</code></pre>
+
+<p>```</p>
+
+<p>The final HAProxy config should be something like this:</p>
+
+<p>```
+listen  http 127.0.0.1:8080</p>
+
+<pre><code>    maxconn     18000
+
+    # A/B Test ACLs
+    acl ab_test_url path_beg /ab-test-path
+
+    use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }
+    use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url
+    use_backend ab-test-backend if ab_test_url
+
+    default_backend first-backend
+</code></pre>
+
+<p>backend first-backend</p>
+
+<pre><code>    appsession JSESSIONID len 52 timeout 3h
+    cookie SERVERID insert
+
+    balance leastconn
+    server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+    server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</code></pre>
+
+<p>backend second-backend</p>
+
+<pre><code>    server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</code></pre>
+
+<p>backend ab-test-backend</p>
+
+<pre><code>    balance roundrobin
+    cookie SITEID insert indirect nocache maxlife 48h
+
+    server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+    server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+
+    server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Create SSH Tunnel To Backup PostgreSQL Database]]></title>
@@ -29,7 +145,7 @@
 
 <h1>Format: ssh -L &lt;local-port>:&lt;db-hostname>:&lt;db-port> &lt;fe-username>@&lt;fe-hostname></h1>
 
-<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#97;&#105;&#x6c;&#x74;&#x6f;&#x3a;&#x75;&#98;&#117;&#x6e;&#x74;&#x75;&#64;&#112;&#114;&#x6f;&#x64;&#117;&#x63;&#x74;&#105;&#111;&#x6e;&#46;&#x73;&#101;&#114;&#118;&#101;&#114;&#x73;&#46;&#99;&#x6f;&#109;">&#x75;&#98;&#x75;&#x6e;&#116;&#117;&#64;&#x70;&#114;&#x6f;&#100;&#x75;&#99;&#116;&#105;&#111;&#x6e;&#x2e;&#x73;&#x65;&#114;&#x76;&#x65;&#114;&#115;&#46;&#x63;&#111;&#109;</a>
+<p>ssh -L 9000:database.com:5432 <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#117;&#98;&#117;&#x6e;&#x74;&#117;&#x40;&#112;&#x72;&#111;&#x64;&#117;&#99;&#116;&#x69;&#111;&#110;&#46;&#x73;&#101;&#114;&#x76;&#x65;&#x72;&#x73;&#46;&#99;&#111;&#x6d;">&#x75;&#x62;&#x75;&#x6e;&#x74;&#117;&#64;&#x70;&#x72;&#x6f;&#100;&#117;&#99;&#116;&#105;&#111;&#110;&#46;&#115;&#101;&#x72;&#118;&#101;&#x72;&#115;&#46;&#99;&#111;&#109;</a>
 ```</p>
 
 <p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000
@@ -289,33 +405,6 @@ chmod 644 /etc/php.d/.not-a-new-instance
 ```</p>
 
 <p>Inside my ebextensions config file, I call the shell script which will install additional software. The benefit of using shell script is you have more options and it is much easier to customize the software. Since the .ebextensions folder is copied to the instance, you can tell the shell script to copy a template config file that you have prepared before hand. I hope you find this blog post useful.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Install the latest tmux on Ubuntu 12.04]]></title>
-    <link href="http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04/"/>
-    <updated>2013-12-06T03:43:00+11:00</updated>
-    <id>http://blog.rudylee.com/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04</id>
-    <content type="html"><![CDATA[<p>In this post, I will show you how to install the latest tmux on Ubuntu 12.04. First, we need to install &lsquo;add-apt-repository&rsquo; command on our machine. This can be done by running these commands:</p>
-
-<p>``` bash
-sudo apt-get install software-properties-common</p>
-
-<p>sudo apt-get install python-software-properties
-```</p>
-
-<p>After that you can add third party repository ( Ubuntu official repository does not have latest tmux at the moment )</p>
-
-<p>``` bash
-sudo add-apt-repository ppa:pi-rho/dev</p>
-
-<p>sudo apt-get update</p>
-
-<p>sudo apt-get install tmux
-```</p>
-
-<p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
 ]]></content>
   </entry>
   

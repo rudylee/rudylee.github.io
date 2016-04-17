@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-03-10T10:59:38+11:00</updated>
+  <updated>2016-04-17T23:12:24+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,159 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HAProxy and A/B Testing]]></title>
+    <link href="http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing/"/>
+    <updated>2016-04-13T15:59:00+10:00</updated>
+    <id>http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing</id>
+    <content type="html"><![CDATA[<p>Few weeks ago, I was given a task to create an A/B test using HAProxy. I need to make HAProxy to split traffic between two different applications ( Rails and NodeJS )</p>
+
+<p>In this blog post, I&rsquo;ll explain how to achieve this.</p>
+
+<h3>Create ACL for the page you want to A/B test</h3>
+
+<p>The first step you have to do is to create an ACL for the URL you want to A/B test. In this example, the URL path is <code>/ab-test-path</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>acl ab_test_url path_beg /ab-test-path</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Direct the traffic based on ACL rule and cookie</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Send user to first backend if they have SITEID cookie with cookie_first_backend value
+</span><span class='line'>use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }
+</span><span class='line'>
+</span><span class='line'># Send user to second backend if they have SITEID cookie with cookie_second_backend value and the URL they request is ab_test_url
+</span><span class='line'>use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url
+</span><span class='line'>
+</span><span class='line'># If the doesn't have any cookie send them to ab-test backend
+</span><span class='line'>use_backend ab-test-backend if ab_test_url
+</span><span class='line'>
+</span><span class='line'># By default send all traffic to the first backend
+</span><span class='line'>default_backend first-backend</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Create all the backends</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>backend first-backend
+</span><span class='line'>        appsession JSESSIONID len 52 timeout 3h
+</span><span class='line'>        cookie SERVERID insert
+</span><span class='line'>
+</span><span class='line'>        balance leastconn
+</span><span class='line'>        server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>        server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend second-backend
+</span><span class='line'>        server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend ab-test-backend
+</span><span class='line'>        balance roundrobin
+</span><span class='line'>        cookie SITEID insert indirect nocache maxlife 48h
+</span><span class='line'>
+</span><span class='line'>        server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>        server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>
+</span><span class='line'>        server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The final HAProxy config should be something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>listen  http 127.0.0.1:8080
+</span><span class='line'>        maxconn     18000
+</span><span class='line'>
+</span><span class='line'>        # A/B Test ACLs
+</span><span class='line'>        acl ab_test_url path_beg /ab-test-path
+</span><span class='line'>
+</span><span class='line'>        use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }
+</span><span class='line'>        use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url
+</span><span class='line'>        use_backend ab-test-backend if ab_test_url
+</span><span class='line'>
+</span><span class='line'>        default_backend first-backend
+</span><span class='line'>
+</span><span class='line'>backend first-backend
+</span><span class='line'>        appsession JSESSIONID len 52 timeout 3h
+</span><span class='line'>        cookie SERVERID insert
+</span><span class='line'>
+</span><span class='line'>        balance leastconn
+</span><span class='line'>        server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>        server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend second-backend
+</span><span class='line'>        server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend ab-test-backend
+</span><span class='line'>        balance roundrobin
+</span><span class='line'>        cookie SITEID insert indirect nocache maxlife 48h
+</span><span class='line'>
+</span><span class='line'>        server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>        server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>
+</span><span class='line'>        server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Create new user on Amazon AMI and give it root access]]></title>
@@ -1111,19 +1264,6 @@
 <p>If you get to this point, you just need to follow the tutorial from official documentation to set up postfix and use Amazon SES as the relay. After you are done with the configuration there is another thing that you need to solve. You might notice there is a timeout when you are trying to send emails in huge volume. The workaround for this problem is you have to ask Amazon to remove the limitation on your account.</p>
 
 <p>Amazon put throttle on port 25 to prevent user to use Amazon EC2 for spam machine. This cause connection timeout which prevent you from sending email in real time. To solve this you have to send support request to remove this limitation. So, good luck with that.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Migrate to Octopress]]></title>
-    <link href="http://blog.rudylee.com/2013/07/25/migrate-to-octopress/"/>
-    <updated>2013-07-25T20:26:00+10:00</updated>
-    <id>http://blog.rudylee.com/2013/07/25/migrate-to-octopress</id>
-    <content type="html"><![CDATA[<p>Today, I decided to upload my new blog using Octopress into live. I have spent the last two weeks migrating my blog posts into Octopress. The process was not as smooth as I thought. I had to check every single blog post and re-apply all the code snippet tags, fix typo and add missing post.</p>
-
-<p>After all, I am quite happy with the end result. I can easily add new blog post through terminal and edit the post using my current favourite text editor Vim. The other good thing is the beautiful code snippet which is one of the reasons I moved from Wordpress.</p>
-
-<p>I am looking forward to post more tutorials about PHP, Rails, NodeJS, AngularJS and so on.</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Jul 31st, 2012 Unix and Linux Precise Pangolin After spending whole day moving all my data &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Nov 28th, 2012 CakePHP No prefix support for mapResources in CakePHP 2.x REST API is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,66 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2012-11-28T13:45:18+11:00" pubdate data-updated="true">Nov 28<span>th</span>, 2012</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/cakephp/"><span class="badge">CakePHP</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2012/11/28/no-prefix-support-for-mapresources-in-cakephp-2-x/">No prefix support for mapResources in CakePHP 2.x</a></h1>
+      <p>REST API is relatively easy to implement if you are using web framework to build your application. In Rails, you just need to add single &lsquo;resources&rsquo;  entry in your routing file. In CakePHP, it has similar solution as you can read in the <a href="http://book.cakephp.org/2.0/en/development/rest.html">Cookbook</a>. However, currently there is no prefix support in CakePHP 2.x and this is confirmed in these links :</p>
+
+<ul>
+<li><p><a href="http://cakephp.lighthouseapp.com/projects/42648/tickets/968-rest-routes-with-prefix">http://cakephp.lighthouseapp.com/projects/42648/tickets/968-rest-routes-with-prefix</a></p></li>
+<li><p><a href="https://github.com/cakephp/cakephp/pull/763">https://github.com/cakephp/cakephp/pull/763</a></p></li>
+</ul>
+
+
+<p>This is a drawback because you are most likely will use prefix to build REST API. In my case, I have products controller in my application which has default CRUD actions and another set of actions with prefix ( api_index, api_view, etc ). Those actions with prefix in front of it will act as our RESTful API.</p>
+
+<p>You can try another approach by creating separate controller only to handle API request. For example, you will have to create controller called products_api to handle all restful API for specific controller. I am not a fan of this approach because you might end up having a lot of files and it&rsquo;s difficult to maintain.</p>
+
+<p>So, if you are on the same boat as me, you can follow this solution that I found. This solution only requires you to add one line of code to Router.php file in CakePHP lib folder ( <a href="https://github.com/DiegoMax/cakephp/commit/f203202ff78da930b472ecce817fdc6f19d6dfda">https://github.com/DiegoMax/cakephp/commit/f203202ff78da930b472ecce817fdc6f19d6dfda</a> ).</p>
+
+<p>Not a best solution but I don&rsquo;t want to wait until CakePHP 3.x released to finish my first CakePHP + Backbone.JS app. That&rsquo;s all, have a nice day.</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -705,72 +765,6 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 <p>Gwa: &hellip;</p>
 
 <p>PS : kata2 sedikit diubah agar mudah dimengerti</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2011-09-30T17:44:44+10:00" pubdate data-updated="true">Sep 30<span>th</span>, 2011</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/my-stories/"><span class="badge">My Stories</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2011/09/30/reasons-why-i-hate-long-weekend/">Reasons why I hate long weekend</a></h1>
-      <h1><strong>Too much sleep</strong></h1>
-
-<p><a href="http://blog.rudylee.com/wp-content/uploads/2011/10/302271589_0a29afd756_z.jpg"><img src="http://blog.rudylee.com/wp-content/uploads/2011/10/302271589_0a29afd756_z.jpg" alt="" /></a></p>
-
-<h1><strong>Less productive</strong></h1>
-
-<p><a href="http://blog.rudylee.com/wp-content/uploads/2011/10/857874987_d8a2142d2a_z.jpg"><img src="http://blog.rudylee.com/wp-content/uploads/2011/10/857874987_d8a2142d2a_z.jpg" alt="" /></a></p>
-
-<h1><strong>Tasks waiting after holiday</strong></h1>
-
-<p><a href="http://blog.rudylee.com/wp-content/uploads/2011/10/6192893731_716e3567e1_z.jpg"><img src="http://blog.rudylee.com/wp-content/uploads/2011/10/6192893731_716e3567e1_z.jpg" alt="" /></a></p>
-
-<h1></h1>
-
-<h1><strong>and</strong></h1>
-
-<h1></h1>
-
-<h1><strong>Far away from your girlfriend</strong></h1>
-
-<h1><a href="http://blog.rudylee.com/wp-content/uploads/2011/10/5422183699_ceda9b84c6_z.jpg"><img src="http://blog.rudylee.com/wp-content/uploads/2011/10/5422183699_ceda9b84c6_z.jpg" alt="" /></a></h1>
 
       
       

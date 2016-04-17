@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Create new user on Amazon AMI and give it root access - Blog Rudy Lee</title>
+  <title>HAProxy and A/B Testing - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Create New User on Amazon AMI and Give It Root Access Mar 9th, 2016 Setup your new EC2 instance on AWS and choose Amazon AMI. SSH to your instance &hellip;">
+  <meta name="description" content="HAProxy and A/B Testing Apr 13th, 2016 Few weeks ago, I was given a task to create an A/B test using HAProxy. I need to make HAProxy to split &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access">
+  <link rel="canonical" href="http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -102,7 +102,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
   <header>
   <div class="jumbotron">
-    Create New User on Amazon AMI and Give It Root Access
+    HAProxy and A/B Testing
 	<h5>
 
 
@@ -115,80 +115,156 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2016-03-09T14:55:00+11:00" pubdate data-updated="true">Mar 9<span>th</span>, 2016</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2016-04-13T15:59:00+10:00" pubdate data-updated="true">Apr 13<span>th</span>, 2016</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Setup your new EC2 instance on AWS and choose Amazon AMI.</p>
+      <p>Few weeks ago, I was given a task to create an A/B test using HAProxy. I need to make HAProxy to split traffic between two different applications ( Rails and NodeJS )</p>
 
-<p>SSH to your instance using your private key</p>
+<p>In this blog post, I&rsquo;ll explain how to achieve this.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>ssh -i &lt;path-to-your-pem-file&gt; ec2-user@&lt;ec2-endpoint-or-ip&gt;</span></code></pre></td></tr></table></div></figure>
+<h3>Create ACL for the page you want to A/B test</h3>
 
-
-<p>Change to root</p>
+<p>The first step you have to do is to create an ACL for the URL you want to A/B test. In this example, the URL path is <code>/ab-test-path</code></p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo su</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>acl ab_test_url path_beg /ab-test-path</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Create new group for your user ( in this case my group name is &lsquo;dev&rsquo; )</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>groupadd dev</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Create new user and assign it to your recently created group</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>useradd -g dev dev</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Give the username root access</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>visudo</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add this to the bottom of the file</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>dev     ALL=(ALL)       NOPASSWD:ALL</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Delete the password for &lsquo;dev&rsquo; user</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo passwd dev -d</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Change to the &lsquo;dev&rsquo; user</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>su dev</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Try run sudo su whether you can gain root privileges</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>sudo su</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Change user back to dev and set authorized_keys for ssh</p>
+<h3>Direct the traffic based on ACL rule and cookie</h3>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>exit
-</span><span class='line'>mkdir ~/.ssh
-</span><span class='line'>vi ~/.ssh/authorized_keys
-</span><span class='line'>chmod -R 700 ~/.ssh</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Send user to first backend if they have SITEID cookie with cookie_first_backend value
+</span><span class='line'>use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }
+</span><span class='line'>
+</span><span class='line'># Send user to second backend if they have SITEID cookie with cookie_second_backend value and the URL they request is ab_test_url
+</span><span class='line'>use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url
+</span><span class='line'>
+</span><span class='line'># If the doesn't have any cookie send them to ab-test backend
+</span><span class='line'>use_backend ab-test-backend if ab_test_url
+</span><span class='line'>
+</span><span class='line'># By default send all traffic to the first backend
+</span><span class='line'>default_backend first-backend</span></code></pre></td></tr></table></div></figure>
 
 
-<p>If everything is correct, you should be able to change to root user from dev without providing any password.</p>
+<h3>Create all the backends</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>backend first-backend
+</span><span class='line'>        appsession JSESSIONID len 52 timeout 3h
+</span><span class='line'>        cookie SERVERID insert
+</span><span class='line'>
+</span><span class='line'>        balance leastconn
+</span><span class='line'>        server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>        server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend second-backend
+</span><span class='line'>        server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend ab-test-backend
+</span><span class='line'>        balance roundrobin
+</span><span class='line'>        cookie SITEID insert indirect nocache maxlife 48h
+</span><span class='line'>
+</span><span class='line'>        server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>        server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>
+</span><span class='line'>        server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The final HAProxy config should be something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>listen  http 127.0.0.1:8080
+</span><span class='line'>        maxconn     18000
+</span><span class='line'>
+</span><span class='line'>        # A/B Test ACLs
+</span><span class='line'>        acl ab_test_url path_beg /ab-test-path
+</span><span class='line'>
+</span><span class='line'>        use_backend first-backend if { req.cook(SITEID) -m beg cookie_first_backend }
+</span><span class='line'>        use_backend second-backend if { req.cook(SITEID) -m beg cookie_second_backend } ab_test_url
+</span><span class='line'>        use_backend ab-test-backend if ab_test_url
+</span><span class='line'>
+</span><span class='line'>        default_backend first-backend
+</span><span class='line'>
+</span><span class='line'>backend first-backend
+</span><span class='line'>        appsession JSESSIONID len 52 timeout 3h
+</span><span class='line'>        cookie SERVERID insert
+</span><span class='line'>
+</span><span class='line'>        balance leastconn
+</span><span class='line'>        server  backend02a-aws-syd 10.0.105.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>        server  backend02b-aws-syd 10.0.106.102:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend second-backend
+</span><span class='line'>        server  backend03a-aws-syd 10.0.105.103:80 check maxconn 3000 inter 30s
+</span><span class='line'>
+</span><span class='line'>backend ab-test-backend
+</span><span class='line'>        balance roundrobin
+</span><span class='line'>        cookie SITEID insert indirect nocache maxlife 48h
+</span><span class='line'>
+</span><span class='line'>        server backend02a-aws-syd 10.0.105.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>        server backend02b-aws-syd 10.0.106.102:80 weight 25 cookie cookie_first_backend
+</span><span class='line'>
+</span><span class='line'>        server backend03a-aws-syd 10.0.105.103:80 weight 50 cookie cookie_second_backend</span></code></pre></td></tr></table></div></figure>
+
 
     </div>
   </div>
@@ -207,9 +283,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 
-  <a href="/categories/aws/"><span class="badge">AWS</span></a>
-
-  <a href="/categories/linux/"><span class="badge">Linux</span></a>
+  <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
 
 
 
@@ -239,10 +313,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2016/02/16/import-json-to-elasticsearch-using-jq/" title="Previous Post: Import JSON to Elasticsearch using jq">&laquo; Import JSON to Elasticsearch using jq</a>
+            <a class="basic-alignment left" href="/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access/" title="Previous Post: Create new user on Amazon AMI and give it root access">&laquo; Create new user on Amazon AMI and give it root access</a>
           
-          
-            <a class="basic-alignment right" href="/2016/04/13/haproxy-and-a-slash-b-testing/" title="Next Post: HAProxy and A/B Testing">HAProxy and A/B Testing &raquo;</a>
           
         </p>
       </div>
@@ -281,8 +353,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access/';
-        var disqus_url = 'http://blog.rudylee.com/2016/03/09/create-new-user-on-amazon-ami-and-give-it-root-access/';
+        var disqus_identifier = 'http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing/';
+        var disqus_url = 'http://blog.rudylee.com/2016/04/13/haproxy-and-a-slash-b-testing/';
         var disqus_script = 'embed.js';
       
     (function () {

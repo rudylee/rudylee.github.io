@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Dec 27th, 2009 Reviews Lithium atau Li3 : PHP 5.3++ Framework Setelah 3 hari dicekcoki &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Jan 13th, 2010 Unix and Linux Logs Rotate Nginx di FreeBSD File logs sering kali menjadi &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,125 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2010-01-13T15:44:49+11:00" pubdate data-updated="true">Jan 13<span>th</span>, 2010</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2010/01/13/logs-rotate-nginx-di-freebsd/">Logs Rotate Nginx di FreeBSD</a></h1>
+      <p>File logs sering kali menjadi sebuah masalah ketika ukurannya menjadi semakin besar dan memakan sebagian besar hard disk server kita, tetapi di sisi lain file logs juga berguna untuk mencari masalah yang terjadi di server kita.</p>
+
+<p>Gwa juga sempat mengalami beberapa masalah dengan file logs nginx di server FreeBSD. Permasalahan bermula dikarenakan gwa salah mengeset ukuran dari folder &lsquo;/var/logs&rsquo; yang hanya berukuran 2 Gb saja ( padahal file logs ukurannya bisa sampai 10 Gb keatas ). Hal tersebut tentu saja mengakibatkan banyak user-user binus-access yang &ldquo;bernyanyi&rdquo; karena ga bisa login.</p>
+
+<p>Selain itu ukuran file logs yang semakin lama semakin besar dan terkonsentrasi dalam 1 file tentu saja sangat mempersulit kita dalam melakukan tracing jika terjadi sesuatu, entah itu kena hack, kena dos, kena flood, kompor meleduk, anak hilang, blum sarapan, dll. Oleh karena itu kita akan menggunakan salah satu solusi yaitu rotate file log sehingga file log itu akan dipecah2 menjadi file2 kecil setiap harinya.</p>
+
+<p>Kalau biasanya file logs itu cuma bentuknya &ldquo;error.log&rdquo; nanti akan muncul banyak file log sesuai dengan hasil rotate kita, contohnya &ldquo;error.log.0.bz1&rdquo; atau &ldquo;error.log.1.bz2&rdquo;.</p>
+
+<p>Jadi langkah pertama yang gwa lakukan adalah mengubah tempat penyimpanan file log ke &lsquo;/usr/local&rsquo;, kira2 begini lah settingannya di nginx.conf</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='apache'><span class='line'><span class="nb">access_log</span> <span class="sx">/usr/local/log/binus-access.com.access.log</span>;
+</span><span class='line'><span class="nb">error_log</span> <span class="sx">/usr/local/log/binus-access.com.error.log</span>;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>setelah itu kita cuma perlu melakukan perubahan di newsyslog.conf supaya bisa merotate log kita, kira-kira begini isi newsyslog.conf ( /etc/newsyslog.conf )</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/var/log/all.log                        600  7     *    @T00  J
+</span><span class='line'>/var/log/amd.log                        644  7     100  *     J
+</span><span class='line'>/var/log/auth.log                       600  7     100  *     JC
+</span><span class='line'>/var/log/console.log                    600  5     100  *     J
+</span><span class='line'>/var/log/cron                           600  3     100  *     JC
+</span><span class='line'>/var/log/daily.log                      640  7     *    @T00  JN
+</span><span class='line'>/var/log/debug.log                      600  7     100  *     JC
+</span><span class='line'>/var/log/kerberos.log                   600  7     100  *     J
+</span><span class='line'>/var/log/lpd-errs                       644  7     100  *     JC
+</span><span class='line'>/var/log/maillog                        640  7     *    @T00  JC
+</span><span class='line'>/var/log/messages                       644  5     100  *     JC
+</span><span class='line'>/var/log/monthly.log                    640  12    *    <span class="nv">$M1D0</span> JN
+</span><span class='line'>/var/log/pflog                          600  3     100  *     JB    /var/run/pflogd.pid
+</span><span class='line'>/var/log/ppp.log        root:network    640  3     100  *     JC
+</span><span class='line'>/var/log/security                       600  10    100  *     JC
+</span><span class='line'>/var/log/sendmail.st                    640  10    *    168   B
+</span><span class='line'>/var/log/slip.log       root:network    640  3     100  *     JC
+</span><span class='line'>/var/log/weekly.log                     640  5     1    <span class="nv">$W6D0</span> JN
+</span><span class='line'>/var/log/wtmp                           644  3     *    @01T05 B
+</span><span class='line'>/var/log/xferlog                        600  7     100  *     JC
+</span><span class='line'>/usr/local/log/*.log    root:wheel      640  7     *    @T00  GJ    /var/run/nginx.pid
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>jadi sebenarnya yang harus kita tambahkan adalah line terakhir yaitu</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/usr/local/log/*.log    root:wheel      640  7     *    @T00  GJ    /var/run/nginx.pid
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>/usr/local/log/*.log adalah tempat penyimpanan file log kita. Sementara untuk root:wheel itu adalah nama usernya, sementara sisanya ikutin saja la soalnya saya juga ga ngerti hohohoho.</p>
+
+<p>Nah setelah setting itu, kita tinggal menunggu satu hari maka secara otomatis logs file kita akan ter-rotate sendiri. Silakan dicoba sendiri :D</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -1082,215 +1201,6 @@ jika benar maka akan muncul tampilan seperti ini :</p>
 
 
 <p>trus sekarang coba jalankan lagi /etc/init.d/fms start dan seharusnya sekarang semuanya sudah berjalan dengan baik :)</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2009-08-31T13:37:52+10:00" pubdate data-updated="true">Aug 31<span>st</span>, 2009</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2009/08/31/melihat-pemakaian-hard-disk-di-linuxunix/">Melihat pemakaian hard disk di Linux/Unix</a></h1>
-      <p>Jika kita menggunakan operating system Windows pasti dapat dengan mudahnya mencek pemakaian hard disk komputer kita melalui My Computer. Tapi bagaimana jika kita harus mengecek pemakaian hard disk ketika kita diharuskan memakai Linux Server atau Unix Server.</p>
-
-<p>Untuk mengecek pemakaian hard disk di Linux/Unix kita dapat menggunakan beberapa perintah yaitu : ( gwa mengetesnya di server Sun Solaris )</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>df
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>jika kita menggunakan perintah df maka akan keluar tampilan kira-kira seperti ini :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>/                  <span class="o">(</span>/dev/dsk/c1t0d0s0 <span class="o">)</span>: 2326264 blocks   444933 files
-</span><span class='line'>/devices           <span class="o">(</span>/devices          <span class="o">)</span>:       0 blocks        0 files
-</span><span class='line'>/system/contract   <span class="o">(</span>ctfs              <span class="o">)</span>:       0 blocks 2147483610 files
-</span><span class='line'>/proc              <span class="o">(</span>proc              <span class="o">)</span>:       0 blocks    29959 files
-</span><span class='line'>/etc/mnttab        <span class="o">(</span>mnttab            <span class="o">)</span>:       0 blocks        0 files
-</span><span class='line'>/etc/svc/volatile  <span class="o">(</span>swap              <span class="o">)</span>: 3997376 blocks   293539 files
-</span><span class='line'>/system/object     <span class="o">(</span>objfs             <span class="o">)</span>:       0 blocks 2147483464 files
-</span><span class='line'>/dev/fd            <span class="o">(</span>fd                <span class="o">)</span>:       0 blocks        0 files
-</span><span class='line'>/tmp               <span class="o">(</span>swap              <span class="o">)</span>: 3997376 blocks   293539 files
-</span><span class='line'>/var/run           <span class="o">(</span>swap              <span class="o">)</span>: 3997376 blocks   293539 files
-</span><span class='line'>/export/home       <span class="o">(</span>/dev/dsk/c1t0d0s7 <span class="o">)</span>:59435344 blocks  3683313 files
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>dari perintah tersebut dapat kita lihat pemakaian hard disknya, tetapi kalau cuma begitu saja agak sulit untuk membacanya. Oleh karena itu kita menggunakan tambahan option yaitu :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>df -h
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>dengan menjalankan perintah tersebut maka akan keluar tampilan seperti ini :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Filesystem             size   used  avail capacity  Mounted on
-</span><span class='line'>/dev/dsk/c1t0d0s0      4.5G   3.4G   1.1G    77%    /
-</span><span class='line'>/devices                 0K     0K     0K     0%    /devices
-</span><span class='line'>ctfs                     0K     0K     0K     0%    /system/contract
-</span><span class='line'>proc                     0K     0K     0K     0%    /proc
-</span><span class='line'>mnttab                   0K     0K     0K     0%    /etc/mnttab
-</span><span class='line'>swap                   1.9G   968K   1.9G     1%    /etc/svc/volatile
-</span><span class='line'>objfs                    0K     0K     0K     0%    /system/object
-</span><span class='line'>fd                       0K     0K     0K     0%    /dev/fd
-</span><span class='line'>swap                   1.9G     0K   1.9G     0%    /tmp
-</span><span class='line'>swap                   1.9G    32K   1.9G     1%    /var/run
-</span><span class='line'>/dev/dsk/c1t0d0s7       28G    31M    28G     1%    /export/home
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>dari disitu sudah lebih terlihat berapa pemakaian hard disk dalam ukuran :</p>
-
-<ul>
-<li><p>K ( KiloByte )</p></li>
-<li><p>M ( MegaByte )</p></li>
-<li><p>G ( Gigabyte )</p></li>
-</ul>
-
-
-<p>Namun perintah di atas cuma memperlihatkan ukuran dari directory utamanya saja ( tidak menampilkan detail pemakaian dari masing-masing folder ). Maka kita akan menggunakan perintah satu lagi untuk mengecek pemakaian dari masing-masing folder yaitu dengan menggunakan perintah :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>du -sh
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>contoh pemakaiannya :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>du -sh /
-</span><span class='line'>3.7G
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>kalau untuk melist semua folder2nya cukup menambahkan tanda * di depannya menjadi seperti ini :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>du -sh /*
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>maka hasil yang akan dikeluarkan kira-kira seperti ini :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>26K   /TT_DB
-</span><span class='line'>   1K   /bin
-</span><span class='line'>   3K   /cdrom
-</span><span class='line'>   1K   /core
-</span><span class='line'>   2K   /core.svc.configd.1251605478.9
-</span><span class='line'>   2K   /core.svc.configd.1251606613.9
-</span><span class='line'> 347K   /dev
-</span><span class='line'> 134K   /devices
-</span><span class='line'>  49M   /etc
-</span><span class='line'> 2.2M   /export
-</span><span class='line'>   0K   /home
-</span><span class='line'>  14M   /instaler
-</span><span class='line'>  27M   /kernel
-</span><span class='line'>  24M   /lib
-</span><span class='line'>   8K   /lost+found
-</span><span class='line'>   1K   /mnt
-</span><span class='line'>  45M   /mysql-connector-odbc-5.1.4-solaris10-sparc-64bit
-</span><span class='line'>   0K   /net
-</span><span class='line'>  98M   /opt
-</span><span class='line'>  17M   /platform
-</span><span class='line'> 300M   /proc
-</span><span class='line'> 1.3M   /sbin
-</span><span class='line'> 3.6M   /system
-</span><span class='line'>  24K   /tmp
-</span><span class='line'> 2.9G   /usr
-</span><span class='line'> 295M   /var
-</span><span class='line'>   0K   /vol
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Perintah-perintah diatas sangat berguna kalau misalnya kita harus mencari kenapa tiba-tiba pemakaian hard disk kita menjadi 99% ( yang kebanyakan disebabkan oleh folder logs yang tiba-tiba membesar ). Semoga berguna :)</p>
 
       
       
