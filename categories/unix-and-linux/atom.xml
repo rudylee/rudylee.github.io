@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-04-17T23:12:24+10:00</updated>
+  <updated>2016-12-05T14:48:23+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,53 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[HAProxy as a reverse proxy for cloudinary images]]></title>
+    <link href="http://blog.rudylee.com/2016/12/05/haproxy-as-a-reverse-proxy-for-cloudinary-images/"/>
+    <updated>2016-12-05T13:51:00+11:00</updated>
+    <id>http://blog.rudylee.com/2016/12/05/haproxy-as-a-reverse-proxy-for-cloudinary-images</id>
+    <content type="html"><![CDATA[<p>We are using in one of our applications <a href="http://cloudinary.com/">Cloudinary</a> to host and resize images on the fly. We are also using <a href="http://www.cloudflare.com">Cloudflare</a> for our CDN and DNS management.</p>
+
+<p>I was given a task to setup a CNAME subdomain in CloudFlare to forward the request to Cloudinary. This way we can still have the benefit of serving static images from CDN as well as reducing the Cloudinary bandwidth usage.</p>
+
+<p>My solution is to set HAProxy as a reverse proxy which responsibility to fetch images from Cloudinary server. You can see the overview diagram below:</p>
+
+<p><a href="/images/posts/HAProxy-as-a-reverse-proxy.png"><img src="/images/posts/HAProxy-as-a-reverse-proxy.png" alt="" /></a></p>
+
+<p>The first thing we have to do is to create an ACL in HAProxy for our cloudinary subdomain</p>
+
+<p>In the configuration below, we are telling HAProxy to forward all requests from <code>cloudinary-asset.rudylee.com</code> to <code>cloudinary-backend</code>:</p>
+
+<p>```
+listen  http</p>
+
+<pre><code>    bind 127.0.0.1:8080
+    maxconn     18000
+
+    acl host_cloudinary hdr(host) -i cloudinary-asset.rudylee.com
+
+    use_backend cloudinary-backend if host_cloudinary
+</code></pre>
+
+<p>```</p>
+
+<p>Next one is to create a new backend.</p>
+
+<p>```
+backend cloudinary-backend</p>
+
+<pre><code>    http-request set-header Host res.cloudinary.com
+    server cloudinary res.cloudinary.com:80
+</code></pre>
+
+<p>```</p>
+
+<p>Restart HAProxy and you should be able to use the subdomain to serve images from Cloudinary (eg: <a href="http://cloudinary-asset.rudylee.com/rudylee/image/upload/12298848/icon/12379593943923.png">http://cloudinary-asset.rudylee.com/rudylee/image/upload/12298848/icon/12379593943923.png</a> )</p>
+
+<p>Requesting the images through SSL should work if you have SSL termination configured in your HAProxy.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HAProxy and A/B Testing]]></title>
@@ -145,7 +192,7 @@ listen  http 127.0.0.1:8080</p>
 
 <h1>Format: ssh -L &lt;local-port>:&lt;db-hostname>:&lt;db-port> &lt;fe-username>@&lt;fe-hostname></h1>
 
-<p>ssh -L 9000:database.com:5432 <a href="&#109;&#x61;&#x69;&#108;&#116;&#x6f;&#x3a;&#117;&#98;&#117;&#x6e;&#x74;&#117;&#x40;&#112;&#x72;&#111;&#x64;&#117;&#99;&#116;&#x69;&#111;&#110;&#46;&#x73;&#101;&#114;&#x76;&#x65;&#x72;&#x73;&#46;&#99;&#111;&#x6d;">&#x75;&#x62;&#x75;&#x6e;&#x74;&#117;&#64;&#x70;&#x72;&#x6f;&#100;&#117;&#99;&#116;&#105;&#111;&#110;&#46;&#115;&#101;&#x72;&#118;&#101;&#x72;&#115;&#46;&#99;&#111;&#109;</a>
+<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x75;&#x62;&#x75;&#110;&#x74;&#x75;&#64;&#x70;&#114;&#x6f;&#100;&#x75;&#99;&#116;&#105;&#x6f;&#x6e;&#x2e;&#x73;&#101;&#x72;&#118;&#101;&#114;&#x73;&#x2e;&#99;&#111;&#109;">&#117;&#x62;&#x75;&#x6e;&#116;&#117;&#x40;&#112;&#114;&#111;&#100;&#x75;&#99;&#x74;&#x69;&#x6f;&#x6e;&#46;&#115;&#101;&#x72;&#118;&#x65;&#x72;&#x73;&#46;&#x63;&#111;&#109;</a>
 ```</p>
 
 <p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000
@@ -235,176 +282,6 @@ Allow from all
 Deny from env=live_uri
 Satisfy any
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Configuring Elastic Beanstalk Environment with .ebextensions]]></title>
-    <link href="http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions/"/>
-    <updated>2014-05-22T01:44:00+10:00</updated>
-    <id>http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions</id>
-    <content type="html"><![CDATA[<p>At <a href="http://www.captiv8.com.au">Captiv8</a>, we are using Amazon AWS to host most of our PHP projects. We are heavily rely on Elastic Beanstalk to help us set up PHP environment, database and load balancer. On top of that, we are also managing our own server image based on Amazon AMI. In this image, we installed additional software and packages that we need for our application. However, this approach has a drawback as it is difficult to maintain the image and track changes. Everytime you need to update the image, you have to create new server, install the new software and export it into new image. This will leave you with bunch of different images and it is hard to tell what are the things that have changed inside each image.</p>
-
-<h1>Chef</h1>
-
-<p>In order to solve these problems, I decided to find a way to automate the process. My first attempt was trying to use Chef to provision the Elastic Beanstalk environment. I have been using Chef for a while to provision my Vagrant machines. It is powerful and more convenient in compare with bash scripts. Since I am already familiar with Chef, I started looking at tutorials on how to use Chef with Elastic Beanstalk. Most of the tutorials that I found don&rsquo;t provide easy way to integrate Chef with Elastic Beanstalk. One of them mentions about using AWS OpsWorks with Chef but I think it is overkill for the time being. So, I ditched Chef and start looking for another solution.</p>
-
-<h1>ebextensions</h1>
-
-<p>ebextensions is another solution that I found after checking the official documentation of Elastic Beanstalk. With this solution, you need to to create .ebextensions folder inside your project and create a file to define what are the packages that you want to install into the environment. Elastic Beanstalk will automatically run the script every time you deploy a new version of the application. Aside from that, you can also tell ebextensions to execute shell script in the instance or changing permission of a file. You can read more details about ebextension here: <a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html">http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html</a></p>
-
-<p>This is my directory structure at the moment:
-<a href="/images/ebextensions.png"><img src="/images/ebextensions.png" alt="" /></a></p>
-
-<p>Here is the example of my ebextension config file:</p>
-
-<p>``` yaml
-packages:
-  yum:</p>
-
-<pre><code>mlocate: []
-</code></pre>
-
-<p>commands:
-  01updateComposer:</p>
-
-<pre><code>command: export COMPOSER_HOME=/root &amp;&amp; /usr/bin/composer.phar self-update
-</code></pre>
-
-<p>  02updateTag:</p>
-
-<pre><code>command: ec2-create-tags $(ec2-metadata -i | cut -d ' ' -f2) --tag Project=ChangeThis
-cwd: /home/ec2-user
-env:
-  EC2_HOME: /opt/aws/apitools/ec2
-  EC2_URL: https://ec2.ap-southeast-2.amazonaws.com
-  JAVA_HOME: /usr/lib/jvm/jre
-  PATH: /bin:/usr/bin:/opt/aws/bin/
-</code></pre>
-
-<p>container_commands:
-  01-command:</p>
-
-<pre><code>command: updatedb
-</code></pre>
-
-<p>  02-command:</p>
-
-<pre><code>command: rm -rf /captiv8/.ebextensions
-</code></pre>
-
-<p>  03-command:</p>
-
-<pre><code>command: mkdir -p /captiv8/.ebextensions
-</code></pre>
-
-<p>  04-command:</p>
-
-<pre><code>command: cp -R .ebextensions/* /captiv8/.ebextensions/
-</code></pre>
-
-<p>  05-command:</p>
-
-<pre><code>command: bash /captiv8/.ebextensions/scripts/app-setup.sh
-</code></pre>
-
-<p>option_settings:
-  &ndash; namespace: aws:elasticbeanstalk:application:environment</p>
-
-<pre><code>option_name: COMPOSER_HOME
-value: /root
-</code></pre>
-
-<p>```</p>
-
-<p>And this is the example of my bash script:</p>
-
-<p>``` bash</p>
-
-<h1>!/usr/bin/env bash</h1>
-
-<p>#</p>
-
-<h1>References:</h1>
-
-<h1>&ndash; <a href="http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/">http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/</a></h1>
-
-<h1>&ndash; <a href="http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app">http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app</a></h1>
-
-<p>#</p>
-
-<h1>Main configuration, change these for each project</h1>
-
-<p>appName=&ldquo;change_this&rdquo;
-newrelicLicense=&ldquo;newreliclicense&rdquo;</p>
-
-<h1>Check if this is the very first time that this script is running</h1>
-
-<p>if ([ ! -f /root/.not-a-new-instance.txt ]) then
-  newEC2Instance=true
-fi</p>
-
-<h1>Install applications if this is new instance</h1>
-
-<p>if ([ $newEC2Instance ]) then</p>
-
-<pre><code># Allow sudo command to be used as part of beanstalk ebextensions scripts without a terminal
-grep -q 'Defaults:root !requiretty' /etc/sudoers.d/$appName || echo -e 'Defaults:root !requirettyn' &gt; /etc/sudoers.d/$appName
-chmod 440 /etc/sudoers.d/$appName
-
-# Add sudo command if not already present to .bashrc of ec2-user so that we are logged on as root when we use ssh
-grep -q "sudo -s" /home/ec2-user/.bashrc || echo -e "nsudo -sn" &gt;&gt; /home/ec2-user/.bashrc
-</code></pre>
-
-<p>  # Install phpMyAdmin
-  yum -y &mdash;enablerepo=epel install phpmyadmin
-  rm /etc/httpd/conf.d/phpMyAdmin.conf
-  rm /etc/phpMyAdmin/config.inc.php
-  mv /captiv8/.ebextensions/templates/phpMyAdmin/phpMyAdmin.conf /etc/httpd/conf.d/
-  mv /captiv8/.ebextensions/templates/phpMyAdmin/config.inc.php /etc/phpMyAdmin/
-  chmod 644 /etc/httpd/conf.d/phpMyAdmin.conf
-  chmod 644 /etc/phpMyAdmin/config.inc.php
-  service httpd restart</p>
-
-<p>  # Install New Relic
-  rpm -Uvh <a href="http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm">http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm</a>
-  yum -y install newrelic-php5<br/>
-  echo -ne &lsquo;\n\&rsquo; | newrelic-install install
-  rm /etc/php.d/newrelic.ini
-  mv /captiv8/.ebextensions/templates/newrelic/newrelic.ini /etc/php.d/
-  chmod 644 /etc/php.d/newrelic.ini
-  perl -pi -e &ldquo;s/PHP Application/$appName/g&rdquo; /etc/php.d/newrelic.ini
-  perl -pi -e &ldquo;s/newrelicLicense/$newrelicLicense/g&rdquo; /etc/php.d/newrelic.ini</p>
-
-<p>  # Install New Relic Server Monitor<br/>
-  yum -y install newrelic-sysmond
-  nrsysmond-config &mdash;set license_key=$newrelicLicense
-  /etc/init.d/newrelic-sysmond start
-  service httpd restart</p>
-
-<p>  # Install OSSEC
-  yum -y install mysql-devel postgresql-devel
-  wget <a href="http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz">http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz</a> -P /captiv8
-  tar xzvf /captiv8/ossec-hids-2.7.1.tar.gz -C /captiv8
-  rm /captiv8/ossec-hids-2.7.1.tar.gz
-  rm /captiv8/ossec-hids-2.7.1/etc/preloaded-vars.conf
-  mv /captiv8/.ebextensions/templates/ossec/preloaded-vars.conf /captiv8/ossec-hids-2.7.1/etc/
-  /captiv8/ossec-hids-2.7.1/install.sh
-  /var/ossec/bin/ossec-control start
-fi</p>
-
-<h1>If new instance, now it is not new anymore</h1>
-
-<p>if ([ $newEC2Instance ]) then</p>
-
-<pre><code>echo -n "" &gt; /root/.not-a-new-instance.txt
-chmod 644 /etc/php.d/.not-a-new-instance
-</code></pre>
-
-<p>fi
-```</p>
-
-<p>Inside my ebextensions config file, I call the shell script which will install additional software. The benefit of using shell script is you have more options and it is much easier to customize the software. Since the .ebextensions folder is copied to the instance, you can tell the shell script to copy a template config file that you have prepared before hand. I hope you find this blog post useful.</p>
 ]]></content>
   </entry>
   

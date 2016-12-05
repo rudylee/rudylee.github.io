@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Apr 13th, 2016 Unix and Linux HAProxy and A/B Testing Few weeks ago, I was given a task to &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Dec 5th, 2016 HAProxy Unix and Linux HAProxy as a reverse proxy for cloudinary images We are &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,94 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2016-12-05T13:51:00+11:00" pubdate data-updated="true">Dec 5<span>th</span>, 2016</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/haproxy/"><span class="badge">HAProxy</span></a>
+          
+          <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2016/12/05/haproxy-as-a-reverse-proxy-for-cloudinary-images/">HAProxy as a reverse proxy for cloudinary images</a></h1>
+      <p>We are using in one of our applications <a href="http://cloudinary.com/">Cloudinary</a> to host and resize images on the fly. We are also using <a href="http://www.cloudflare.com">Cloudflare</a> for our CDN and DNS management.</p>
+
+<p>I was given a task to setup a CNAME subdomain in CloudFlare to forward the request to Cloudinary. This way we can still have the benefit of serving static images from CDN as well as reducing the Cloudinary bandwidth usage.</p>
+
+<p>My solution is to set HAProxy as a reverse proxy which responsibility to fetch images from Cloudinary server. You can see the overview diagram below:</p>
+
+<p><a href="/images/posts/HAProxy-as-a-reverse-proxy.png"><img src="/images/posts/HAProxy-as-a-reverse-proxy.png" alt="" /></a></p>
+
+<p>The first thing we have to do is to create an ACL in HAProxy for our cloudinary subdomain</p>
+
+<p>In the configuration below, we are telling HAProxy to forward all requests from <code>cloudinary-asset.rudylee.com</code> to <code>cloudinary-backend</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>listen  http
+</span><span class='line'>        bind 127.0.0.1:8080
+</span><span class='line'>        maxconn     18000
+</span><span class='line'>
+</span><span class='line'>        acl host_cloudinary hdr(host) -i cloudinary-asset.rudylee.com
+</span><span class='line'>
+</span><span class='line'>        use_backend cloudinary-backend if host_cloudinary</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next one is to create a new backend.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>backend cloudinary-backend
+</span><span class='line'>        http-request set-header Host res.cloudinary.com
+</span><span class='line'>        server cloudinary res.cloudinary.com:80</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Restart HAProxy and you should be able to use the subdomain to serve images from Cloudinary (eg: <a href="http://cloudinary-asset.rudylee.com/rudylee/image/upload/12298848/icon/12379593943923.png">http://cloudinary-asset.rudylee.com/rudylee/image/upload/12298848/icon/12379593943923.png</a> )</p>
+
+<p>Requesting the images through SSL should work if you have SSL termination configured in your HAProxy.</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -954,58 +1042,6 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 </span><span class='line'>Satisfy any
 </span></code></pre></td></tr></table></div></figure>
 
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2014-05-26T05:41:00+10:00" pubdate data-updated="true">May 26<span>th</span>, 2014</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/angularjs/"><span class="badge">AngularJS</span></a>
-          
-          <a href="/categories/javascript/"><span class="badge">Javascript</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2014/05/26/angularjs-free-course-by-code-school/">AngularJS Free Course by Code School</a></h1>
-      <p>I spent some time last weekend to run through the new <a href="https://www.codeschool.com/courses/shaping-up-with-angular-js">AngularJS course by Code School</a>. This course is sponsored by Google which means you don&rsquo;t need to pay for the Code School membership to play this course. AngularJS is one of the popular Javascript frameworks to build single page app application. You might be familiar with other frameworks such as <a href="http://emberjs.com/">Ember.js</a>, <a href="http://backbonejs.org/">Backbone.js</a> and <a href="http://knockoutjs.com/">Knockout.js</a>.</p>
-
-<p>I really enjoyed the course and definitely learned something new from it. It covers the basic concept about directives, services and dependecy injection. I didn&rsquo;t understand those features when the first time I learned about AngularJS. In the beginning of learning AngularJS, I tended to copy and paste code without understanding the meaning behind it. This caused confusion when I tried to learn more about the framework.</p>
-
-<p>Code School also released another screencast on how to build AngularJS app from scratch. I&rsquo;ll suggest you to check that one out as well so you can apply the knowledge that you have learned from the course to build real application. However, you have to become the member to get access to the screencast.  There are also some other websites that provide AngularJS videos such as <a href="http://www.egghead.io">http://www.egghead.io</a> and <a href="http://www.thinkster.io">http://www.thinkster.io</a></p>
 
       
       
