@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Unix and Linux | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/unix-and-linux/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-12-05T16:32:07+11:00</updated>
+  <updated>2017-01-12T19:49:50+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Setting Up L2TP VPN to Bypass Great Firewall Of China]]></title>
+    <link href="http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china/"/>
+    <updated>2017-01-11T19:41:00+11:00</updated>
+    <id>http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china</id>
+    <content type="html"><![CDATA[<p>Last month, I traveled to China for the second time. Unlike my first trip, this time I am more prepared to bypass the great firewall of China.</p>
+
+<p>During my first trip in China, I was mainly relying on simple SSH tunnel to get access to Gmail and all other blocked services. This solution is unrealiable because I couldn&rsquo;t use it on my Android phone. Aside from that, I also kept having constant dropouts which explained in this blog post <a href="http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/">http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/</a></p>
+
+<p>After an extensive research and also a recommendation from one of my friends, I decided to install an L2TP VPN server in Japan. I choose Japan because it&rsquo;s close to China and I can use Tokyo AWS Region.</p>
+
+<p>I ended up using this ansible playbook that I found when I was looking for tutorials <a href="https://github.com/jlund/streisand">https://github.com/jlund/streisand</a>. It&rsquo;s basically an Ansible Playbook which help you to install various software such as OpenVPN, L2TP, Tor, etc. You just need to run one shell script and it will install all of those software to your target host.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HAProxy as a reverse proxy for cloudinary images]]></title>
@@ -22,7 +37,7 @@
 
 <p>I was given a task to setup a CNAME subdomain in CloudFlare to forward the request to Cloudinary. This way we can still have the benefit of serving static images from CDN as well as reducing the Cloudinary bandwidth usage.</p>
 
-<p>My solution is to set HAProxy as a reverse proxy which responsibility to fetch images from Cloudinary server. You can see the overview diagram below:</p>
+<p>My solution is to set HAProxy as a reverse proxy which responsible to fetch images from Cloudinary server. You can see the overview diagram below:</p>
 
 <p><a href="/images/posts/HAProxy-as-a-reverse-proxy.png"><img src="/images/posts/HAProxy-as-a-reverse-proxy.png" alt="" /></a></p>
 
@@ -192,7 +207,7 @@ listen  http 127.0.0.1:8080</p>
 
 <h1>Format: ssh -L &lt;local-port>:&lt;db-hostname>:&lt;db-port> &lt;fe-username>@&lt;fe-hostname></h1>
 
-<p>ssh -L 9000:database.com:5432 <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#x3a;&#x75;&#98;&#117;&#110;&#116;&#117;&#64;&#112;&#114;&#111;&#100;&#x75;&#99;&#x74;&#105;&#111;&#x6e;&#46;&#115;&#x65;&#x72;&#118;&#x65;&#x72;&#x73;&#46;&#99;&#111;&#109;">&#x75;&#x62;&#117;&#x6e;&#116;&#117;&#x40;&#112;&#114;&#111;&#100;&#117;&#99;&#116;&#105;&#x6f;&#110;&#46;&#115;&#x65;&#114;&#x76;&#101;&#114;&#115;&#x2e;&#x63;&#111;&#109;</a>
+<p>ssh -L 9000:database.com:5432 <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#117;&#x62;&#117;&#110;&#x74;&#117;&#x40;&#112;&#x72;&#111;&#100;&#x75;&#x63;&#x74;&#105;&#111;&#x6e;&#46;&#x73;&#x65;&#x72;&#118;&#x65;&#114;&#115;&#46;&#x63;&#111;&#x6d;">&#117;&#x62;&#x75;&#x6e;&#x74;&#x75;&#64;&#112;&#x72;&#111;&#x64;&#x75;&#99;&#116;&#x69;&#x6f;&#x6e;&#x2e;&#115;&#x65;&#114;&#118;&#x65;&#114;&#x73;&#x2e;&#99;&#x6f;&#109;</a>
 ```</p>
 
 <p>After this you can check whether the SSH tunnel is succesfully created by running this and look for port 9000
@@ -256,32 +271,6 @@ config.vm.provider &ldquo;virtualbox&rdquo; do |v|</p>
 </code></p>
 
 <p>This solution will ensure that all the node modules are stored inside home directory instead of synced folder.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Enable HTTP authentication on certain domain]]></title>
-    <link href="http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain/"/>
-    <updated>2014-09-18T21:54:00+10:00</updated>
-    <id>http://blog.rudylee.com/2014/09/18/enable-http-authentication-on-certain-domain</id>
-    <content type="html"><![CDATA[<p>Basic HTTP authentication is one simple way to limit public access to your website prior to launch.</p>
-
-<p>The first thing you need is .htaccess file which contains all the configurations. The second one is .htpasswd containing username and password. You can use this website to generate .htpasswd file for you <a href="http://www.htaccesstools.com/htpasswd-generator/">http://www.htaccesstools.com/htpasswd-generator/</a></p>
-
-<p>In the sample below, I am trying to enable HTTP authentication only on certain domain. On the first line, I set enviroment variable if the domain name is equal to &ldquo;www.bundabergfestival.com.au&rdquo;. On line 7, I tell .htaccess file to deny any access by using the live_uri variable. I hope that explanation is pretty straight forward.</p>
-
-<p><code>bash
-SetEnvIf Host "^www.bundabergfestival.com.au" live_uri
-AuthName "Bundaberg Festival Website Coming Soon"
-AuthType Basic
-AuthUserFile /var/app/.htpasswd
-AuthGroupFile /dev/null
-require valid-user
-Order allow,deny
-Allow from all
-Deny from env=live_uri
-Satisfy any
-</code></p>
 ]]></content>
   </entry>
   

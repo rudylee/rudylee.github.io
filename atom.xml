@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2016-12-05T16:32:07+11:00</updated>
+  <updated>2017-01-12T19:49:50+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,21 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Setting Up L2TP VPN to Bypass Great Firewall Of China]]></title>
+    <link href="http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china/"/>
+    <updated>2017-01-11T19:41:00+11:00</updated>
+    <id>http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china</id>
+    <content type="html"><![CDATA[<p>Last month, I traveled to China for the second time. Unlike my first trip, this time I am more prepared to bypass the great firewall of China.</p>
+
+<p>During my first trip in China, I was mainly relying on simple SSH tunnel to get access to Gmail and all other blocked services. This solution is unrealiable because I couldn&rsquo;t use it on my Android phone. Aside from that, I also kept having constant dropouts which explained in this blog post <a href="http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/">http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/</a></p>
+
+<p>After an extensive research and also a recommendation from one of my friends, I decided to install an L2TP VPN server in Japan. I choose Japan because it&rsquo;s close to China and I can use Tokyo AWS Region.</p>
+
+<p>I ended up using this ansible playbook that I found when I was looking for tutorials <a href="https://github.com/jlund/streisand">https://github.com/jlund/streisand</a>. It&rsquo;s basically an Ansible Playbook which help you to install various software such as OpenVPN, L2TP, Tor, etc. You just need to run one shell script and it will install all of those software to your target host.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[HAProxy as a reverse proxy for cloudinary images]]></title>
@@ -22,7 +37,7 @@
 
 <p>I was given a task to setup a CNAME subdomain in CloudFlare to forward the request to Cloudinary. This way we can still have the benefit of serving static images from CDN as well as reducing the Cloudinary bandwidth usage.</p>
 
-<p>My solution is to set HAProxy as a reverse proxy which responsibility to fetch images from Cloudinary server. You can see the overview diagram below:</p>
+<p>My solution is to set HAProxy as a reverse proxy which responsible to fetch images from Cloudinary server. You can see the overview diagram below:</p>
 
 <p><a href="http://blog.rudylee.com/images/posts/HAProxy-as-a-reverse-proxy.png"><img src="http://blog.rudylee.com/images/posts/HAProxy-as-a-reverse-proxy.png" alt="" /></a></p>
 
@@ -1248,23 +1263,6 @@
 
 
 <p>Run &lsquo;bundle&rsquo; to install the gem and update the version. You should be able to run &lsquo;zeus start&rsquo; now and other Rails commands.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Refocus]]></title>
-    <link href="http://blog.rudylee.com/2013/08/04/refocus/"/>
-    <updated>2013-08-04T17:08:00+10:00</updated>
-    <id>http://blog.rudylee.com/2013/08/04/refocus</id>
-    <content type="html"><![CDATA[<p>For the past few weeks, it seems that I am gradually moving into different life style. When I was still doing my course, it is almost impossible to spend time on the weekend to catch up with friends, walking around city and trying new stuff. Everytime my friend invited me to hang out with them I always said that I need to finish my assignments.</p>
-
-<p>I remember one of my friend just asked me this question &ldquo;So, what you usually do during the weekend ?&rdquo; and I answered &ldquo;Nothing, just doing my assigments and other stuff&rdquo;. He looked surprised with my answer and he added &ldquo;Don&rsquo;t you have any friends that invited you out ?&rdquo;. At that time, I realized that he must be feel pity and I said to him &ldquo;At first, you might feel that your life is unfair. You will think that why everyone can enjoy their life during the weekend and you trapped here working on your assigments. But, as the time goes you start to get used to it&rdquo;.</p>
-
-<p>So for the past few months, I have been doing the same routine. Working and attending the class during the weekdays, working on assignments with my group mate during the weekend. Sometimes, I felt stress and tired but believe me, that was the most meaningful moment in my life. During that time, I definitely know what I am going to do everyday and somehow I feel more motivated.</p>
-
-<p>The problem with my current life style is I have more control on what I can do during my free time. I can decide that I can go to cinema, buy clothes, trying this new restaurant or just spending whole day watching YouTube. However, I started to feel that this path is leading me to different direction. The direction that I might regret in the future.</p>
-
-<p>That is why I decided to start writing more blog posts about my life experience. I believe writing blog post can help you refocus on what you should do.</p>
 ]]></content>
   </entry>
   

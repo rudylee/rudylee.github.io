@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: L2TP | Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/categories/l2tp/atom.xml" rel="self"/>
+  <link href="http://blog.rudylee.com/"/>
+  <updated>2017-01-12T19:49:50+11:00</updated>
+  <id>http://blog.rudylee.com/</id>
+  <author>
+    <name><![CDATA[Rudy Lee]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Setting Up L2TP VPN to Bypass Great Firewall Of China]]></title>
+    <link href="http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china/"/>
+    <updated>2017-01-11T19:41:00+11:00</updated>
+    <id>http://blog.rudylee.com/2017/01/11/setting-up-l2tp-vpn-to-bypass-great-firewall-of-china</id>
+    <content type="html"><![CDATA[<p>Last month, I traveled to China for the second time. Unlike my first trip, this time I am more prepared to bypass the great firewall of China.</p>
+
+<p>During my first trip in China, I was mainly relying on simple SSH tunnel to get access to Gmail and all other blocked services. This solution is unrealiable because I couldn&rsquo;t use it on my Android phone. Aside from that, I also kept having constant dropouts which explained in this blog post <a href="http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/">http://blog.zorinaq.com/my-experience-with-the-great-firewall-of-china/</a></p>
+
+<p>After an extensive research and also a recommendation from one of my friends, I decided to install an L2TP VPN server in Japan. I choose Japan because it&rsquo;s close to China and I can use Tokyo AWS Region.</p>
+
+<p>I ended up using this ansible playbook that I found when I was looking for tutorials <a href="https://github.com/jlund/streisand">https://github.com/jlund/streisand</a>. It&rsquo;s basically an Ansible Playbook which help you to install various software such as OpenVPN, L2TP, Tor, etc. You just need to run one shell script and it will install all of those software to your target host.</p>
+]]></content>
+  </entry>
+  
+</feed>
