@@ -149,6 +149,46 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <p>I ended up using this ansible playbook that I found when I was looking for tutorials <a href="https://github.com/jlund/streisand">https://github.com/jlund/streisand</a>. It&rsquo;s basically an Ansible Playbook which help you to install various software such as OpenVPN, L2TP, Tor, etc. You just need to run one shell script and it will install all of those software to your target host.</p>
 
+<h3>Running the playbook</h3>
+
+<p>Since I already have ansible installed, I just need to clone the project and run the setup script. If not a complete tutorial on how to get started you can check this installation guide here <a href="https://github.com/jlund/streisand#installation">https://github.com/jlund/streisand#installation</a>.</p>
+
+<p>Cloning the project</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone https://github.com/jlund/streisand.git && cd streisand</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Running the setup script</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>./streisand</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When you run the setup script, it will ask few questions such as where to host the server, AWS Access Keys, etc. I am using AWS because I can use the free tier to run the VPN server. On AWS, it will take around 45 minutes to finish the whole installation process.</p>
+
+<h3>Using the VPN</h3>
+
+<p>When the whole installation finished, the playbook will create instructions files in the server. You need to SSH to the server in order to view the instruction.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ssh ubuntu@server-ip</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Go to the NGINX folder to see file</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /var/www/streisand/l2tp-ipsec</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Read the instruction</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cat index.md | more</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the file, you will find instructions on how to connect to the L2TP server all different operating systems.</p>
+
       
       
     </div>
