@@ -149,9 +149,9 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <h2>Creating a watcher</h2>
 
-<p>On AWS, we can use Cloud Watch to monitor our Elasticsearch cluster health status as well as monitoring other metrics such as memory and cpu usage. With Elastic Cloud, we have to use Elastic Watcher or Alerting to monitor and trigger alerts. Currently, there is no UI to set up the watcher on Elastic Cloud.</p>
+<p>On AWS, we can use Cloud Watch to monitor our Elasticsearch cluster health status as well as monitoring other metrics such as memory and cpu usage. With Elastic Cloud, we have to use Elastic Watcher or Alerting to monitor and trigger alerts.</p>
 
-<p>To create a watcher, you have to send a PUT request to your cluster. Please note that this blog post is based on Elasticsearch version <code>1.7.6</code> and Elasticsearch Watcher version is <code>1.0.1</code>.</p>
+<p>Currently, there is no UI to set up the watcher on Elastic Cloud. To create a watcher, you have to send a PUT request to your cluster. Please note that this blog post is based on Elasticsearch version <code>1.7.6</code> and Elasticsearch Watcher version is <code>1.0.1</code>.</p>
 
 <p>First thing you have to do is to enable the watcher plugin on the Elastic Cloud clusters configuration. See screenshot below:</p>
 
