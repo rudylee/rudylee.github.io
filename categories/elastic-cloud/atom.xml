@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Elasticsearch | Blog Rudy Lee]]></title>
-  <link href="http://blog.rudylee.com/categories/elasticsearch/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Elastic Cloud | Blog Rudy Lee]]></title>
+  <link href="http://blog.rudylee.com/categories/elastic-cloud/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
   <updated>2017-01-30T17:25:28+11:00</updated>
   <id>http://blog.rudylee.com/</id>
@@ -133,31 +133,6 @@
 <p>If the query returns a hit, it means that your watcher has been triggered. This is helpful during debugging.</p>
 
 <p>That&rsquo;s it for now, the next thing I need to figure out is to create alerting for CPU and memory usage. I&rsquo;ll leave it for another blog post.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Import JSON to Elasticsearch using jq]]></title>
-    <link href="http://blog.rudylee.com/2016/02/16/import-json-to-elasticsearch-using-jq/"/>
-    <updated>2016-02-16T16:14:00+11:00</updated>
-    <id>http://blog.rudylee.com/2016/02/16/import-json-to-elasticsearch-using-jq</id>
-    <content type="html"><![CDATA[<p>This is based on <a href="http://kevinmarsh.com/2014/10/23/using-jq-to-import-json-into-elasticsearch.html">http://kevinmarsh.com/2014/10/23/using-jq-to-import-json-into-elasticsearch.html</a></p>
-
-<p>Install jq first on Mac</p>
-
-<p><code>
-brew install jq
-</code></p>
-
-<p>Import the JSON file to Elasticsearch index</p>
-
-<p><code>
-cat file.json | jq -c '.[] | {"index": {"_index": "bookmarks", "_type": "bookmark", "_id": .id}}, .' | curl -XPOST localhost:9200/_bulk --data-binary @-
-</code></p>
-
-<p>Check for the list of indexes <a href="http://localhost:9200/_cat/indices?v">http://localhost:9200/_cat/indices?v</a></p>
-
-<p>See the list of records <a href="http:/localhost:9200//bookmarks/_search">http:/localhost:9200//bookmarks/_search</a></p>
 ]]></content>
   </entry>
   
