@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Change wordpress default email and name - Blog Rudy Lee</title>
+  <title>Monitor Background Jobs with New Relic Query Language - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Change Wordpress Default Email and Name Jun 20th, 2011 Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog &hellip;">
+  <meta name="description" content="Monitor Background Jobs With New Relic Query Language Jul 1st, 2017 Background In this blog post, I&rsquo;ll show you how to set up an alert to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name">
+  <link rel="canonical" href="http://blog.rudylee.com/2017/07/01/monitor-background-jobs-with-new-relic-query-language">
   <link href="/favicon.png" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -102,7 +102,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
   <header>
   <div class="jumbotron">
-    Change Wordpress Default Email and Name
+    Monitor Background Jobs With New Relic Query Language
 	<h5>
 
 
@@ -115,39 +115,64 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2011-06-20T14:12:53+10:00" pubdate data-updated="true">Jun 20<span>th</span>, 2011</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2017-07-01T12:29:00+10:00" pubdate data-updated="true">Jul 1<span>st</span>, 2017</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog just because I am lazy to find it again.</p>
+      <h1>Background</h1>
 
-<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#x6f;&#x3a;&#x77;&#x6f;&#x72;&#x64;&#x70;&#x72;&#x65;&#x73;&#x73;&#x40;&#x79;&#111;&#x75;&#114;&#100;&#111;&#109;&#97;&#x69;&#x6e;&#46;&#x63;&#x6f;&#109;">&#119;&#111;&#x72;&#x64;&#x70;&#114;&#101;&#115;&#115;&#x40;&#121;&#x6f;&#x75;&#x72;&#100;&#111;&#x6d;&#97;&#105;&#110;&#46;&#x63;&#111;&#109;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
+<p>In this blog post, I&rsquo;ll show you how to set up an alert to monitor your sidekiq jobs using New Relic Query Language and New Relic Alert.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from_name&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;no-reply@rudylee.com&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from_name</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;Rudy&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>I was given a task to find a solution to monitor our sidekiq jobs. In the past, I used New Relic Sidekiq Plugin ( <a href="https://newrelic.com/plugins/secondimpression/131">https://newrelic.com/plugins/secondimpression/131</a> ) to do this.</p>
+
+<p>The plugin is a Ruby app that connects to your Redis instance, retrieves all of the sidekiq metrics such as jobs, queues and send it to New Relic using the agent library.</p>
+
+<p>This means you need to host the Ruby app somewhere and make sure the plugin can connect to your Redis instance.</p>
+
+<p>However, I found a much better solution using NRQL that doesn&rsquo;t require you to set up a new server or install any plugins.</p>
+
+<h1>New Relic Query Language ( NRQL )</h1>
+
+<p>NRQL definition from the official New Relic docs ( <a href="https://docs.newrelic.com/docs/insights/nrql-new-relic-query-language/using-nrql/introduction-nrql">https://docs.newrelic.com/docs/insights/nrql-new-relic-query-language/using-nrql/introduction-nrql</a> )</p>
+
+<p>The New Relic Query Language (NRQL), similar to SQL, is a query language for making calls against the Insights event database. NRQL enables you to query data collected from your application and transform that data into dynamic charts. From there, you can interpret your data to better understand how your application is used in a variety of ways.</p>
+
+<p>Using NRQL, You can run a query to get the amount of background jobs that has been executed for a specific time period.</p>
+
+<p>Here is the query to get the count of background jobs:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SELECT count(name) FROM Transaction WHERE transactionType='Other'</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Just change the email address and name to your&rsquo;s. Hope it works, cheers.</p>
+<h1>New Relic Alert and NRQL</h1>
+
+<p>First thing you have to do is to create a New Relic alert policy using NRQL. See the screenshots below:</p>
+
+<p><a href="/images/posts/nrql-sidekiq/1.png"><img src="/images/posts/nrql-sidekiq/1.png" alt="" /></a></p>
+
+<p><a href="/images/posts/nrql-sidekiq/2.png"><img src="/images/posts/nrql-sidekiq/2.png" alt="" /></a></p>
+
+<p>Choose <code>NRQL</code> on the <code>Categorize</code> step</p>
+
+<p><a href="/images/posts/nrql-sidekiq/3.png"><img src="/images/posts/nrql-sidekiq/3.png" alt="" /></a></p>
+
+<p>And put the the following query:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>SELECT count(name) FROM Transaction WHERE transactionType='Other'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After that, you can set up a condition when it will fire the alert.</p>
+
+<p>In the screenshot below, you can see that I set the alert to fire if there are no background jobs running within 15 minutes.</p>
+
+<p><a href="/images/posts/nrql-sidekiq/4.png"><img src="/images/posts/nrql-sidekiq/4.png" alt="" /></a></p>
+
+<p><a href="/images/posts/nrql-sidekiq/5.png"><img src="/images/posts/nrql-sidekiq/5.png" alt="" /></a></p>
+
+<p>I hope this tutorial will give you an idea on how to monitor your background jobs.</p>
 
     </div>
   </div>
@@ -166,7 +191,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 
-  <a href="/categories/wordpress/"><span class="badge">Wordpress</span></a>
+  <a href="/categories/new-relic/"><span class="badge">New Relic</span></a>
 
 
 
@@ -196,10 +221,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2011/05/29/fixing-rake-command-error-in-rails-3-0/" title="Previous Post: Fixing rake command error in rails 3.0.7">&laquo; Fixing rake command error in rails 3.0.7</a>
+            <a class="basic-alignment left" href="/2017/01/30/setting-up-elasticsearch-watcher-to-check-for-cluster-status-on-elastic-cloud/" title="Previous Post: Setting Up Elasticsearch Watcher to Check For Cluster Status on Elastic Cloud">&laquo; Setting Up Elasticsearch Watcher to Check For Cluster Status on Elastic Cloud</a>
           
-          
-            <a class="basic-alignment right" href="/2011/07/25/jquery-ui-autocomplete-in-cakephp/" title="Next Post: jQuery UI AutoComplete in CakePHP">jQuery UI AutoComplete in CakePHP &raquo;</a>
           
         </p>
       </div>
@@ -238,8 +261,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
-        var disqus_url = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
+        var disqus_identifier = 'http://blog.rudylee.com/2017/07/01/monitor-background-jobs-with-new-relic-query-language/';
+        var disqus_url = 'http://blog.rudylee.com/2017/07/01/monitor-background-jobs-with-new-relic-query-language/';
         var disqus_script = 'embed.js';
       
     (function () {
