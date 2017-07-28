@@ -471,8 +471,14 @@
         <lastmod>2017-07-01T12:36:45+10:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://blog.rudylee.com/2017/07/28/regular-expression-for-a-string-containing-one-word-but-not-another/
+        </loc>
+        <lastmod>2017-07-28T13:45:19+10:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.rudylee.com/archives/</loc>
-        <lastmod>2017-07-01T12:36:45+10:00</lastmod>
+        <lastmod>2017-07-28T13:45:19+10:00</lastmod>
     </url>
     <url>
         <loc>http://blog.rudylee.com/home.html</loc>
@@ -480,7 +486,7 @@
     </url>
     <url>
         <loc>http://blog.rudylee.com/</loc>
-        <lastmod>2017-07-01T12:36:45+10:00</lastmod>
+        <lastmod>2017-07-28T13:45:19+10:00</lastmod>
     </url>
     <url>
         <loc>http://blog.rudylee.com/robots.txt</loc>

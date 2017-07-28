@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2017-07-01T13:02:08+10:00</updated>
+  <updated>2017-07-28T13:45:32+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Regular Expression For A String Containing One Word But Not Another]]></title>
+    <link href="http://blog.rudylee.com/2017/07/28/regular-expression-for-a-string-containing-one-word-but-not-another/"/>
+    <updated>2017-07-28T10:55:00+10:00</updated>
+    <id>http://blog.rudylee.com/2017/07/28/regular-expression-for-a-string-containing-one-word-but-not-another</id>
+    <content type="html"><![CDATA[<p>Last weekend, one our apps that is hosted on Heroku were reporting a lot of R14 errors.</p>
+
+<p>R14 is an error that thrown by Heroku if the machine is running out of memory.</p>
+
+<p>I quickly jumped into (logentries)[<a href="https://logentries.com/">https://logentries.com/</a>] to download the log file and opened it in Sublime Text.</p>
+
+<p>However, I was having problem finding the request that is causing the problem because we also have our background job workers reporting R14 errors.</p>
+
+<p>I decided to use regex to find a line that has <code>R14</code> but doesn&rsquo;t contain any of the background worker&rsquo;s name,</p>
+
+<p>This is the regex that I used to find the line:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>^(?!.*(lowworker|highworker|run)).*R14.*$</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The regex above will match the line that has <code>R14</code> but doesn&rsquo;t contain <code>lowworker</code> or <code>highworker</code> and <code>run</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Monitor Background Jobs with New Relic Query Language]]></title>
@@ -1315,24 +1340,6 @@
 
 
 <p>We need to add skip_before_filter :verify_authenticity_token because Rails will return 422 status code and error message &lsquo;Can&rsquo;t verify CSRF token authenticity&rsquo;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fix npm symlink problem in Vagrant]]></title>
-    <link href="http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant/"/>
-    <updated>2013-10-24T00:16:00+11:00</updated>
-    <id>http://blog.rudylee.com/2013/10/24/fix-npm-symlink-problem-in-vagrant</id>
-    <content type="html"><![CDATA[<p>Today I encountered weird symlink error when trying to install npm modules on my Vagrant Ubuntu Box. The error says &ldquo;pm ERR! Error: UNKNOWN, symlink &lsquo;../which/bin/which&rsquo;&rdquo;.</p>
-
-<p>After quick Google, it turns out the problem is caused by npm trying to create symlink which is not supported on Windows ( I am using Windows 8 as my host machine ).</p>
-
-<p>Here is quick solution which allow you to install npm modules without creating any symlinks :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>npm install --no-bin-link
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   
