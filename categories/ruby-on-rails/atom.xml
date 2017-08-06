@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby on Rails | Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/categories/ruby-on-rails/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2017-08-01T09:51:03+10:00</updated>
+  <updated>2017-08-06T23:16:44+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Run Sidekiq Jobs Without Starting Worker Process]]></title>
+    <link href="http://blog.rudylee.com/2017/08/06/run-sidekiq-jobs-without-starting-worker-process/"/>
+    <updated>2017-08-06T22:53:00+10:00</updated>
+    <id>http://blog.rudylee.com/2017/08/06/run-sidekiq-jobs-without-starting-worker-process</id>
+    <content type="html"><![CDATA[<p>You can add the code snippet below to <code>config/initializers/sidekiq.rb</code> if you don&rsquo;t want to start a separate sidekiq workers.</p>
+
+<p>The configuration below will make sure that the sidekiq jobs will be executed without worker process.</p>
+
+<p>This is handy if you don&rsquo;t want to open an extra terminal tab or tmux window for worker process.</p>
+
+<p>```ruby</p>
+
+<h1>config/initializers/sidekiq.rb</h1>
+
+<p>if Rails.env.development?
+  require &lsquo;sidekiq/testing&rsquo;
+  Sidekiq::Testing.inline!
+end
+```</p>
+
+<p>See the official Sidekiq wiki for more information: <a href="https://github.com/mperham/sidekiq/wiki/Testing">https://github.com/mperham/sidekiq/wiki/Testing</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails Engines and Vim]]></title>
@@ -264,49 +289,6 @@ export ZEUSSOCK=/tmp/zeus.sock
 ```</p>
 
 <p>Run &lsquo;bundle&rsquo; to install the gem and update the version. You should be able to run &lsquo;zeus start&rsquo; now and other Rails commands.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rails set up namespace and redirect from namespace]]></title>
-    <link href="http://blog.rudylee.com/2012/02/12/rails-set-up-namespace-and-redirect-from-namespace/"/>
-    <updated>2012-02-12T13:02:27+11:00</updated>
-    <id>http://blog.rudylee.com/2012/02/12/rails-set-up-namespace-and-redirect-from-namespace</id>
-    <content type="html"><![CDATA[<p>In order to differentiate between admin actions and users actions, you can set up what called &ldquo;namespace&rdquo; in your rails apps. The basic idea of this feature is you will have different controller and view files for each role in your application.</p>
-
-<p>This concept is similar with prefixes in CakePHP. However,  CakePHP allows you to put different action in one controller file, while in rails you have to create different controller and view file for the new namespace. Here is the sample namespace code that I put in my routes.rb file :</p>
-
-<p><code>ruby
-namespace :admin do
-  resources :users
-  resources :products
-  resources :categories
-end
-</code></p>
-
-<p>The code means that users, products and categories will have admin namespace. The next step is to create new folder in your controller and view folder called &ldquo;admin&rdquo;. Here is the screenshot ( see the directory browser on the left hand side ) :</p>
-
-<p><a href="http://blog.rudylee.com/wp-content/uploads/2012/04/routes-rb.png"><img src="http://blog.rudylee.com/wp-content/uploads/2012/04/routes-rb.png" alt="" /></a></p>
-
-<p>Put the template and controller files inside these folders. You have to add Admin:: in front of the class definition of your controller file. So it&rsquo;s gonna be like this :</p>
-
-<p>``` ruby</p>
-
-<pre><code>class Admin::UsersController &lt; ApplicationController
-</code></pre>
-
-<p>```</p>
-
-<p>After you set up everything done, you can try to access your apps through <a href="http://your-url/admin/controller-path">http://your-url/admin/controller-path</a> ( ex: <a href="http://localhost:3000/admin/users">http://localhost:3000/admin/users</a> ). It should automatically pick the controller and view files from admin folder. And if you want to redirect to the original route, you have to add &lsquo;/&rsquo; in front of the controller name. Here is the code :</p>
-
-<p>``` ruby</p>
-
-<pre><code>redirect_to :controller =&gt; "/sessions",:action =&gt; "new"
-</code></pre>
-
-<p>```</p>
-
-<p>It means you will redirect the user to session controller outside of the namespace and load &ldquo;new&rdquo; action. That&rsquo;s all.</p>
 ]]></content>
   </entry>
   

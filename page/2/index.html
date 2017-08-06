@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Aug 31st, 2015 PostgreSQL Unix and Linux Create SSH Tunnel To Backup PostgreSQL Database &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Oct 16th, 2015 AWS Copying Files Between Two S3 Buckets Today, I have to copy files from one &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,118 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2015-10-16T12:00:00+11:00" pubdate data-updated="true">Oct 16<span>th</span>, 2015</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/aws/"><span class="badge">AWS</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2015/10/16/copying-files-between-two-s3-buckets/">Copying Files Between Two S3 Buckets</a></h1>
+      <p>Today, I have to copy files from one S3 bucket to another S3 bucket which sitting in separate AWS account.</p>
+
+<p>Initially, I was thinking to use S3 clients ( Tranmit or Cyberduck ) to download the files first and manually upload the files again to the other S3 Bucket. However, this approach will consume a lot of bandwidth and really slow if you have a lot of files in your S3 bucket.</p>
+
+<p>After a bit of research, I found that you can easily copy files between two S3 buckets. You can use either s4cmd or AWS CLI.</p>
+
+<h2>s3cmd or s4cmd</h2>
+
+<p>Run this command to install s4cmd</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pip install s4cmd
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After you finished setting up the AWS credentials, you can start the copying process.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># format</span>
+</span><span class='line'>s4cmd cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;target-bucket&gt;/ --recursive
+</span><span class='line'>
+</span><span class='line'><span class="c">#example</span>
+</span><span class='line'>s4cmd cp s3://rudylee-images s3://rudylee-new-images/ --recursive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>AWS CLI</h2>
+
+<p>Install the cli through pip</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>pip install awscli
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And configure it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>awscli configure
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The usage is quite similar to s4cmd, see below:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>aws s3 cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;destination-bucket&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I prefer using AWS CLI because it has more options and official support. AWS CLI has a built it support can specify the ACL and permission of the objects.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># The command below will allow the target bucket owner to have full access to the object</span>
+</span><span class='line'>aws s3 cp s3://&lt;<span class="nb">source</span>-bucket&gt; s3://&lt;target-bucket&gt; --acl <span class="s2">&quot;bucket-owner-full-control&quot;</span> --recursive
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since my target bucket is sitting in separate AWS account, I have to set another permission to allow everyone to upload and delete files into my target bucket.</p>
+
+<p>If you want to follow this approach, make sure to delete that permission after you finished with the copying.</p>
+
+<p>The other option is to set the S3 bucket policy manually, see this link: <a href="http://serverfault.com/questions/556077/what-is-causing-access-denied-when-using-the-aws-cli-to-download-from-amazon-s3">http://serverfault.com/questions/556077/what-is-causing-access-denied-when-using-the-aws-cli-to-download-from-amazon-s3</a></p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -956,171 +1068,6 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 <p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2013-10-29T02:02:00+11:00" pubdate data-updated="true">Oct 29<span>th</span>, 2013</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/ruby-on-rails/"><span class="badge">Ruby on Rails</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2013/10/29/rails-4-cors/">Rails 4 CORS</a></h1>
-      <h2>McFlyyy pointed out another solution to solve this problem. I haven&rsquo;t tested it myself so follow it at your own risk <a href="https://stackoverflow.com/questions/18538549/cant-get-rack-cors-working-in-rails-application/20464939#20464939">Click Here</a></h2>
-
-<p>I was trying to use Rails to build REST API for my AngularJS app and came across CORS error on my Chrome developer tools.</p>
-
-<p>According to <a href="http://leopard.in.ua/2012/07/08/using-cors-with-rails/">Alexey Vasiliev</a>, Cross-origin resource sharing (CORS) is a web browser technology specification which defines ways for a web server to allow its resources to be accessed by a web page from a different domain. Such access would otherwise be forbidden by the same origin policy. CORS defines a way in which the browser and the server can interact to determine whether or not to allow the cross-origin request. It is a compromise that allows greater flexibility, but is more secure than simply allowing all such requests. CORS is supported in the following browsers:</p>
-
-<p>After following couple of outdated tutorials, I found the quick solution for it. Here are the steps:</p>
-
-<h1>Add route to handle OPTIONS method</h1>
-
-<p>AngularJS using OPTIONS method to check the CORS support on the API server. Thus, you need to add line in your route file to handle this. This can be done by adding code like this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">&#39;users#index&#39;</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="o">[</span><span class="ss">:options</span><span class="o">]</span>
-</span><span class='line'><span class="n">resources</span> <span class="ss">:users</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To check whether your configuration is correct you can run &lsquo;rake routes&rsquo;. It should print out something like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>   Prefix Verb    URI Pattern               Controller#Action
-</span><span class='line'>    users OPTIONS /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
-</span><span class='line'>          GET     /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
-</span><span class='line'>          POST    /users<span class="o">(</span>.:format<span class="o">)</span>          users#create
-</span><span class='line'> new_user GET     /users/new<span class="o">(</span>.:format<span class="o">)</span>      users#new
-</span><span class='line'>edit_user GET     /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> users#edit
-</span><span class='line'>     user GET     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#show
-</span><span class='line'>          PATCH   /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-</span><span class='line'>          PUT     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-</span><span class='line'>          DELETE  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#destroy
-</span><span class='line'>     root GET     /                         users#index
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You can see on the second line, we handle OPTIONS verb and redirect to index action.</p>
-
-<h1>Add before_filter and after_filter to allow CORS</h1>
-
-<p>The next step is we need to return proper header to tell AngularJS that our server allow CORS. Here is the sample controller file:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">skip_before_filter</span> <span class="ss">:verify_authenticity_token</span>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:cors_preflight_check</span>
-</span><span class='line'>  <span class="n">after_filter</span> <span class="ss">:cors_set_access_control_headers</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># For all responses in this controller, return the CORS access control headers.</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_set_access_control_headers</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;1728000&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># If this is a preflight OPTIONS request, then short-circuit the</span>
-</span><span class='line'>  <span class="c1"># request, return only the necessary headers and return an empty</span>
-</span><span class='line'>  <span class="c1"># text/plain.</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_preflight_check</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;X-Requested-With, X-Prototype-Version&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;1728000&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
-</span><span class='line'>    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="vi">@users</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We need to add skip_before_filter :verify_authenticity_token because Rails will return 422 status code and error message &lsquo;Can&rsquo;t verify CSRF token authenticity&rsquo;</p>
 
       
       

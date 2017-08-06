@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2017-08-01T09:51:03+10:00</updated>
+  <updated>2017-08-06T23:16:44+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,34 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Run Sidekiq Jobs Without Starting Worker Process]]></title>
+    <link href="http://blog.rudylee.com/2017/08/06/run-sidekiq-jobs-without-starting-worker-process/"/>
+    <updated>2017-08-06T22:53:00+10:00</updated>
+    <id>http://blog.rudylee.com/2017/08/06/run-sidekiq-jobs-without-starting-worker-process</id>
+    <content type="html"><![CDATA[<p>You can add the code snippet below to <code>config/initializers/sidekiq.rb</code> if you don&rsquo;t want to start a separate sidekiq workers.</p>
+
+<p>The configuration below will make sure that the sidekiq jobs will be executed without worker process.</p>
+
+<p>This is handy if you don&rsquo;t want to open an extra terminal tab or tmux window for worker process.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># config/initializers/sidekiq.rb</span>
+</span><span class='line'><span class="k">if</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">development?</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;sidekiq/testing&#39;</span>
+</span><span class='line'>  <span class="ss">Sidekiq</span><span class="p">:</span><span class="ss">:Testing</span><span class="o">.</span><span class="n">inline!</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>See the official Sidekiq wiki for more information: <a href="https://github.com/mperham/sidekiq/wiki/Testing">https://github.com/mperham/sidekiq/wiki/Testing</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Regular Expression For A String Containing One Word But Not Another]]></title>
@@ -1212,134 +1240,6 @@
 
 
 <p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Rails 4 CORS]]></title>
-    <link href="http://blog.rudylee.com/2013/10/29/rails-4-cors/"/>
-    <updated>2013-10-29T02:02:00+11:00</updated>
-    <id>http://blog.rudylee.com/2013/10/29/rails-4-cors</id>
-    <content type="html"><![CDATA[<h2>McFlyyy pointed out another solution to solve this problem. I haven&rsquo;t tested it myself so follow it at your own risk <a href="https://stackoverflow.com/questions/18538549/cant-get-rack-cors-working-in-rails-application/20464939#20464939">Click Here</a></h2>
-
-<p>I was trying to use Rails to build REST API for my AngularJS app and came across CORS error on my Chrome developer tools.</p>
-
-<p>According to <a href="http://leopard.in.ua/2012/07/08/using-cors-with-rails/">Alexey Vasiliev</a>, Cross-origin resource sharing (CORS) is a web browser technology specification which defines ways for a web server to allow its resources to be accessed by a web page from a different domain. Such access would otherwise be forbidden by the same origin policy. CORS defines a way in which the browser and the server can interact to determine whether or not to allow the cross-origin request. It is a compromise that allows greater flexibility, but is more secure than simply allowing all such requests. CORS is supported in the following browsers:</p>
-
-<p>After following couple of outdated tutorials, I found the quick solution for it. Here are the steps:</p>
-
-<h1>Add route to handle OPTIONS method</h1>
-
-<p>AngularJS using OPTIONS method to check the CORS support on the API server. Thus, you need to add line in your route file to handle this. This can be done by adding code like this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">match</span> <span class="s1">&#39;users&#39;</span><span class="p">,</span> <span class="ss">to</span><span class="p">:</span> <span class="s1">&#39;users#index&#39;</span><span class="p">,</span> <span class="ss">via</span><span class="p">:</span> <span class="o">[</span><span class="ss">:options</span><span class="o">]</span>
-</span><span class='line'><span class="n">resources</span> <span class="ss">:users</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To check whether your configuration is correct you can run &lsquo;rake routes&rsquo;. It should print out something like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>   Prefix Verb    URI Pattern               Controller#Action
-</span><span class='line'>    users OPTIONS /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
-</span><span class='line'>          GET     /users<span class="o">(</span>.:format<span class="o">)</span>          users#index
-</span><span class='line'>          POST    /users<span class="o">(</span>.:format<span class="o">)</span>          users#create
-</span><span class='line'> new_user GET     /users/new<span class="o">(</span>.:format<span class="o">)</span>      users#new
-</span><span class='line'>edit_user GET     /users/:id/edit<span class="o">(</span>.:format<span class="o">)</span> users#edit
-</span><span class='line'>     user GET     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#show
-</span><span class='line'>          PATCH   /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-</span><span class='line'>          PUT     /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#update
-</span><span class='line'>          DELETE  /users/:id<span class="o">(</span>.:format<span class="o">)</span>      users#destroy
-</span><span class='line'>     root GET     /                         users#index
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>You can see on the second line, we handle OPTIONS verb and redirect to index action.</p>
-
-<h1>Add before_filter and after_filter to allow CORS</h1>
-
-<p>The next step is we need to return proper header to tell AngularJS that our server allow CORS. Here is the sample controller file:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">skip_before_filter</span> <span class="ss">:verify_authenticity_token</span>
-</span><span class='line'>  <span class="n">before_filter</span> <span class="ss">:cors_preflight_check</span>
-</span><span class='line'>  <span class="n">after_filter</span> <span class="ss">:cors_set_access_control_headers</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># For all responses in this controller, return the CORS access control headers.</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_set_access_control_headers</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;1728000&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c1"># If this is a preflight OPTIONS request, then short-circuit the</span>
-</span><span class='line'>  <span class="c1"># request, return only the necessary headers and return an empty</span>
-</span><span class='line'>  <span class="c1"># text/plain.</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">cors_preflight_check</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Origin&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Methods&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;POST, GET, OPTIONS&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Allow-Headers&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;X-Requested-With, X-Prototype-Version&#39;</span>
-</span><span class='line'>    <span class="n">headers</span><span class="o">[</span><span class="s1">&#39;Access-Control-Max-Age&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;1728000&#39;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">index</span>
-</span><span class='line'>    <span class="vi">@users</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">respond_to</span> <span class="k">do</span> <span class="o">|</span><span class="nb">format</span><span class="o">|</span>
-</span><span class='line'>      <span class="nb">format</span><span class="o">.</span><span class="n">json</span> <span class="p">{</span> <span class="n">render</span> <span class="ss">:json</span> <span class="o">=&gt;</span> <span class="vi">@users</span> <span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We need to add skip_before_filter :verify_authenticity_token because Rails will return 422 status code and error message &lsquo;Can&rsquo;t verify CSRF token authenticity&rsquo;</p>
 ]]></content>
   </entry>
   
