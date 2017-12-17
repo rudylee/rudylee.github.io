@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Oct 29th, 2013 Ruby on Rails Rails 4 CORS McFlyyy pointed out another solution to solve this &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Dec 6th, 2013 Unix and Linux Install the latest tmux on Ubuntu 12.04 In this post, I will &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,78 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2013-12-06T03:43:00+11:00" pubdate data-updated="true">Dec 6<span>th</span>, 2013</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2013/12/06/install-the-latest-tmux-on-ubuntu-12-dot-04/">Install the latest tmux on Ubuntu 12.04</a></h1>
+      <p>In this post, I will show you how to install the latest tmux on Ubuntu 12.04. First, we need to install &lsquo;add-apt-repository&rsquo; command on our machine. This can be done by running these commands:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install software-properties-common
+</span><span class='line'>
+</span><span class='line'>sudo apt-get install python-software-properties
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After that you can add third party repository ( Ubuntu official repository does not have latest tmux at the moment )</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo add-apt-repository ppa:pi-rho/dev
+</span><span class='line'>
+</span><span class='line'>sudo apt-get update
+</span><span class='line'>
+</span><span class='line'>sudo apt-get install tmux
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I will suggest you to install the latest tmux if you want to use Tmuxinator.</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -952,101 +1024,6 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 <p>Zend Framework 2 will read this file and overwrite the username key inside module.config.php. Now you can create script during your deployment process to create this file automatically.</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2013-05-06T14:44:36+10:00" pubdate data-updated="true">May 6<span>th</span>, 2013</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/zend-framework-2/"><span class="badge">Zend Framework 2</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2013/05/06/zend-framework-2-the-proper-way-to-set-application-path-in-javascript-object/">Zend Framework 2 : The proper way to set application path in Javascript Object</a></h1>
-      <p>Storing application path inside Javascript object is a way to avoid &ldquo;hard coded&rdquo; URL inside your Javascript file.  It is pretty common to have like this in your Javascript file :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-</span><span class='line'>    <span class="nx">type</span><span class="o">:</span> <span class="nx">POST</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">url</span><span class="o">:</span> <span class="s1">&#39;http://localhost/my-website/register&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="nx">data</span><span class="o">:</span> <span class="nx">dataJSON</span>
-</span><span class='line'><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That approach is completely fine. However, when you need to deploy your application, you need to manually change all the URL to match with your server. The solution that I have been using for quite a long time is setting up Javascript object that contains path to my application.</p>
-
-<p>In CakePHP, this can be easily done by using URL method inside Router Class. Here is the sample :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$cbunny</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
-</span><span class='line'>    <span class="s1">&#39;APP_PATH&#39;</span> <span class="o">=&gt;</span> <span class="nx">Router</span><span class="o">::</span><span class="na">url</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span><span class="k">true</span><span class="p">)</span>
-</span><span class='line'><span class="p">);</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Html</span><span class="o">-&gt;</span><span class="na">scriptBlock</span><span class="p">(</span><span class="s1">&#39;var CbunnyObj = &#39;</span> <span class="o">.</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Javascript</span><span class="o">-&gt;</span><span class="na">object</span><span class="p">(</span><span class="nv">$cbunny</span><span class="p">)</span> <span class="o">.</span> <span class="s1">&#39;;&#39;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In Zend Framework 2, you have to rely on serverUrl and basePath to achieve the same thing. Here is the proper way to do it in Zend Framework 2 :</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="c1">//&lt;![CDATA[</span>
-</span><span class='line'>        <span class="kd">var</span> <span class="nx">CMSObj</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>            <span class="s2">&quot;APP_PATH&quot;</span><span class="o">:</span><span class="s2">&quot;&lt;?php echo $this-&gt;serverUrl() . $this-&gt;basePath() ?&gt;/&quot;</span>
-</span><span class='line'>        <span class="p">};</span>
-</span><span class='line'>    <span class="c1">//]]&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 
       
       

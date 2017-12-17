@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Change wordpress default email and name - Blog Rudy Lee</title>
+  <title>Trello Card Repeater - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Change Wordpress Default Email and Name Jun 20th, 2011 Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog &hellip;">
+  <meta name="description" content="Trello Card Repeater Dec 17th, 2017 I&rsquo;ve been using Trello as my primary task managers for the past couple of years. Recently, I found a very &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name">
+  <link rel="canonical" href="http://blog.rudylee.com/2017/12/17/trello-card-repeater">
   <link href="/favicon.ico" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -102,7 +102,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
   <header>
   <div class="jumbotron">
-    Change Wordpress Default Email and Name
+    Trello Card Repeater
 	<h5>
 
 
@@ -115,39 +115,22 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2011-06-20T14:12:53+10:00" pubdate data-updated="true">Jun 20<span>th</span>, 2011</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2017-12-17T18:41:00+11:00" pubdate data-updated="true">Dec 17<span>th</span>, 2017</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog just because I am lazy to find it again.</p>
+      <p>I&rsquo;ve been using Trello as my primary task managers for the past couple of years.  Recently, I found a very useful feature in Trello that helps me automating the creation of repetitive tasks.</p>
 
-<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#x77;&#111;&#x72;&#100;&#x70;&#114;&#x65;&#115;&#115;&#x40;&#121;&#x6f;&#x75;&#x72;&#x64;&#111;&#x6d;&#97;&#105;&#110;&#x2e;&#99;&#x6f;&#109;">&#119;&#111;&#114;&#100;&#112;&#114;&#101;&#x73;&#115;&#x40;&#x79;&#x6f;&#117;&#114;&#x64;&#111;&#109;&#97;&#105;&#x6e;&#x2e;&#x63;&#x6f;&#x6d;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
+<p>This feature allows you to tell Trello to create a card on specified time such as daily, weekly, monthly or annually.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from_name&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;no-reply@rudylee.com&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from_name</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;Rudy&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>At the moment, I am using this feature to create a few daily tasks that I want to do first in the morning such as meditation, coding exercise and learning chinese.</p>
 
+<p>I am not a disciplined person and I found that this feature has been helping me forming new habits. I set it to put the tasks on the top of my todo list which makes it difficult for me to ignore those tasks in the morning.</p>
 
-<p>Just change the email address and name to your&rsquo;s. Hope it works, cheers.</p>
+<p>Research says it takes around 66 days for a new habit to form. I suggest you to try this feature if you want to create a new habit and make it part of daily routine.</p>
+
+<p>Check out this link for more details on how to use and set up the repeat card <a href="https://blog.trello.com/trello-card-repeater">https://blog.trello.com/trello-card-repeater</a></p>
 
     </div>
   </div>
@@ -166,7 +149,9 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 
-  <a href="/categories/wordpress/"><span class="badge">Wordpress</span></a>
+  <a href="/categories/productivity/"><span class="badge">Productivity</span></a>
+
+  <a href="/categories/trello/"><span class="badge">Trello</span></a>
 
 
 
@@ -196,10 +181,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2011/05/29/fixing-rake-command-error-in-rails-3-0/" title="Previous Post: Fixing rake command error in rails 3.0.7">&laquo; Fixing rake command error in rails 3.0.7</a>
+            <a class="basic-alignment left" href="/2017/08/06/run-sidekiq-jobs-without-starting-worker-process/" title="Previous Post: Run Sidekiq Jobs Without Starting Worker Process">&laquo; Run Sidekiq Jobs Without Starting Worker Process</a>
           
-          
-            <a class="basic-alignment right" href="/2011/07/25/jquery-ui-autocomplete-in-cakephp/" title="Next Post: jQuery UI AutoComplete in CakePHP">jQuery UI AutoComplete in CakePHP &raquo;</a>
           
         </p>
       </div>
@@ -238,8 +221,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
-        var disqus_url = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
+        var disqus_identifier = 'http://blog.rudylee.com/2017/12/17/trello-card-repeater/';
+        var disqus_url = 'http://blog.rudylee.com/2017/12/17/trello-card-repeater/';
         var disqus_script = 'embed.js';
       
     (function () {
