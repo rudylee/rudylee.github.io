@@ -9,7 +9,7 @@
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Jul 19th, 2009 Unix and Linux Setting mod_rewrite atau SEF Joomla di Nginx Yap sambil &hellip;">
+  <meta name="description" content="Hi. I&#8217;m Rudy Lee. Here are some thoughts of mine. Jul 24th, 2009 Unix and Linux Koneksi ke Microsoft SQL Server dengan PHP di FreeBSD Beberapa &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +106,339 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 <div class="blog-index">
   
+  
+  
+    <article>
+      
+
+  <div class="row-fluid">
+    <div class="span2">
+		<h1 class="date-time">
+
+
+
+
+
+
+
+
+  
+
+
+<i class="icon-calendar-empty"></i> <time datetime="2009-07-24T01:06:55+10:00" pubdate data-updated="true">Jul 24<span>th</span>, 2009</time></h5>
+          <div class="row-fluid">
+          
+          </div>
+          
+          <div class="row-fluid">
+          
+          <a href="/categories/unix-and-linux/"><span class="badge">Unix and Linux</span></a>
+          
+          </div>
+          
+    </div>
+    <div class="span10">
+      <h1 class="link"><a href="/2009/07/24/koneksi-ke-microsoft-sql-server-dengan-php-di-freebsd/">Koneksi ke Microsoft SQL Server dengan PHP di FreeBSD</a></h1>
+      <p>Beberapa hari yang lalu gwa melakukan perpindahan server Binus Access ke server baru yang menggunakan FreeBSD ( sebelumnya menggunaka Ubuntu Server 8.04 ). Setelah melakukan konfigurasi-konfigurasi dan beberapa persiapan yaitu :</p>
+
+<ul>
+<li><p>Backup database dan file website Binus Access</p></li>
+<li><p>Konfigurasi Nginx ( web servernya ganti Nginx ) agar bisa membaca mod_rewrite</p></li>
+<li><p>Setting NFS dari server asterix ke server Binus Access</p></li>
+<li><p>Setting IP</p></li>
+<li><p>Beberapa settingan kecil lainnya</p></li>
+</ul>
+
+
+<p>Jadi setelah dirasa semua persiapan sudah kelar, akhirnya perpindahan server dilakukan yaitu mencabut kabel LAN di server lama dan mencoloknya di server baru ( yap pindahin server cuma begitu saja ). Nah setelah gwa melakukan perpindahan server gwa pun mencoba semua fitur-fitur yang ada di binus-access satu persatu apakah ada yang ga jalan. Ternyata eh ternyata pas gwa tes registrasi untuk user baru terjadilah error dimana yang kalau gwa telusuri dikarenakan server tersebut tidak dapat mengakses server binusmaya ( menggunakan mssql ).</p>
+
+<p>Jadi gwa pun mulai mencek dengan menggunakan phpinfo(); apakah extension mssql sudah terinstall di server FreeBSD tersebut atau blum ( karena seingat gwa pas nginstall php-fpm extension mssql sudah gwa aktifkan ), pas gwa cek ternyata extension mssql sudah terinstall dengan benarnya ( berarti tidak ada kesalahan dengan extension mssql.</p>
+
+<p>Setelah itu gwa pun mulai searching di google dan akhirnya ketemu sebuah artikel yang menyebutkan tentang FreeTDS, gwa sih kurang ngerti juga tentang FreeTDS tapi kalau artikel itu bilang kalau mau connect mssql menggunakan FreeBSD harus menggunakan FreeTDS ini. Oleh karena itu tanpa banyak cing cong langsung saja gwa install FreeTDS lewat ports FreeBSD, neh syntaxnya :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> /usr/ports/databases/freetds
+</span><span class='line'>make install clean
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Setelah menginstall FreeTDS langsung saja config freetds.confnya yang terletak di <strong>/usr/local/etc/freetds.conf </strong> ini isinya config freetds gwa :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+</pre></td><td class='code'><pre><code class='apache'><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#   $Id: freetds.conf,v 1.11 2005/12/05 21:34:12 freddy77 Exp $</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># The freetds.conf file is a replacement for the original interfaces</span>
+</span><span class='line'><span class="c"># file developed by Sybase.  You may use either this or the interfaces</span>
+</span><span class='line'><span class="c"># file, but not both.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># FreeTDS will search for a conf file in the following order:</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     1) check if a file was set programatically via dbsetifile() and</span>
+</span><span class='line'><span class="c">#        is in .conf format, if so use that,</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     2) otherwise, if env variable FREETDSCONF specifies a properly </span>
+</span><span class='line'><span class="c">#        formatted config file, use it,</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     3) otherwise, look in ~/.freetds.conf,</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     4) otherwise, look in @sysconfdir@/freetds.conf</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># If FreeTDS has found no suitable conf file it will then search for</span>
+</span><span class='line'><span class="c"># an interfaces file in the following order:</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     1) check if a file was set programatically via dbsetifile() and </span>
+</span><span class='line'><span class="c">#        is in interfaces format, if so use that,</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     2) look in ~/.interfaces</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c">#     3) look in $SYBASE/interfaces (where $SYBASE is an environment</span>
+</span><span class='line'><span class="c">#        variable)</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Only hostname, port number, and protocol version can be specified</span>
+</span><span class='line'><span class="c"># using the interfaces format.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># The conf file format follows a modified Samba style layout.  There</span>
+</span><span class='line'><span class="c"># is a [global] section which will affect all database servers and</span>
+</span><span class='line'><span class="c"># basic program behaviour, and a section headed with the database</span>
+</span><span class='line'><span class="c"># server&#39;s name which will have settings which override the global</span>
+</span><span class='line'><span class="c"># ones.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Note that environment variables TDSVER, TDSDUMP, TDSPORT, TDSQUERY, </span>
+</span><span class='line'><span class="c"># and TDSHOST will override values set by a .conf or .interfaces file.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># To review the processing of the above, set env variable TDSDUMPCONFIG</span>
+</span><span class='line'><span class="c"># to a file name to log configuration processing.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Global settings, any value here may be overridden by a database</span>
+</span><span class='line'><span class="c"># server specific section</span>
+</span><span class='line'><span class="err">[global]</span>
+</span><span class='line'>        <span class="c"># TDS protocol version</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">4</span>.2
+</span><span class='line'>
+</span><span class='line'><span class="err">;</span>    <span class="nb">initial</span> block size = <span class="m">512</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># uses some fixes required for some bugged MSSQL 7.0 server that</span>
+</span><span class='line'>  <span class="c"># return invalid data to big endian clients</span>
+</span><span class='line'>  <span class="c"># NOTE TDS version 7.0 or 8.0 should be used instead</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">swap</span> broken dates = no
+</span><span class='line'><span class="err">;</span>    <span class="nb">swap</span> broken money = no
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Whether to write a TDSDUMP file for diagnostic purposes</span>
+</span><span class='line'>  <span class="c"># (setting this to /tmp is insecure on a multi-user system)</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">dump</span> file = <span class="sx">/tmp/freetds.log</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">debug</span> flags = <span class="m">0</span>xffff
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># Command and connection timeouts</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">timeout</span> = <span class="m">10</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">connect</span> timeout = <span class="m">10</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c"># If you get out of memory errors, it may mean that your client</span>
+</span><span class='line'>  <span class="c"># is trying to allocate a huge buffer for a TEXT field.  </span>
+</span><span class='line'>  <span class="c"># (Microsoft servers sometimes pretend TEXT columns are</span>
+</span><span class='line'>  <span class="c"># 4 GB wide!)   If you have this problem, try setting </span>
+</span><span class='line'>  <span class="c"># &#39;text size&#39; to a more reasonable limit </span>
+</span><span class='line'>  <span class="nb">text</span> size = <span class="m">64512</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># This is a Sybase hosted database server, if you are directly on the</span>
+</span><span class='line'><span class="c"># net you can use it to test.</span>
+</span><span class='line'><span class="err">[JDBC]</span>
+</span><span class='line'>  <span class="nb">host</span> = <span class="m">192.138.151.39</span>
+</span><span class='line'>  <span class="nb">port</span> = <span class="m">4444</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">5</span>.0
+</span><span class='line'>
+</span><span class='line'><span class="c"># The same server, using TDS 4.2.  Used in configuration examples for the</span>
+</span><span class='line'><span class="c"># pool server, since the pool server supports only TDS 4.2.</span>
+</span><span class='line'><span class="err">[JDBC_42]</span>
+</span><span class='line'>  <span class="nb">host</span> = <span class="m">192.138.151.39</span>
+</span><span class='line'>  <span class="nb">port</span> = <span class="m">4444</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">4</span>.2
+</span><span class='line'>
+</span><span class='line'><span class="c"># The client connecting to the pool server will use this to find its</span>
+</span><span class='line'><span class="c"># listening socket.  This entry assumes that the client is on the same</span>
+</span><span class='line'><span class="c"># system as the pool server.</span>
+</span><span class='line'><span class="err">[mypool]</span>
+</span><span class='line'>  <span class="nb">host</span> = <span class="m">127.0.0.1</span>
+</span><span class='line'>  <span class="nb">port</span> = <span class="m">5000</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">4</span>.2
+</span><span class='line'>
+</span><span class='line'><span class="c"># A typical Microsoft SQL Server 7.0 configuration    </span>
+</span><span class='line'><span class="err">;[MyServer70]</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">host</span> = ntmachine.domain.com
+</span><span class='line'><span class="err">;</span>    <span class="nb">port</span> = <span class="m">1433</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">tds</span> version = <span class="m">7</span>.0
+</span><span class='line'>
+</span><span class='line'><span class="c"># A typical Microsoft SQL Server 2000 configuration</span>
+</span><span class='line'><span class="err">[stored]</span>
+</span><span class='line'>  <span class="nb">host</span> = <span class="m">10.21.50.16</span>
+</span><span class='line'>  <span class="nb">port</span> = <span class="m">1433</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">8</span>.0
+</span><span class='line'>
+</span><span class='line'><span class="c"># A typical Microsoft SQL Server 6.x configuration    </span>
+</span><span class='line'><span class="err">;[MyServer65]</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">host</span> = ntmachine.domain.com
+</span><span class='line'><span class="err">;</span>    <span class="nb">port</span> = <span class="m">1433</span>
+</span><span class='line'><span class="err">;</span>    <span class="nb">tds</span> version = <span class="m">4</span>.2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>jadi buat settingan mssql buat server binusmaya itu gwa letakin di bagian ini :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='apache'><span class='line'><span class="c"># A typical Microsoft SQL Server 2000 configuration</span>
+</span><span class='line'><span class="err">[stored]</span>
+</span><span class='line'>  <span class="nb">host</span> = xx.xx.xx.xx
+</span><span class='line'>  <span class="nb">port</span> = <span class="m">1433</span>
+</span><span class='line'>  <span class="nb">tds</span> version = <span class="m">8</span>.0
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ganti tulisan xx.xx.xx.xx dengan ip server SQL Server nya. Nah sekarang saatnya mencoba melakukan koneksi ( ada sedikit perbedaan cara melakukan koneksi ) begini contoh codingnya dalam PHP :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nv">$host</span> <span class="o">=</span> <span class="s2">&quot;stored&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$user</span> <span class="o">=</span> <span class="s2">&quot;yourusername&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$pass</span> <span class="o">=</span> <span class="s2">&quot;yourpassword&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nv">$db</span> <span class="o">=</span> <span class="nb">mssql_connect</span><span class="p">(</span><span class="nv">$host</span><span class="p">,</span><span class="nv">$user</span><span class="p">,</span><span class="nv">$pass</span><span class="p">)</span> <span class="k">or</span> <span class="k">die</span> <span class="p">(</span><span class="s2">&quot;Unable to connect to mssql databases&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Jadi perbedaannya adalah $host yang harus diisi dengan nama yang ada set di freetds.conf tadi, jadi jika pada freetds.conf ada menset namanya menjadi &ldquo;mssql&rdquo; maka pada host anda ubah menjadi &ldquo;mssql&rdquo;. Kira-kira begitulah caranya yang cukup membuat gwa pusing selama 2 jam mencari-cari caranya. Lanjut ngejunk lagi ah :P</p>
+
+      
+      
+    </div>
+  </div>
+
+
+
+    </article>
+    
+    <hr>
+    
   
   
     <article>
@@ -839,87 +1172,6 @@ Drill Sergeant: This is a new company record! If it wouldn&rsquo;t be such a was
 <p>Sama halnya dalam menggunakan framework, seberapa bagusnya aplikasi kita bukan saja ditentukan dari framework apa yang kita gunakan, bukan juga ditentukan dari apakah kita menggunakan framework atau tidak. Tetapi juga ditentukan dari kemampuan orang tersebut, karena di mata client tetap saja yang dilihat itu adalah hasil jadinya, bukan codingannya ( kebanyakan client kan ga ngerti2 banget :P ). Jadi client mana mo tau itu mie hasil buat sendiri ato hasil beli di pasar, yang mereka tahu cuma &ldquo;mie ini enak&rdquo;, &ldquo;mie ini ga enak&rdquo;. Udah itu aja, simple sekali kan ?</p>
 
 <p>Yah sebenarnya kalau mau didebatkan lagi sebenarnya banyak yang bisa didebatkan tapi intinya sekarang gwa malas nulis panjang-panjang dan juga tentu saja gwa mendukung semua orang untuk mempelajari framework. Kenapa ? karena sekarang persaingan sudah semakin ketat, kita sekarang membuat aplikasi semakin mudah dan semakin cepat. Ibarat kata pepatah &ldquo;Siapa cepat dia dapat&rdquo;. Sekarang itu ada di tangan anda, apakah anda ingin memakai mie yang dijual atau buat mie sendiri :P hohoho yang penting untuk sekarang 5 star buat CakePHP deh :)</p>
-
-      
-      
-    </div>
-  </div>
-
-
-
-    </article>
-    
-    <hr>
-    
-  
-  
-    <article>
-      
-
-  <div class="row-fluid">
-    <div class="span2">
-		<h1 class="date-time">
-
-
-
-
-
-
-
-
-  
-
-
-<i class="icon-calendar-empty"></i> <time datetime="2009-03-31T04:33:55+11:00" pubdate data-updated="true">Mar 31<span>st</span>, 2009</time></h5>
-          <div class="row-fluid">
-          
-          </div>
-          
-          <div class="row-fluid">
-          
-          <a href="/categories/my-stories/"><span class="badge">My Stories</span></a>
-          
-          </div>
-          
-    </div>
-    <div class="span10">
-      <h1 class="link"><a href="/2009/03/31/ibu-ibu-bapak-tua-mungkin-gay-dan-phobia/">Ibu-ibu dan yang lainnya</a></h1>
-      <p>Hari ini untuk kesekian kalinya jalan-jalan ke kalideres&hellip; sebenarnya ga jalan-jalan juga sih&hellip; yah lebih tepatnya pergi melapor ke kalideres&hellip;</p>
-
-<p>Dan seperti yang terjadi pada setiap kalinya gwa pergi kesana&hellip; Dalam perjalanan pasti gwa mengalami hal-hal yang menarik.</p>
-
-<p>Seperti contohnya beberapa minggu yang lalu ketika gwa sedang dalam perjalanan ke kalideres&hellip; pas sampai di terminal grogol, nah gwa lagi pengen naik tangga neh ke busway grogol&hellip; Pada saat gwa lagi naik tangga gwa ngelihat seorang ibu lagi kesusahan menaiki tangga jembatan penyebrangan ( FYI jembatan penyebrangan grogol memang terkenal dengan curamnya )&hellip; Nah jadi dengan inisiatif yang tinggi gwa pun menawarkan bantuan kepada ibu tersebut ( bukan gendong ya, enak aja )&hellip; yah jadi gwa menawarkan kepada ibu tersebut untuk membawakan tasnya ( soalnya kelihatan berat banget bawa tasnya, padahal pas gwa angkat ringan )&hellip; Yah mungkin karena ibu tersebut melihat wajah gwa yang alim dan baik, maka dengan senang hati dia memberikan tas tersebut kepada gwa&hellip; Dan akhirnya gwa sukses membawakan tas ibu itu sampai ke atas jembatan penyebrangan&hellip; Tapi sayang sekali kami harus berpisah di depan tangga menuju busway ( karena gwa mo naik busway, sementara sang ibu pengen ke seberang )&hellip;</p>
-
-<p>Sementara hari ini untuk kesekian kalinya gwa ketemu ibu-ibu lagi ( gila jodoh amat dah ama ibu-ibu ).. tapi bukan di terminal grogol&hellip; tapi di terminal kalideres&hellip; Jadi ceritanya gwa lagi jalan mo ke pasar semanan dari terminal kalideres&hellip; pas sampai depan terminal kalideres tiba2 ada ibu-ibu yang teriak &ldquo;Tunggu bareng seberangnya&rdquo;&hellip; Posisi ibu-ibu itu pas di samping gwa&hellip; gwa kirain dia lagi manggil anaknya ternyata pas didengar baik-baik dia lagi mau dibantuin nyebrang&hellip;</p>
-
-<p>Dan untuk kesekian kalinya terketuklah pintu hatiku untuk membantu sang ibu&hellip; Dengan sigap aku menawarkan tanganku untuk digandeng oleh sang ibu&hellip; Sang ibu pun dengan sigap menggandeng tanganku&hellip; Jadilah kami berdua menyeberang jalan bersama seperti peragawan dan peragawati di atas catwalk&hellip; ( lebai wakakaka )&hellip;</p>
-
-<p>Yah intinya gwa membantu sang ibu untuk menyeberang jalan&hellip; tapi ada satu hal yang menarik&hellip; biasanya kalau lampu merah sudah hijau biasanya kan para motor dan mobil tidak memperhatikan para penyebrang yang menyeberang&hellip; ( main hajar-hajar aja )&hellip; tapi tadi itu sangat berbeda&hellip; entah kenapa begitu melihat gwa mengandeng sang ibu sambil bilang &ldquo;Stop&hellip; Stop&hellip;&rdquo;, dengan sangat ajaibnya semua motor dan mobil itu pun mengikuti perintah gwa buat stop&hellip; entah karena kasihan melihat ibu itu atau ikut prihatin dengan gwa yang membantu sang ibu&hellip; tapi satu pelajaran yang bisa dipetik, kalau mau nyebrang jalan pas lampunya hijau kita gandeng ibu-ibu aja ( sudah terbukti )&hellip;</p>
-
-<p>Jadi kalau ditotal itu kedua kalinya gwa ketemu ibu-ibu dan membantu ibu-ibu&hellip; dan ternyata hal itu bukanlah jadi yang terakhir&hellip; Pada saat gwa lagi pulang naik busway di kalideres&hellip; gwa ketemu lagi ibu-ibu&hellip; tapi ini ga sampai lebai-lebai amat kek yang dua sebelumnya&hellip; yah intinya gwa cuma kasih duduk buat ibu-ibu yang ga dapat tempat duduk di busway ( hal yang sudah biasa gwa lakukan )&hellip;</p>
-
-<p>Tapi ternyata ga semua orang punya kesadaran untuk memberikan tempat duduk di busway kepada orang yang lebih membutuhkan&hellip; Hal itu terbukti ketika ada seorang bapak-bapak yang cukup tua sih menurut gwa ( kira-kira umur 60-70 ) masuk ke dalam busway&hellip; Yang amat disayangkan seakan-akan semua orang cuek dan seperti tidak melihat si bapak&hellip; bahkan ada seorang cewe ( yah masih muda la kira2 umur 20an ) cuek-cuek aja melihat si bapak berdiri di depannya ( padahal si cewe terlihat orangnya religius )&hellip; Yah intinya gwa juga ga bisa memaksa orang sih dan menjudge orang secara gwa juga penuh dosa dan lubang-lubang ( maksudnya tidak sempurna ).</p>
-
-<p>Selain itu juga ada hal menarik yang terjadi di busway yang sama&hellip; jadi ketik busway berhenti di sebuah terminal ( keknya terminal dispenda ato jembatan gantung )&hellip; nah ada 3 orang cowo masuk&hellip; sebenarnya pada awalnya gwa ga gitu ngeh&hellip; tapi pas salah seorang dari 3 orang cowo tersebut berjalan dengan gemulainya memasuki busway gwa pun mulai berteriak dalam hati &ldquo;GAWAT ada gay ini keknya&rdquo;&hellip; beh jujur gwa serem banget pas liat 3 cowo itu ( gwa menduga bertiga itu gay ) gwa udah was-was aja apalagi mereka berdiri di belakang gwa ( beh salah-salah bisa-bisa gwa dibelai ). Tapi untunglah sampai di terminal grogol gwa tidak dibelai-belai ataupun digerayangi&hellip; Amin&hellip;</p>
-
-<p>Setelah itu gwa melanjutkan perjalanan untuk balik ke binus dengan menggunakan m91&hellip; dan sialnya lagi pas gwa naik itu bus penuh banget&hellip; dan cuma tersisa tempat duduk&hellip; adanya di depan ( samping cewek ) trus dibelakang ( samping cewek juga )&hellip; tapi karena gwa ga mau susah-susah akhirnya gwa memilih untuk duduk di depan aja&hellip;</p>
-
-<p>Namun ada hal yang aneh terjadi&hellip; tanpa sadar tiba-tiba tubuh gwa berkeringat dengan hebatnya&hellip; ( mungkin ini namanya kalo phobia duduk di depan + disamping cewek )&hellip; Jadi selama setengah perjalan dari halte grogol sampai tanjung duren gwa pun terus berkeringat ( sudah pakai jaket + berkeringat + ga bisa keluarin sapu tangan soalnya sempit banget kursinya ) jadi sesekali gwa mulai deh mengusap muka gwa yang penuh keringat ( anjrit bener-bener salting banget di samping cewek )&hellip; trus penderitaan bukan sampai disitu aja&hellip; ceweknya pakai acara gerak-gerak lagi kek ga mau dekat-dekat gwa ( bueh apa gwa kurang ganteng ya mbak )&hellip;</p>
-
-<p>Tapi untunglah malaikat penyelamat menghampiri&hellip; kami disuruh pindah bus !!!! akhirnya dengan sigap gwa keluar dari bus dan ngambil tempat duduk paling belakang ( tiba-tiba angin berubah sejuk dan keringat gwa hilang seketika )&hellip;</p>
-
-<p>Jadi intinya hari ini gwa mendapat beberapa pelajaran :</p>
-
-<ul>
-<li><p>Bantulah ibu-ibu menyeberang jalan karena itu membantu anda juga menyeberang</p></li>
-<li><p>Gwa lagi jodoh banget sama ibu-ibu akhir2 ini</p></li>
-<li><p>Sepertinya gwa phobia tempat ramai, duduk di barisan depan, dan disamping cewek</p></li>
-<li><p>Berilah tempat duduk kepada orang yang lebih membutuhkan</p></li>
-<li><p>Waspada terhadap gay-gay yang naik busway&hellip;</p></li>
-</ul>
-
-
-<p>Yah intinya ternyata hari ini ada pengalaman menarik lah&hellip; udah ah mo telpon &ldquo;seseorang&rdquo; dulu ( soalnya tadi dia nelpon pas nulis blog sih&hellip; jadinya ga konsen trus jadinya dicuekin deh&hellip; )</p>
 
       
       

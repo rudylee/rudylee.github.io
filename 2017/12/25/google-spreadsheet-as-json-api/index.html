@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Change wordpress default email and name - Blog Rudy Lee</title>
+  <title>Google Spreadsheet as JSON API - Blog Rudy Lee</title>
   <meta name="author" content="Rudy Lee">
 
   
-  <meta name="description" content="Change Wordpress Default Email and Name Jun 20th, 2011 Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog &hellip;">
+  <meta name="description" content="Google Spreadsheet as JSON API Dec 25th, 2017 Data store is an important piece in most of the modern applications. The implementation can range from &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name">
+  <link rel="canonical" href="http://blog.rudylee.com/2017/12/25/google-spreadsheet-as-json-api">
   <link href="/favicon.ico" rel="icon">
   <link href='http://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
@@ -102,7 +102,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
   <header>
   <div class="jumbotron">
-    Change Wordpress Default Email and Name
+    Google Spreadsheet as JSON API
 	<h5>
 
 
@@ -115,39 +115,66 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
   
 
 
-<i class="icon-calendar-empty"></i> <time datetime="2011-06-20T14:12:53+10:00" pubdate data-updated="true">Jun 20<span>th</span>, 2011</time></h5>
+<i class="icon-calendar-empty"></i> <time datetime="2017-12-25T17:12:00+11:00" pubdate data-updated="true">Dec 25<span>th</span>, 2017</time></h5>
   </div>
 </header>
   <div class="row-fluid">
     <div class="span12">
-      <p>Actually you can find this solution easily in Google. However, I&rsquo;ll put it in my blog just because I am lazy to find it again.</p>
+      <p>Data store is an important piece in most of the modern applications. The implementation can range from a simple text file to a complicated database systems. In this blog post, I will show you how to use Google Spreadsheet as a data store for your application.</p>
 
-<p>So wordpress has default email address and name which are &ldquo;Wordpress&rdquo; as the name, <a href="&#109;&#97;&#x69;&#108;&#116;&#111;&#58;&#x77;&#111;&#114;&#x64;&#x70;&#114;&#x65;&#115;&#115;&#64;&#121;&#111;&#117;&#114;&#x64;&#111;&#x6d;&#x61;&#105;&#x6e;&#x2e;&#99;&#x6f;&#109;">&#119;&#x6f;&#x72;&#100;&#x70;&#x72;&#x65;&#x73;&#x73;&#x40;&#121;&#111;&#x75;&#x72;&#x64;&#x6f;&#x6d;&#x61;&#x69;&#110;&#x2e;&#x63;&#111;&#109;</a> as the email. To change it you can use plugin or put these wordpress action to your functions.php file in themes folder :</p>
+<p>Google Spreadsheet provides a convenient way to store, edit, share and retrieve data. This makes Google Spreadsheet appealing if you want to quickly prototype an app and don&rsquo;t want to spend time building a CRUD interface to manage your data. It is also allow you to output the spreadsheet data in JSON format. This means you use Google spreadsheet as your JSON API.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">add_filter</span><span class="p">(</span><span class="s1">&#39;wp_mail_from_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_mail_from_name&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;no-reply@rudylee.com&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">function</span> <span class="nf">new_mail_from_name</span><span class="p">(</span><span class="nv">$old</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s1">&#39;Rudy&#39;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<h1>Publish the spreadsheet to the web</h1>
+
+<p>In order to enable this feature, first you need to publish the spreadsheet to the web. You can easily do this by going to the File menu and choose Publish to the web. This only works if you own or have admin access to the spreadsheet. See the screenshot below.</p>
+
+<p><a href="/images/posts/google-spreadsheet-json-api/publish-to-the-web.png"><img src="/images/posts/google-spreadsheet-json-api/publish-to-the-web.png" alt="" /></a></p>
+
+<h1>Get the ID of the spreadsheet</h1>
+
+<p>The next thing that you have to do is getting the spreadsheet ID from the URL.</p>
+
+<p>The URL of your spreadsheet should be something like this <code>https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgV2385FLVzDV3L8cUDidhfge8U_J4/edit#gid=0</code></p>
+
+<p>The spreadsheet ID is the characters between the <code>d</code> and <code>edit</code>, which in the example above is <code>17CAMo4mY7pdlk7jgV2385FLVzDV3L8cUDidhfge8U_J4</code></p>
+
+<h1>Copy the ID and construct the JSON API endpoint</h1>
+
+<p>After retrieving the ID, you can start constructing the JSON API endpoint. The URL format as follow:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>https://spreadsheets.google.com/feeds/list/replace-this-with-your-spreadsheet-id/od6/public/values?alt=json</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Just change the email address and name to your&rsquo;s. Hope it works, cheers.</p>
+<p>If we are using the spreadsheet URL in the previous section ( <a href="https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/edit#gid=0">https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/edit#gid=0</a> ), the JSON API URL will be:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>https://spreadsheets.google.com/feeds/list/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/od6/public/values?alt=json</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>The spreadsheet is public but not published to the web</h1>
+
+<p>In some cases, you might want to use a public Google spreadsheet but it is not published to the web. I discovered from the official Google forum that you can use <code>importrange</code> formula to retrieve the data from another spreadsheet and import it into your spreadsheet.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>=importrange("URL-TO-SPREADSHEET", "SHEET NAME!CELL RANGE")</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Take for example this public spreadsheet that I don&rsquo;t have admin access to: <code>https://docs.google.com/spreadsheets/d/1ql32s8kcUB-Q8AEwxrCzPYJzNgaQ2CknW4J0rlnJqfE/edit#gid=1671204426</code></p>
+
+<p>I will create another spreadsheet and use the <code>importrange</code> formula to import the data from that public spreadsheet into my spreadsheet</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>=importrange("https://docs.google.com/spreadsheets/d/1ql32s8kcUB-Q8AEwxrCzPYJzNgaQ2CknW4J0rlnJqfE","SBW Optimal Conversions!A1:I190")</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It should look something like this:</p>
+
+<p><a href="/images/posts/google-spreadsheet-json-api/import-range.png"><img src="/images/posts/google-spreadsheet-json-api/import-range.png" alt="" /></a></p>
+
+<p>As you might think, this solution is prone to error because the formula will break if the owner of the original spreadsheet changes the sheet&rsquo;s name.</p>
+
+<p>It&rsquo;s something I can live with since it&rsquo;s so much easier to update the sheet&rsquo;s name rather than asking the owner to publish spreadsheet to the web.</p>
 
     </div>
   </div>
@@ -166,7 +193,7 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
 
 
 
-  <a href="/categories/wordpress/"><span class="badge">Wordpress</span></a>
+  <a href="/categories/google-spreadsheet/"><span class="badge">Google Spreadsheet</span></a>
 
 
 
@@ -196,10 +223,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       <div class="span12">
         <p class="meta">
           
-            <a class="basic-alignment left" href="/2011/05/29/fixing-rake-command-error-in-rails-3-0/" title="Previous Post: Fixing rake command error in rails 3.0.7">&laquo; Fixing rake command error in rails 3.0.7</a>
+            <a class="basic-alignment left" href="/2017/12/17/trello-card-repeater/" title="Previous Post: Trello Card Repeater">&laquo; Trello Card Repeater</a>
           
-          
-            <a class="basic-alignment right" href="/2011/07/25/jquery-ui-autocomplete-in-cakephp/" title="Next Post: jQuery UI AutoComplete in CakePHP">jQuery UI AutoComplete in CakePHP &raquo;</a>
           
         </p>
       </div>
@@ -238,8 +263,8 @@ mixpanel.init("61a006900f814889fdc104eecb397ac0");</script><!-- end Mixpanel -->
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
-        var disqus_url = 'http://blog.rudylee.com/2011/06/20/change-wordpress-default-email-and-name/';
+        var disqus_identifier = 'http://blog.rudylee.com/2017/12/25/google-spreadsheet-as-json-api/';
+        var disqus_url = 'http://blog.rudylee.com/2017/12/25/google-spreadsheet-as-json-api/';
         var disqus_script = 'embed.js';
       
     (function () {

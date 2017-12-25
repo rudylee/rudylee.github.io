@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2017-12-17T18:44:41+11:00</updated>
+  <updated>2017-12-25T17:22:01+11:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Google Spreadsheet as JSON API]]></title>
+    <link href="http://blog.rudylee.com/2017/12/25/google-spreadsheet-as-json-api/"/>
+    <updated>2017-12-25T17:12:00+11:00</updated>
+    <id>http://blog.rudylee.com/2017/12/25/google-spreadsheet-as-json-api</id>
+    <content type="html"><![CDATA[<p>Data store is an important piece in most of the modern applications. The implementation can range from a simple text file to a complicated database systems. In this blog post, I will show you how to use Google Spreadsheet as a data store for your application.</p>
+
+<p>Google Spreadsheet provides a convenient way to store, edit, share and retrieve data. This makes Google Spreadsheet appealing if you want to quickly prototype an app and don&rsquo;t want to spend time building a CRUD interface to manage your data. It is also allow you to output the spreadsheet data in JSON format. This means you use Google spreadsheet as your JSON API.</p>
+
+<h1>Publish the spreadsheet to the web</h1>
+
+<p>In order to enable this feature, first you need to publish the spreadsheet to the web. You can easily do this by going to the File menu and choose Publish to the web. This only works if you own or have admin access to the spreadsheet. See the screenshot below.</p>
+
+<p><a href="http://blog.rudylee.com/images/posts/google-spreadsheet-json-api/publish-to-the-web.png"><img src="http://blog.rudylee.com/images/posts/google-spreadsheet-json-api/publish-to-the-web.png" alt="" /></a></p>
+
+<h1>Get the ID of the spreadsheet</h1>
+
+<p>The next thing that you have to do is getting the spreadsheet ID from the URL.</p>
+
+<p>The URL of your spreadsheet should be something like this <code>https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgV2385FLVzDV3L8cUDidhfge8U_J4/edit#gid=0</code></p>
+
+<p>The spreadsheet ID is the characters between the <code>d</code> and <code>edit</code>, which in the example above is <code>17CAMo4mY7pdlk7jgV2385FLVzDV3L8cUDidhfge8U_J4</code></p>
+
+<h1>Copy the ID and construct the JSON API endpoint</h1>
+
+<p>After retrieving the ID, you can start constructing the JSON API endpoint. The URL format as follow:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>https://spreadsheets.google.com/feeds/list/replace-this-with-your-spreadsheet-id/od6/public/values?alt=json</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If we are using the spreadsheet URL in the previous section ( <a href="https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/edit#gid=0">https://docs.google.com/spreadsheets/d/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/edit#gid=0</a> ), the JSON API URL will be:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>https://spreadsheets.google.com/feeds/list/17CAMo4mY7pdlk7jgVRmgD5FLVzDV3L8cUDiHaT8U_J4/od6/public/values?alt=json</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>The spreadsheet is public but not published to the web</h1>
+
+<p>In some cases, you might want to use a public Google spreadsheet but it is not published to the web. I discovered from the official Google forum that you can use <code>importrange</code> formula to retrieve the data from another spreadsheet and import it into your spreadsheet.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>=importrange("URL-TO-SPREADSHEET", "SHEET NAME!CELL RANGE")</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Take for example this public spreadsheet that I don&rsquo;t have admin access to: <code>https://docs.google.com/spreadsheets/d/1ql32s8kcUB-Q8AEwxrCzPYJzNgaQ2CknW4J0rlnJqfE/edit#gid=1671204426</code></p>
+
+<p>I will create another spreadsheet and use the <code>importrange</code> formula to import the data from that public spreadsheet into my spreadsheet</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>=importrange("https://docs.google.com/spreadsheets/d/1ql32s8kcUB-Q8AEwxrCzPYJzNgaQ2CknW4J0rlnJqfE","SBW Optimal Conversions!A1:I190")</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It should look something like this:</p>
+
+<p><a href="http://blog.rudylee.com/images/posts/google-spreadsheet-json-api/import-range.png"><img src="http://blog.rudylee.com/images/posts/google-spreadsheet-json-api/import-range.png" alt="" /></a></p>
+
+<p>As you might think, this solution is prone to error because the formula will break if the owner of the original spreadsheet changes the sheet&rsquo;s name.</p>
+
+<p>It&rsquo;s something I can live with since it&rsquo;s so much easier to update the sheet&rsquo;s name rather than asking the owner to publish spreadsheet to the web.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Trello Card Repeater]]></title>
@@ -1171,59 +1234,6 @@
 <p>I decided to give audio book a try and downloaded <a href="http://www.amazon.com/Eat-That-Frog-Great-Procrastinating/dp/1576754227">Eat That Frog by Brian Tracy</a>. If you are interested, you can easily find the audio version of this book on YouTube. At first, I was a little bit skeptical with the result but it turned out to be really helpful. I can feel that my life is back on track again. I started to use <a href="http://trello.com/">Trello</a> to keep my list of tasks. Once in a while, I&rsquo;ll update my goals and create separate boards for each project.</p>
 
 <p>Since that, I have been listening to several different audio books such as <a href="http://www.amazon.com/168-Hours-Have-More-Think/dp/159184410X">168 hours by Laura Vanderkam</a> and <a href="http://www.amazon.com/Getting-Things-Done-Stress-Free-Productivity/dp/0142000280">Getting things done by David Allen</a>. Both of them shared some basic principles from Eat that frog. I prefer Getting things done because it&rsquo;s more straight forward and focusing on actions you can perform to improve your productivity. Although, I can say that this book is quite to hard understand so you need to listen it more than once to get a good grasp of the concept.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Add 'current' class to website menu in Rails]]></title>
-    <link href="http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails/"/>
-    <updated>2014-01-15T04:52:00+11:00</updated>
-    <id>http://blog.rudylee.com/2014/01/15/add-current-class-to-website-menu-in-rails</id>
-    <content type="html"><![CDATA[<p>It is common to have &lsquo;active&rsquo; state or &lsquo;current&rsquo; state on website navigation. This will help visitors to know which page they have selected.</p>
-
-<p>This solution is based on Stackoverflow&rsquo;s question which I couldn&rsquo;t find. First, I&rsquo;ll create a method inside Rails application_helper.rb file. I&rsquo;ll call this method cp(). Here are the syntax:</p>
-
-<figure class='code'><figcaption><span>application_helper.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">ApplicationHelper</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">cp</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>    <span class="n">current_route</span> <span class="o">=</span> <span class="no">Rails</span><span class="o">.</span><span class="n">application</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">recognize_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-</span><span class='line'>    <span class="s2">&quot;current&quot;</span> <span class="k">if</span> <span class="n">current_page?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="ow">or</span> <span class="n">params</span><span class="o">[</span><span class="ss">:controller</span><span class="o">]</span> <span class="o">==</span> <span class="n">current_route</span><span class="o">[</span><span class="ss">:controller</span><span class="o">]</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The method uses current_page and Rails.application.routes.recognize_path to get information about current page.</p>
-
-<p>After that we can use it in our view. Here is the example:</p>
-
-<figure class='code'><figcaption><span>application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="n">nav</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;menu-panel&quot;</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="sx">%= link_to &#39;SERVICES&#39;, services_path, class: cp(&#39;/services&#39;) %&gt;</span>
-</span><span class='line'><span class="sx">    &lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;FACILITIES&#39;</span><span class="p">,</span> <span class="n">facilities_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="n">cp</span><span class="p">(</span><span class="s1">&#39;/facilities&#39;</span><span class="p">)</span> <span class="sx">%&gt;</span>
-</span><span class='line'><span class="sx">    &lt;%= link_to &#39;ABOUT&#39;, about_path, class: cp(&#39;/about&#39;) %&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="sx">%= link_to &#39;CAREERS&#39;, careers_path, class: cp(careers_path) %&gt;</span>
-</span><span class='line'><span class="sx">    &lt;%=</span> <span class="n">link_to</span> <span class="s1">&#39;BLOG&#39;</span><span class="p">,</span> <span class="n">blog_index_path</span><span class="p">,</span> <span class="ss">class</span><span class="p">:</span> <span class="n">cp</span><span class="p">(</span><span class="n">blog_index_path</span><span class="p">)</span> <span class="sx">%&gt;</span>
-</span><span class='line'><span class="sx">    &lt;%= link_to &#39;CONTACT&#39;, contact_path, class: cp(&#39;/contact&#39;) %&gt;</span>
-</span><span class='line'>    <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;#&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;close-menu-panel&quot;</span><span class="o">&gt;&lt;</span><span class="n">b</span><span class="o">&gt;</span><span class="no">CLOSE</span><span class="o">&lt;</span><span class="sr">/b&gt;&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="sr">/nav&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I hope that helps.</p>
 ]]></content>
   </entry>
   
