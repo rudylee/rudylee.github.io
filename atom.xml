@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2018-06-23T14:01:29+10:00</updated>
+  <updated>2018-06-23T14:03:27+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -289,7 +289,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>You can check out the full code here: <a href="https://github.com/rudylee/go-playground.">https://github.com/rudylee/go-playground.</a> Hope this helps.</p>
+<p>You can check out the full code here: <a href="https://github.com/rudylee/go-playground">https://github.com/rudylee/go-playground</a> and please leave a comment if find any errors.</p>
 ]]></content>
   </entry>
   
