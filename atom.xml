@@ -4,7 +4,7 @@
   <title><![CDATA[Blog Rudy Lee]]></title>
   <link href="http://blog.rudylee.com/atom.xml" rel="self"/>
   <link href="http://blog.rudylee.com/"/>
-  <updated>2018-06-24T18:15:07+10:00</updated>
+  <updated>2018-08-18T12:01:00+10:00</updated>
   <id>http://blog.rudylee.com/</id>
   <author>
     <name><![CDATA[Rudy Lee]]></name>
@@ -12,6 +12,33 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to Run Code Snippet in Heroku Rails Console]]></title>
+    <link href="http://blog.rudylee.com/2018/08/18/how-to-run-code-snippet-in-heroku-rails-console/"/>
+    <updated>2018-08-18T11:40:00+10:00</updated>
+    <id>http://blog.rudylee.com/2018/08/18/how-to-run-code-snippet-in-heroku-rails-console</id>
+    <content type="html"><![CDATA[<p>Often in my day to day work, I need to run a snippet in rails console to fix or investigate issues. Since our application is hosted on Heroku, I can do this by running <code>heroku rails console --app app-name</code> and in a matter of seconds I am connected to the rails console on production.</p>
+
+<p>In some cases, I need to run a really long code snippet especially if the fix needs to touch a lot of data. Usually I will copy the snippet line by line into the rails console because sometimes one of the lines will return a data and it will mess up the snippet.</p>
+
+<p>After wasting a lot of time, I started thinking on a better way to do this. That&rsquo;s when I decided to use <code>eval</code> and <code>open</code> to help me running long code snippet. The idea is pretty simple, I need a place to securely host the code snippet, use <code>open</code> to read the code snippet and run it using <code>eval</code>.</p>
+
+<p>At the moment, I am using Github secret gist. You can use S3 bucket or your own web server as long as heroku can access it. If you are using Github gist, make sure you use the <code>raw</code> link. You can grab the <code>raw</code> link by clicking the <code>Raw</code> button on the top right hand corner of your gist. The format of the link should be something like
+<code>https://gist.githubusercontent.com/yourgithubaccount/randomhash/raw/randomhash/file.rb</code></p>
+
+<p>After you got the link, you can write 2 lines snippet to read and execute the file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;put-link-to-your-code-snippet-here&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="nb">eval</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I hope you find that useful and let me know if you have a better way to do this.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Download CSV Test in Go]]></title>
@@ -1267,238 +1294,6 @@
 <p>I really enjoyed the course and definitely learned something new from it. It covers the basic concept about directives, services and dependecy injection. I didn&rsquo;t understand those features when the first time I learned about AngularJS. In the beginning of learning AngularJS, I tended to copy and paste code without understanding the meaning behind it. This caused confusion when I tried to learn more about the framework.</p>
 
 <p>Code School also released another screencast on how to build AngularJS app from scratch. I&rsquo;ll suggest you to check that one out as well so you can apply the knowledge that you have learned from the course to build real application. However, you have to become the member to get access to the screencast.  There are also some other websites that provide AngularJS videos such as <a href="http://www.egghead.io">http://www.egghead.io</a> and <a href="http://www.thinkster.io">http://www.thinkster.io</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Configuring Elastic Beanstalk Environment with .ebextensions]]></title>
-    <link href="http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions/"/>
-    <updated>2014-05-22T01:44:00+10:00</updated>
-    <id>http://blog.rudylee.com/2014/05/22/configuring-elastic-beanstalk-environment-with-ebextensions</id>
-    <content type="html"><![CDATA[<p>At <a href="http://www.captiv8.com.au">Captiv8</a>, we are using Amazon AWS to host most of our PHP projects. We are heavily rely on Elastic Beanstalk to help us set up PHP environment, database and load balancer. On top of that, we are also managing our own server image based on Amazon AMI. In this image, we installed additional software and packages that we need for our application. However, this approach has a drawback as it is difficult to maintain the image and track changes. Everytime you need to update the image, you have to create new server, install the new software and export it into new image. This will leave you with bunch of different images and it is hard to tell what are the things that have changed inside each image.</p>
-
-<h1>Chef</h1>
-
-<p>In order to solve these problems, I decided to find a way to automate the process. My first attempt was trying to use Chef to provision the Elastic Beanstalk environment. I have been using Chef for a while to provision my Vagrant machines. It is powerful and more convenient in compare with bash scripts. Since I am already familiar with Chef, I started looking at tutorials on how to use Chef with Elastic Beanstalk. Most of the tutorials that I found don&rsquo;t provide easy way to integrate Chef with Elastic Beanstalk. One of them mentions about using AWS OpsWorks with Chef but I think it is overkill for the time being. So, I ditched Chef and start looking for another solution.</p>
-
-<h1>ebextensions</h1>
-
-<p>ebextensions is another solution that I found after checking the official documentation of Elastic Beanstalk. With this solution, you need to to create .ebextensions folder inside your project and create a file to define what are the packages that you want to install into the environment. Elastic Beanstalk will automatically run the script every time you deploy a new version of the application. Aside from that, you can also tell ebextensions to execute shell script in the instance or changing permission of a file. You can read more details about ebextension here: <a href="http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html">http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html</a></p>
-
-<p>This is my directory structure at the moment:
-<a href="http://blog.rudylee.com/images/ebextensions.png"><img src="http://blog.rudylee.com/images/ebextensions.png" alt="" /></a></p>
-
-<p>Here is the example of my ebextension config file:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">packages</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">yum</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">mlocate</span><span class="p-Indicator">:</span> <span class="p-Indicator">[]</span>
-</span><span class='line'>
-</span><span class='line'><span class="l-Scalar-Plain">commands</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">01updateComposer</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">export COMPOSER_HOME=/root &amp;&amp; /usr/bin/composer.phar self-update</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">02updateTag</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">ec2-create-tags $(ec2-metadata -i | cut -d &#39; &#39; -f2) --tag Project=ChangeThis</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">cwd</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/home/ec2-user</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">env</span><span class="p-Indicator">:</span>
-</span><span class='line'>      <span class="l-Scalar-Plain">EC2_HOME</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/opt/aws/apitools/ec2</span>
-</span><span class='line'>      <span class="l-Scalar-Plain">EC2_URL</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">https://ec2.ap-southeast-2.amazonaws.com</span>
-</span><span class='line'>      <span class="l-Scalar-Plain">JAVA_HOME</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/usr/lib/jvm/jre</span>
-</span><span class='line'>      <span class="l-Scalar-Plain">PATH</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/bin:/usr/bin:/opt/aws/bin/</span>
-</span><span class='line'>
-</span><span class='line'><span class="l-Scalar-Plain">container_commands</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">01-command</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">updatedb</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">02-command</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">rm -rf /captiv8/.ebextensions</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">03-command</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">mkdir -p /captiv8/.ebextensions</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">04-command</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">cp -R .ebextensions/* /captiv8/.ebextensions/</span>
-</span><span class='line'>  <span class="l-Scalar-Plain">05-command</span><span class="p-Indicator">:</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">command</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bash /captiv8/.ebextensions/scripts/app-setup.sh</span>
-</span><span class='line'>
-</span><span class='line'><span class="l-Scalar-Plain">option_settings</span><span class="p-Indicator">:</span>
-</span><span class='line'>  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">namespace</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">aws:elasticbeanstalk:application:environment</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">option_name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">COMPOSER_HOME</span>
-</span><span class='line'>    <span class="l-Scalar-Plain">value</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">/root</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And this is the example of my bash script:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/usr/bin/env bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># References: </span>
-</span><span class='line'><span class="c"># - http://www.hudku.com/blog/configuration-setup-customizing-aws-elastic-beanstalk/</span>
-</span><span class='line'><span class="c"># - http://www.hudku.com/blog/security-credentials-customizing-aws/#.elastic-beanstalk-app</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Main configuration, change these for each project</span>
-</span><span class='line'><span class="nv">appName</span><span class="o">=</span><span class="s2">&quot;change_this&quot;</span>
-</span><span class='line'><span class="nv">newrelicLicense</span><span class="o">=</span><span class="s2">&quot;newreliclicense&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Check if this is the very first time that this script is running</span>
-</span><span class='line'><span class="k">if</span> <span class="o">([</span> ! -f /root/.not-a-new-instance.txt <span class="o">])</span> <span class="k">then</span>
-</span><span class='line'><span class="k">  </span><span class="nv">newEC2Instance</span><span class="o">=</span><span class="nb">true</span>
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Install applications if this is new instance</span>
-</span><span class='line'><span class="k">if</span> <span class="o">([</span> <span class="nv">$newEC2Instance</span> <span class="o">])</span> <span class="k">then</span>
-</span><span class='line'>    <span class="c"># Allow sudo command to be used as part of beanstalk ebextensions scripts without a terminal</span>
-</span><span class='line'>    grep -q <span class="s1">&#39;Defaults:root !requiretty&#39;</span> /etc/sudoers.d/<span class="nv">$appName</span> <span class="o">||</span> <span class="nb">echo</span> -e <span class="s1">&#39;Defaults:root !requirettyn&#39;</span> &gt; /etc/sudoers.d/<span class="nv">$appName</span>
-</span><span class='line'>    chmod 440 /etc/sudoers.d/<span class="nv">$appName</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Add sudo command if not already present to .bashrc of ec2-user so that we are logged on as root when we use ssh</span>
-</span><span class='line'>    grep -q <span class="s2">&quot;sudo -s&quot;</span> /home/ec2-user/.bashrc <span class="o">||</span> <span class="nb">echo</span> -e <span class="s2">&quot;nsudo -sn&quot;</span> &gt;&gt; /home/ec2-user/.bashrc
-</span><span class='line'>
-</span><span class='line'>  <span class="c"># Install phpMyAdmin</span>
-</span><span class='line'>  yum -y --enablerepo<span class="o">=</span>epel install phpmyadmin
-</span><span class='line'>  rm /etc/httpd/conf.d/phpMyAdmin.conf
-</span><span class='line'>  rm /etc/phpMyAdmin/config.inc.php
-</span><span class='line'>  mv /captiv8/.ebextensions/templates/phpMyAdmin/phpMyAdmin.conf /etc/httpd/conf.d/
-</span><span class='line'>  mv /captiv8/.ebextensions/templates/phpMyAdmin/config.inc.php /etc/phpMyAdmin/
-</span><span class='line'>  chmod 644 /etc/httpd/conf.d/phpMyAdmin.conf
-</span><span class='line'>  chmod 644 /etc/phpMyAdmin/config.inc.php
-</span><span class='line'>  service httpd restart
-</span><span class='line'>
-</span><span class='line'>  <span class="c"># Install New Relic</span>
-</span><span class='line'>  rpm -Uvh http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm
-</span><span class='line'>  yum -y install newrelic-php5
-</span><span class='line'>  <span class="nb">echo</span> -ne <span class="err">&#39;</span><span class="se">\n\&#39;</span> | newrelic-install install
-</span><span class='line'>  rm /etc/php.d/newrelic.ini
-</span><span class='line'>  mv /captiv8/.ebextensions/templates/newrelic/newrelic.ini /etc/php.d/
-</span><span class='line'>  chmod 644 /etc/php.d/newrelic.ini
-</span><span class='line'>  perl -pi -e <span class="s2">&quot;s/PHP Application/$appName/g&quot;</span> /etc/php.d/newrelic.ini
-</span><span class='line'>  perl -pi -e <span class="s2">&quot;s/newrelicLicense/$newrelicLicense/g&quot;</span> /etc/php.d/newrelic.ini
-</span><span class='line'>
-</span><span class='line'>  <span class="c"># Install New Relic Server Monitor  </span>
-</span><span class='line'>  yum -y install newrelic-sysmond
-</span><span class='line'>  nrsysmond-config --set <span class="nv">license_key</span><span class="o">=</span><span class="nv">$newrelicLicense</span>
-</span><span class='line'>  /etc/init.d/newrelic-sysmond start
-</span><span class='line'>  service httpd restart
-</span><span class='line'>
-</span><span class='line'>  <span class="c"># Install OSSEC</span>
-</span><span class='line'>  yum -y install mysql-devel postgresql-devel
-</span><span class='line'>  wget http://www.ossec.net/files/ossec-hids-2.7.1.tar.gz -P /captiv8
-</span><span class='line'>  tar xzvf /captiv8/ossec-hids-2.7.1.tar.gz -C /captiv8
-</span><span class='line'>  rm /captiv8/ossec-hids-2.7.1.tar.gz
-</span><span class='line'>  rm /captiv8/ossec-hids-2.7.1/etc/preloaded-vars.conf
-</span><span class='line'>  mv /captiv8/.ebextensions/templates/ossec/preloaded-vars.conf /captiv8/ossec-hids-2.7.1/etc/
-</span><span class='line'>  /captiv8/ossec-hids-2.7.1/install.sh
-</span><span class='line'>  /var/ossec/bin/ossec-control start
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># If new instance, now it is not new anymore</span>
-</span><span class='line'><span class="k">if</span> <span class="o">([</span> <span class="nv">$newEC2Instance</span> <span class="o">])</span> <span class="k">then</span>
-</span><span class='line'><span class="k">    </span><span class="nb">echo</span> -n <span class="s2">&quot;&quot;</span> &gt; /root/.not-a-new-instance.txt
-</span><span class='line'>    chmod 644 /etc/php.d/.not-a-new-instance
-</span><span class='line'><span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Inside my ebextensions config file, I call the shell script which will install additional software. The benefit of using shell script is you have more options and it is much easier to customize the software. Since the .ebextensions folder is copied to the instance, you can tell the shell script to copy a template config file that you have prepared before hand. I hope you find this blog post useful.</p>
 ]]></content>
   </entry>
   
